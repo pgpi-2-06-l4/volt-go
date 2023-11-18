@@ -20,4 +20,4 @@
 
 ## UML VoltGo
 
-![UML voltgo](https://drive.google.com/file/d/18ey6PsYQAxUNZL55r-Hsbjk6hgOFpZyd/view?usp=drive_link)
+![UML voltgo](https://drive.google.com/file/d/18ey6PsYQAxUNZL55r-Hsbjk6hgOFpZyd/view?usp=sharing)
