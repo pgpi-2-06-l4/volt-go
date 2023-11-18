@@ -1,0 +1,15 @@
+tipo(ámbito): título
+
+descripción/cuerpo
+
+pie
+
+# ---------------------------------------------------------------------------
+# tipo: feat,fix,doc,initial,chore
+# ámbito: a qué nivel afecta el cambio (aplicación, módulo concreto, etc.)
+# título: pequeña descripción del cambio. Verbos en imperativo.
+# descripción/cuerpo: detalles del cambio. (opcional)
+# pie: issues o tareas asociadas
+#  - cuando está relacionada se escribe `#ID_ISSUE`
+#  - cuando cierra un issue se escribe `Closes #ID_ISSUE`
+# ---------------------------------------------------------------------------
