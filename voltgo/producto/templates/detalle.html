@@ -1,0 +1,46 @@
+{% block content %} {% load static %}
+
+<link rel="stylesheet" href='{% static "detalle.css" %}' />
+
+<main>
+  <section>
+    <header>
+      <h1>Tecnología de {{ object.empresa.nombre }}</h1>
+    </header>
+
+    <article id="informacion-moto">
+      <div id="contenedor-img-moto">
+        <img
+          id="img-moto"
+          src="{{ object.url_imagen }}"
+          alt="Foto de {{ object.nombre }}"
+        />
+      </div>
+
+      <aside>
+        <h2>{{ object.nombre }}</h2>
+      </aside>
+    </article>
+  </section>
+
+  <section>
+    <article>
+      <header>
+        <h1>Descripción</h1>
+      </header>
+      <p>{{ object.descripcion }}</p>
+    </article>
+    <article>
+      <header>
+        <h1>Características</h1>
+      </header>
+      <ul>
+        {% for c in object.caracteristicas %}
+        <li>{{ c.nombre }}: {{ c.valor }}</li>
+        {% endfor %}
+      </ul>
+    </article>
+  </section>
+</main>
+
+{% endblock content %}

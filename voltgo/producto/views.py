@@ -1,7 +1,7 @@
 from django.views.generic.detail import DetailView
 from .models import Producto
 
+
 class ProductDetailView(DetailView):
     model = Producto
-    template_name = 'detail.html'
-
+    template_name = "detalle.html"
