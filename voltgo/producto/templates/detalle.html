@@ -19,6 +19,8 @@
 
       <aside>
         <h2>{{ object.nombre }}</h2>
+        <p>{{ object.precio_base }} €/hora</p>
+        <button>Reservar ahora</button>
       </aside>
     </article>
   </section>
@@ -30,16 +32,19 @@
       </header>
       <p>{{ object.descripcion }}</p>
     </article>
+
+    {% if object.caracteristicas %}
     <article>
       <header>
         <h1>Características</h1>
       </header>
       <ul>
-        {% for c in object.caracteristicas %}
-        <li>{{ c.nombre }}: {{ c.valor }}</li>
+        {% for c in object.caracteristicas.all %}
+        <li>{{ c.get_nombre_display }}: {{ c.valor }}</li>
         {% endfor %}
       </ul>
     </article>
+    {% endif %}
   </section>
 </main>
 
