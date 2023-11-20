@@ -1,0 +1,45 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="esp">
+  <head>
+    <meta charset="UTF-8">
+    <title>Corto & Cambio</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}/">
+</head>
+
+<body>
+  <div id="container">
+  <header>
+      <h1 id="titulo">Volt-Go</h1>  
+  </header>
+    <nav>
+      <ul>
+        <div id="botones_funcion"> 
+         
+        </div>
+        <div id="botones_sesion">
+            {% if request.user.is_authenticated %}
+              <li>Hola, {{ request.user.first_name }}</li>
+              <li><a href="{% url "logout" %}">Logout</a></li>
+            {% else %}
+              <li><a href="{% url 'register' %}">Registrarse</a></li>
+              <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+            {% endif %}
+        </div>
+          </ul>
+    </nav>
+      <div id="content">
+        {% block content %}
+        {% endblock content %}
+      </div>
+    </body>
+    <footer>
+        <ul>
+          <li>&copy; Corto & Cambio 2022 - 2023</li>
+          <li id="terminos"><a target="blank" href="{% static 'terminos_de_servicio.pdf' %}">Términos de servicio</a></li>
+          <li id="terminos"><a target="blank" href="{% static 'aviso_de_privacidad.pdf' %}">Aviso de privacidad</a></li>
+        </ul>
+    </footer>
+  </div>
+</html>

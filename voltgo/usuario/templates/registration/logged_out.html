@@ -1,0 +1,11 @@
+{% extends "shop/layout.html" %}
+
+{% block title %}Logged out{% endblock %}
+
+{% block content %}
+	<h1>Cierre de sesión</h1>
+ 	<p>
+ 		Has cerrado sesión.
+ 		Puedes iniciar sesión de nuevo <a id="enlace" href="{% url "login" %}">aquí</a>.
+ 	</p>
+{% endblock %}

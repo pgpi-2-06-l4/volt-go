@@ -1,0 +1,8 @@
+{% extends "shop/layout.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+	<h1>Bienvenido {{ new_user.first_name }}!</h1>
+	<p>Tu cuenta ha sido creada correctamente. Puedes iniciar sesión <a id="enlace" href="{% url "login" %}">aquí</a>.</p>
+{% endblock %}
