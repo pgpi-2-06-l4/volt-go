@@ -1,3 +1,5 @@
+@import url(//fonts.googleapis.com/css?family=Nunito:400,700);
+
 body {
   background-color: white;
 }
@@ -8,7 +10,7 @@ body {
 }
 
 header {
-  background-color: rgb(34, 33, 33);
+  background-color: rgb(62, 204, 62);
   color: white;
   height: 140px;
   display: flex;
@@ -55,7 +57,7 @@ nav #botones_sesion {
 
 nav a:link,
 a:visited {
-  color: white;
+  color: black;
 }
 
 nav a:hover {
@@ -65,11 +67,9 @@ nav a:hover {
 #content {
   min-height: 365px;
   background-color: white;
-  border: 1px solid black;
 }
 
 footer {
-  background-color: rgb(25, 25, 44);
   color: white;
   font-size: 20px;
   height: 30px;
@@ -86,13 +86,13 @@ footer ul li {
   margin-right: 20px;
 }
 
-#boton{
+#boton {
   font-size: large;
   background-color: black;
   color: white;
 }
 
-#enlace{
+#enlace {
   color: blue;
 }
 
@@ -107,6 +107,7 @@ footer ul li {
 #vista_inicio {
   text-align: center;
 }
+
 #titulo_inicio {
   font-size: 50px;
   color: rgb(68, 102, 175);
@@ -136,7 +137,6 @@ footer ul li {
 }
 
 #atencion_cliente_form {
-  border: 2px solid black;
   max-height: 120px;
   max-width: 40%;
   margin-top: 20px;
@@ -148,7 +148,6 @@ footer ul li {
 }
 
 #atencion_cliente_list {
-  border: 2px solid black;
   min-width: 300px;
   margin-top: 20px;
   margin-left: 200px;
@@ -156,7 +155,6 @@ footer ul li {
 }
 
 #recomendacion {
-  border: 1px solid black;
   margin: 10px;
 }
 
@@ -169,7 +167,6 @@ footer ul li {
 }
 
 #product_detail {
-  border: 2px solid black;
   margin: auto;
   max-width: 50%;
   text-align: center;
@@ -193,15 +190,14 @@ footer ul li {
 }
 
 #item {
-  border: 2px solid black;
-  border-top: 20px solid rgb(63, 61, 61);
   max-width: fit-content;
   text-align: center;
   font-size: 20px;
   padding: 10px;
   margin-bottom: 20px;
 }
-#pedidos{
+
+#pedidos {
   text-align: center;
 }
 
@@ -211,7 +207,6 @@ footer ul li {
 #register,
 #reserva,
 #pedido {
-  border: 2px solid black;
   margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -221,46 +216,56 @@ footer ul li {
 }
 
 .order-form {
-  float:left;
+  float: left;
 }
 
 .order-info {
-  float:right;
-  width:300px;
-  background:#efefef;
-  padding:10px 20px;
-  color:#333;
-  border-bottom:4px solid #5993bb;
+  float: right;
+  width: 300px;
+  background: #ffffff;
+  padding: 10px 20px;
+  color: #333;
 }
 
 .order-info h3 {
-  color:#5993bb;
+  color: #5993bb;
 }
 
 .order-info ul li {
-  margin:0;
-  padding:0;
-  font-size:14px;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
 }
 
 .order-info p {
-  font-weight:bold;
-  float:right;
+  font-weight: bold;
+  float: right;
 }
 
 .order-info span {
-  float:right;
+  float: right;
 }
 
 /* braintree hosted fields */
 form div.field {
-  font-size:13px;
-  color:#666;
-  width:300px;
-  height:22px;
-  margin-bottom:10px;
-  padding:6px 12px;
-  border:0;
-  background:#efefef;
-  border-radius:4px;
+  font-size: 13px;
+  color: #666;
+  width: 300px;
+  height: 22px;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background: #efefef;
+}
+
+
+a {
+  color: black;
+}
+
+a:hover {
+  color: blue;
+}
+
+a:visited {
+  color: black;
 }

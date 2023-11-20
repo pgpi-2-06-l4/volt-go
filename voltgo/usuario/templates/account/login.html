@@ -2,10 +2,14 @@
 {% block title %}Log-in{% endblock %}
 
 {% block content%}
-<h1>Log-in</h1>
-<p>Please, use the following form to log-in:</p>
-<form method="post">
-  {{ form.as_p }} {% csrf_token %}
-  <p><input id="boton" type="submit" value="Iniciar sesion" /></p>
-</form>
+<div class="text-center justify-content-center align-center">
+  <h1>Log-in</h1>
+  <p>Please, use the following form to log-in:</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input id="boton" type="submit" value="Iniciar sesion" /></p>
+  </form>
+</div>
+
 {% endblock %}
