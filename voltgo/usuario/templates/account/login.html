@@ -1,15 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Log-in{% endblock %}
 
-{% block content%}
+{% block content %}
 <div class="text-center justify-content-center align-center">
   <h1>Log-in</h1>
-  <p>Please, use the following form to log-in:</p>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <p><input id="boton" type="submit" value="Iniciar sesion" /></p>
+    <p><input id="boton" type="submit" value="Iniciar sesión" /></p>
   </form>
-</div>
 
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <p style="color: red;"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+</div>
 {% endblock %}
