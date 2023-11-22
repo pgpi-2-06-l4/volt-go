@@ -1,0 +1,20 @@
+main {
+  padding: 0 20%;
+}
+
+#informacion-moto {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 5%;
+}
+
+#contenedor-img-moto {
+  display: grid;
+  place-content: center;
+}
+
+#img-moto {
+  width: 90%;
+  height: auto;
+  border-radius: 5px;
+}

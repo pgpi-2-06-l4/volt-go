@@ -7,7 +7,6 @@ chardet==3.0.4
 defusedxml==0.6.0
 django-allauth==0.39.1
 django-countries==5.3.3
-
 django-crispy-forms==1.7.2
 django-debug-toolbar==1.11.1
 idna==2.8
@@ -23,3 +22,4 @@ requests-oauthlib==1.2.0
 stripe==2.27.0
 urllib3
 celery==4.4.2
+PyYAML==6.0.1
