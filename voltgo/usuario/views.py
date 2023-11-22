@@ -1,12 +1,10 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Usuario
 from .forms import LoginForm, UserRegistrationForm
-
-
 from django.contrib import messages
 
 def user_login(request):
@@ -20,9 +18,7 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    print('login')
-                    dashboard_url = reverse('dashboard') 
-                    print(dashboard_url)
+                    dashboard_url = reverse('dashboard')
                     return HttpResponseRedirect(dashboard_url)
                 else:
                     return HttpResponse('Cuenta desactivada')
@@ -36,7 +32,6 @@ def user_login(request):
 @login_required
 def dashboard(request):
     return render(request,
-
                   'account/dashboard.html',
                   {'section': 'dashboard'})
 
