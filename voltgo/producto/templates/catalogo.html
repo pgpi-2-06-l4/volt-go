@@ -7,6 +7,12 @@
 </head>
 <body>
     <h1>Catálogo de Motos Eléctricas</h1>
+    <div id="buscador-container">
+        <form method="get">
+            {{ form.as_p }}
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
     <div id="productos-container">
         {% for producto_dict in productos %}
             <div class = producto id="producto-catalogo" data-url="{{ producto_dict.producto.id }}">

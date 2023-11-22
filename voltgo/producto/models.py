@@ -22,13 +22,11 @@ class Caracteristica(models.Model):
         ("AT", "Autonomía"),
         ("VM", "Velocidad máxima"),
         ("TC", "Tiempo de carga"),
-        ("SF", "Sistema de frenado"),
-        ("B", "Batería"),
         ("P", "Peso"),
     ]
 
     nombre = models.CharField(max_length=50, choices=TIPOS)
-    valor = models.CharField(max_length=20, blank=False)
+    valor = models.IntegerField(max_length=20, blank=False)
 
     def __str__(self) -> str:
         return self.nombre
