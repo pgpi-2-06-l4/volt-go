@@ -6,8 +6,12 @@ from django.contrib.auth.decorators import login_required
 from .models import Usuario
 from .forms import LoginForm, UserRegistrationForm
 from django.contrib import messages
+from django.shortcuts import redirect
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/usuario/dashboard')  # Redirigir a la página principal si ya está autenticado
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -40,13 +44,21 @@ def register(request):
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
-            new_user.set_password(
-                user_form.cleaned_data['password'])
+            new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            Usuario.objects.create(user=new_user)
-            return render(request,
-                          'account/dashboard.html',
-                          {'new_user': new_user})
+            
+            # Autenticar al usuario después de registrarse
+            username = user_form.cleaned_data['username']
+            password = user_form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, '¡Registro exitoso! Ahora estás conectado.')
+                
+                # Redirigir al usuario al dashboard
+                return redirect('dashboard')  # Reemplaza 'dashboard' con la URL de tu dashboard
+
     else:
         user_form = UserRegistrationForm()
+
     return render(request, 'account/register.html', {'user_form': user_form})
