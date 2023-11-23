@@ -46,7 +46,7 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            
+
             # Autenticar al usuario después de registrarse
             username = user_form.cleaned_data['username']
             password = user_form.cleaned_data['password']
@@ -54,9 +54,12 @@ def register(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, '¡Registro exitoso! Ahora estás conectado.')
-                
+
                 # Redirigir al usuario al dashboard
                 return redirect('dashboard')  # Reemplaza 'dashboard' con la URL de tu dashboard
+        else:
+            # Si hay errores en el formulario, los agregamos al contexto
+            messages.error(request, 'Corrige los errores marcados en rojo.')
 
     else:
         user_form = UserRegistrationForm()

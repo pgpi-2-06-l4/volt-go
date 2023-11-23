@@ -1,12 +1,20 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
+{% block title %}Crea una cuenta - Tu Sitio{% endblock %}
+
 {% block content %}
-<div id="register">
+<div id="register-form" class="text-center">
   <h1>Crea una cuenta</h1>
-  <p>Usa el siguiente formulario:</p>
+  <p>Utiliza el siguiente formulario:</p>
   <form method="post">
-    {% csrf_token %} 
+    {% csrf_token %}
     {{ user_form.as_p }}
-    <button id="boton" type="submit" id="submit">Registrarse</button>
+    <p><input id="boton" type="submit" value="Registrarse" /></p>
+
+    {% if user_form.errors %}
+    <div class="error-message">
+      <p style="color: red;;">Por favor, corrige los errores.</p>
+    </div>
+    {% endif %}
   </form>
 </div>
 {% endblock content %}
