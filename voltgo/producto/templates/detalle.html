@@ -1,51 +1,47 @@
-{% block content %} {% load static %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" href='{% static "detalle.css" %}' />
-
-<main>
-  <section>
-    <header>
-      <h1>Tecnología de {{ object.empresa.nombre }}</h1>
-    </header>
-
-    <article id="informacion-moto">
-      <div id="contenedor-img-moto">
+{% block content %} 
+<main class="container">
+  <div class="card">
+    <div class="row no-gutters">
+      <div class="col-md-6">
         <img
-          id="img-moto"
           src="{{ object.url_imagen }}"
           alt="Foto de {{ object.nombre }}"
+          class="card-img"
         />
       </div>
+      <div class="col-md-6">
+        <div class="card-body">
+          <h1 class="card-title display-4">Tecnología de {{ object.empresa.nombre }}</h1>
+          <h2 class="h3">{{ object.nombre }}</h2>
+          <p class="lead">{{ object.precio_base }} €/hora</p>
+          <button class="btn btn-lg btn-primary">Reservar ahora</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <aside>
-        <h2>{{ object.nombre }}</h2>
-        <p>{{ object.precio_base }} €/hora</p>
-        <button>Reservar ahora</button>
-      </aside>
-    </article>
-  </section>
-
-  <section>
-    <article>
-      <header>
+  <div class="row mt-4">
+    <article class="col-md-6">
+      <div>
         <h1>Descripción</h1>
-      </header>
+      </div>
       <p>{{ object.descripcion }}</p>
     </article>
 
     {% if object.caracteristicas %}
-    <article>
-      <header>
+    <article class="col-md-6">
+      <div>
         <h1>Características</h1>
-      </header>
-      <ul>
+      </div>
+      <ul class="list-group">
         {% for c in object.caracteristicas.all %}
-        <li>{{ c.get_nombre_display }}: {{ c.valor }}</li>
+        <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
         {% endfor %}
       </ul>
     </article>
     {% endif %}
-  </section>
+  </div>
 </main>
-
 {% endblock content %}
