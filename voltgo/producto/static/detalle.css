@@ -18,3 +18,23 @@ main {
   height: auto;
   border-radius: 5px;
 }
+
+#catalogo-img{
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+#productos-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#producto-catalogo{
+  flex-basis: calc(33.33% - 20px);
+  margin: 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+}

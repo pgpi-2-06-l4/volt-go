@@ -1,0 +1,43 @@
+{% block content %} {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href='{% static "detalle.css" %}' />
+</head>
+<body>
+    <h1>Catálogo de Motos Eléctricas</h1>
+    <div id="buscador-container">
+        <form method="get">
+            {{ form.as_p }}
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+    <div id="productos-container">
+        {% for producto_dict in productos %}
+            <div class = producto id="producto-catalogo" data-url="{{ producto_dict.producto.id }}">
+                <img id="catalogo-img"
+                    src="{{ producto_dict.producto.url_imagen }}"
+                    alt="{{ producto_dict.producto.nombre }}">
+                <p>{{ producto_dict.producto.nombre }}</p>
+                <p>Precio: ${{ producto_dict.producto.precio_base }}</p>
+                <p>Autonomía: {{ producto_dict.autonomia }} horas</p>
+                <p>Velocidad Máxima: {{ producto_dict.velocidad_maxima }} Km/h</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            var productos = document.querySelectorAll('.producto');
+            productos.forEach(function (producto) {
+                producto.addEventListener('click', function () {
+                    var url = '/productos/' + producto.getAttribute('data-url') + '/';
+                    window.location.href = url;
+                });
+            });
+        });
+    </script>
+</body>
+{% endblock content %}
