@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Volt-Go</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <header class="mt-3 mb-4 text-center justify-content-center align-center">
+            <h1 class="display-4"><strong>Volt-Go</strong></h1>
+        </header>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/usuario/login">Inicio</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="navbar-text mr-3">Hola, {{ request.user.first_name }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:8000/usuario/logout">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:8000/usuario/register">Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:8000/usuario/login">Iniciar sesión</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+
+        <div id="content">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+
+    <footer class="footer mt-5 py-3">
+        <div class="container">
+            <ul class="list-unstyled text-center">
+                <li style="color: black;">&copy; Volt-Go 2023 - 2024</li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Agrega la referencia a Bootstrap JS y jQuery al final del cuerpo para mejorar la carga -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
