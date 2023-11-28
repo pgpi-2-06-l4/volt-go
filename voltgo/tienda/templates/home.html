@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Bienvenido a VoltGo</h1>
+  <p>El mejor servicio de alquiler de motos eléctricas</p>
+</div>
+<div class="container mt-5">
+  <div class="row">
+    <div id="imageCarousel" class="carousel slide col-md-6" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="../static/images/Slider1.jfif" class="d-block w-100" alt="Image 1">
+        </div>
+        <div class="carousel-item">
+          <img src="../static/images/Slider2.jfif" class="d-block w-100" alt="Image 2">
+        </div>
+        <div class="carousel-item">
+          <img src="../static/images/Slider3.jfif" class="d-block w-100" alt="Image 3">
+        </div>
+        <div class="carousel-item">
+          <img src="../static/images/Slider4.jfif" class="d-block w-100" alt="Image 3">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <div id="descripcion-container" class="col-md-6 text-center">
+      <h3 id="subtitulo">¿Qué ofrecemos?</h3>
+      <h6 id="descripcion">Nuestro servicios brindan la posibilidad de alquilar motocicletas eléctricas durante un
+        tiempo limitado,
+        con servicio de entrega incluido, para que usted se limite a disfrutar de la carretera. Puede consultar
+        los modelos disponibles o filtrar según características deseadas. </h6>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

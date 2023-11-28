@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %} 
+<main class="container">
+  <div class="card">
+    <div class="row no-gutters">
+      <div class="col-md-6">
+        <img
+          src="{{ object.url_imagen }}"
+          alt="Foto de {{ object.nombre }}"
+          class="card-img"
+        />
+      </div>
+      <div class="col-md-6">
+        <div class="card-body">
+          <h1 class="card-title display-4">Tecnología de {{ object.empresa.nombre }}</h1>
+          <h2 class="h3">{{ object.nombre }}</h2>
+          <p class="lead">{{ object.precio_base }} €/hora</p>
+          <button class="btn btn-lg btn-primary">Reservar ahora</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <article class="col-md-6">
+      <div>
+        <h1>Descripción</h1>
+      </div>
+      <p>{{ object.descripcion }}</p>
+    </article>
+
+    {% if object.caracteristicas %}
+    <article class="col-md-6">
+      <div>
+        <h1>Características</h1>
+      </div>
+      <ul class="list-group">
+        {% for c in object.caracteristicas.all %}
+        <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
+        {% endfor %}
+      </ul>
+    </article>
+    {% endif %}
+  </div>
+</main>
+{% endblock content %}
