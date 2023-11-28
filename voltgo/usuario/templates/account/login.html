@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Iniciar sesión</h1>
+</div>
+<br/>
+<div class="text-center justify-content-center align-center">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input id="boton" type="submit" value="Iniciar sesión" /></p>
+  </form>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <p style="color: red;" {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+</div>
+{% endblock %}
