@@ -22,8 +22,8 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-4" >
-          <li class="nav-item" id="nav-elemento" >
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-4">
+          <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/home">
               <h7 style="color: white;">Home</h7>
             </a>
@@ -33,6 +33,13 @@
               <h7 style="color: white;">Catálogo</h7>
             </a>
           </li>
+          {% if request.user.is_staff %}
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/tienda/gestion/">
+              <h7 style="color: white;">Gestión de Ventas</h7>
+            </a>
+          </li>
+          {% endif %}
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4">
           {% if request.user.is_authenticated %}
