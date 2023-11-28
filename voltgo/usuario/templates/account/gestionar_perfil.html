@@ -9,6 +9,23 @@
     {{ profile_form.as_p }}
     <button type="submit">Guardar Cambios</button>
   </form>
-  <button type="submit">Añadir dirección</button>
+
+  <h2>Mi dirección</h2>
+  {% for direccion in direcciones %}
+    <p>
+      {{ direccion }}
+      <a href="{% url 'direccion_editar' direccion.id %}">Editar</a>
+      <a href="{% url 'eliminar_direccion' direccion.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta dirección?')">Eliminar</a>
+    </p>
+  {% endfor %}
+
+  {% if not direcciones %}
+    <a href="{% url 'direccion_nueva' %}">
+      <button type="button">Añadir dirección</button>
+    </a>
+  {% endif %}
+
+
+
   <button type="submit">Añadir método de pago</button>
 {% endblock %}

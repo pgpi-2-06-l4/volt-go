@@ -3,10 +3,10 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Usuario
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm
+from .models import Usuario, Direccion
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm, DireccionForm
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -81,4 +81,37 @@ def gestionar_perfil(request):
         user_form = UserEditForm(instance=request.user)
         profile_form = UserProfileEditForm(instance=request.user.perfil)
 
-    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form})
+    direcciones = Direccion.objects.filter(usuario=request.user)
+    direccion_form = DireccionForm()
+
+    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones, 'direccion_form': direccion_form,})
+
+
+@login_required
+def eliminar_direccion(request, pk):
+    direccion = get_object_or_404(Direccion, pk=pk, usuario=request.user)
+    direccion.delete()
+
+    return redirect('gestionar_perfil')
+
+@login_required
+def direccion_editar(request, pk=None):
+    # Si se proporciona un pk, entonces estamos editando una dirección existente
+    if pk:
+        direccion = get_object_or_404(Direccion, pk=pk, usuario=request.user)
+        modo_edicion = True
+    else:
+        direccion = None
+        modo_edicion = False
+
+    if request.method == 'POST':
+        form = DireccionForm(request.POST, instance=direccion)
+        if form.is_valid():
+            direccion = form.save(commit=False)
+            direccion.usuario = request.user
+            direccion.save()
+            return redirect('gestionar_perfil')
+    else:
+        form = DireccionForm(instance=direccion)
+
+    return render(request, 'account/direccion_editar.html', {'form': form, 'modo_edicion': modo_edicion})

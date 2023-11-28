@@ -3,7 +3,6 @@ from django.contrib.auth import views as auth_views
 from . import views
 from django.contrib.auth.views import LogoutView
 
-# app_name = 'usuario'
 
 urlpatterns = [
     path('login', views.user_login, name='login'),
@@ -20,4 +19,8 @@ urlpatterns = [
     path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('gestionar_perfil/', views.gestionar_perfil, name='gestionar_perfil'),
+    path('direccion/<int:pk>/eliminar/', views.eliminar_direccion, name='eliminar_direccion'),
+    path('direccion/editar/<int:pk>/', views.direccion_editar, name='direccion_editar'),
+    path('direccion/nueva/', views.direccion_editar, name='direccion_nueva'),
+
 ]
