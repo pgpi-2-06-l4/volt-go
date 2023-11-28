@@ -109,10 +109,24 @@ class Direccion(models.Model):
     ciudad = models.CharField(max_length=100, choices=CIUDADES_CHOICES)
     codigo_postal = models.IntegerField(max_length=5, validators=[RegexValidator(regex='^\d{5}$', message='El código postal debe contener 5 dígitos exactamente')])
 
-    def get_absolute_url(self):
-        return reverse('direccion_detail', args=[str(self.id)])
 
     def __str__(self):
         return f"{self.calle}, {self.apartamento}, {self.ciudad} {self.pais}"
+    
+
+class TarjetaCredito(models.Model):
+
+    class Meta:
+        verbose_name = "tarjeta"
+        verbose_name_plural = "tarjetas"
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null = True, blank = True)
+    iban = models.CharField(max_length=30)
+    fecha_caducidad = models.CharField(max_length=5, validators=[RegexValidator(regex='^\d{2}/\d{2}$', message='El formato de la fecha de caducidad no es el correcto')])
+    cvv = models.CharField(max_length=4)
+
+    
+    def __str__(self):
+        return f'Tarjeta de crédito para {self.usuario.username}'
 
 

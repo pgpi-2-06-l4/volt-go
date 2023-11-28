@@ -25,7 +25,21 @@
     </a>
   {% endif %}
 
+  <h2>Mi tarjeta</h2>
+  {% for tarjeta in tarjetas %}
+    <p>
+      {{ tarjeta }}
+      <a href="{% url 'tarjeta_editar' tarjeta.id %}">Editar</a>
+      <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarjeta?')">Eliminar</a>
+    </p>
+  {% endfor %}
+
+  {% if not tarjetas %}
+    <a href="{% url 'tarjeta_nueva' %}">
+      <button type="button">Añadir tarjeta</button>
+    </a>
+  {% endif %}
 
 
-  <button type="submit">Añadir método de pago</button>
+
 {% endblock %}
