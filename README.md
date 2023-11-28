@@ -3,7 +3,7 @@
 ## Integrantes de PGPI 2.6
 
 - Francisco Javier Barba Trejo (frabartre@alum.us.es)
-- Antonio Barea Jiménez (antbarjim@alum.us.es)
+- Antonio Barea Jiménez (antbarjim1@alum.us.es)
 - Diego González Quintanilla (diegonqui@alum.us.es)
 - Virgilio Oliva Alonso (virolialo@alum.us.es)
 - Alberto Perea León (albperleo@alum.us.es)
