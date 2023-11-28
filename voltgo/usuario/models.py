@@ -1,5 +1,66 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator, MinValueValidator, RegexValidator
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
+from datetime import datetime
+
+
+PAISES_CHOICES = [
+    ('ESP', 'ESP')
+]
+
+CIUDADES_CHOICES = [
+    ('Huelva', 'Huelva'),
+    ('Sevilla', 'Sevilla'),
+    ('Cordoba', 'Cordoba'),
+    ('Jaen', 'Jaen'),
+    ('Cadiz', 'Cadiz'),
+    ('Malaga', 'Malaga'),
+    ('Granada', 'Granada'),
+    ('Almeria', 'Almeria'),
+    ('Badajoz', 'Badajoz'),
+    ('Ciudad Real', 'Ciudad Real'),
+    ('Albacete', 'Albacete'),
+    ('Murcia', 'Murcia'),
+    ('Alicante', 'Alicante'),
+    ('Caceres', 'Caceres'),
+    ('Toledo', 'Toledo'),
+    ('Cuenca', 'Cuenca'),
+    ('Valencia', 'Valencia'),
+    ('Salamanca', 'Salamanca'),
+    ('Avila', 'Avila'),
+    ('Madrid', 'Madrid'),
+    ('Guadalajara', 'Guadalajara'),
+    ('Teruel', 'Teruel'),
+    ('Castellon', 'Castellon'),
+    ('Zamora', 'Zamora'),
+    ('Valladolid', 'Valladolid'),
+    ('Segovia', 'Segovia'),
+    ('Soria', 'Soria'),
+    ('Zaragoza', 'Zaragoza'),
+    ('Tarragona', 'Tarragona'),
+    ('Pontevedra', 'Pontevedra'),
+    ('Orense', 'Orense'),
+    ('Leon', 'Leon'),
+    ('Palencia', 'Palencia'),
+    ('Burgos', 'Burgos'),
+    ('La Rioja', 'La Rioja'),
+    ('Navarra', 'Navarra'),
+    ('Huesca', 'Huesca'),
+    ('Lerida', 'Lerida'),
+    ('Barcelona', 'Barcelona'),
+    ('Gerona', 'Gerona'),
+    ('Navarra', 'Navarra'),
+    ('Vizacaya', 'Vizcaya'),
+    ('Guipuzcoa', 'Guipuzcoa'),
+    ('Alava', 'Alava'),
+    ('Cantabria', 'Cantabria'),
+    ('Asturias', 'Asturias'),
+    ('Lugo', 'Lugo'),
+    ('La Coruña', 'La Coruña')    
+]
 
 class Usuario(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
@@ -11,3 +72,38 @@ class Usuario(models.Model):
 
     def __str__(self):
         return 'Profile for user {self.user.username}'
+
+
+def validar_fecha(fecha):
+    fecha_limite = datetime.now().date()
+    if fecha > fecha_limite:
+        raise ValidationError(_('La fecha no puede ser superior a la fecha actual.'),
+                              params={'fecha_limite': fecha_limite})
+    
+class Perfil(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    fecha_nacimiento = models.DateField(validators=[validar_fecha])
+    
+    telefono_validator = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$',
+        message="Formato invalido."
+    )
+    
+    telefono = models.CharField(max_length=15, validators=[telefono_validator], help_text="El numero de telefono debe ser ingresado en formato internacional")
+
+
+    def __str__(self):
+        return self.usuario.username
+    
+class Direccion(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    calle = models.CharField(max_length=100)
+    apartamento = models.CharField(max_length=100)
+    pais = models.CharField(max_length=100, choices=PAISES_CHOICES)
+    ciudad = models.CharField(max_length=100, choices=CIUDADES_CHOICES)
+    codigo_postal = models.IntegerField(validators=[MaxLengthValidator(limit_value=5, message="El codigo postal debe contener 5 digitos exactamente"), MinValueValidator(limit_value=5, message="El codigo postal debe contener 5 digitos exactamente")])
+
+    def __str__(self):
+        return f"{self.calle}, {self.apartamento}, {self.ciudad} {self.pais}"
+
+
