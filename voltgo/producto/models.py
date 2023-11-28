@@ -26,7 +26,7 @@ class Caracteristica(models.Model):
     ]
 
     nombre = models.CharField(max_length=50, choices=TIPOS)
-    valor = models.IntegerField(max_length=20, blank=False)
+    valor = models.IntegerField(blank=False)
 
     def __str__(self) -> str:
         return self.nombre
