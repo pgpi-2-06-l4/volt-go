@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Usuario
-from .forms import LoginForm, UserRegistrationForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm
 from django.contrib import messages
 from django.shortcuts import redirect
 
@@ -65,3 +65,20 @@ def register(request):
         user_form = UserRegistrationForm()
 
     return render(request, 'account/register.html', {'user_form': user_form})
+
+@login_required
+def gestionar_perfil(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(request.POST, instance=request.user)
+        profile_form = UserProfileEditForm(request.POST, request.FILES, instance=request.user.perfil)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('home')
+        
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = UserProfileEditForm(instance=request.user.perfil)
+
+    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form})
