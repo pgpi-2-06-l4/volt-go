@@ -138,5 +138,70 @@
             "url_imagen": "https://movilidadelectrica.com/wp-content/uploads/2022/01/arc-vector-desnuda.jpeg",
             "empresa": 5
         }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 1,
+        "fields": {
+            "fecha_inicio": "2023-11-01T12:00:00Z",
+            "fecha_fin": null,
+            "estado_producto": 1,  
+            "estado_envio": 0,  
+            "tipo_pago": 1, 
+            "producto": 1, 
+            "usuario": 1 
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 2,
+        "fields": {
+            "fecha_inicio": "2023-11-02T14:30:00Z",
+            "fecha_fin": "2023-11-05T16:45:00Z",
+            "estado_producto": 2,
+            "estado_envio": 1,
+            "tipo_pago": 0,
+            "producto": 2,
+            "usuario": 1
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 3,
+        "fields": {
+            "fecha_inicio": "2023-11-03T10:00:00Z",
+            "fecha_fin": null,
+            "estado_producto": 0,
+            "estado_envio": 0,
+            "tipo_pago": 1,
+            "producto": 3,
+            "usuario": 1
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 4,
+        "fields": {
+            "fecha_inicio": "2023-11-04T09:15:00Z",
+            "fecha_fin": "2023-11-07T18:30:00Z",
+            "estado_producto": 3,
+            "estado_envio": 2,
+            "tipo_pago": 1,
+            "producto": 4,
+            "usuario": 1
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 5,
+        "fields": {
+            "fecha_inicio": "2023-11-05T13:45:00Z",
+            "fecha_fin": null,
+            "estado_producto": 1,
+            "estado_envio": 0,
+            "tipo_pago": 0,
+            "producto": 5,
+            "usuario": 1
+        }
     }
 ]
