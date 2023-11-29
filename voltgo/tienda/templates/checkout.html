@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <!-- Contenido de la página de pago -->
+    <button id="checkout-button">Pagar</button>
+    <script>
+        var stripePublicKey = '{{ stripe_public_key }}';
+        console.log('Stripe Public Key:', stripePublicKey);
+        var stripe = Stripe(stripePublicKey);
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function () {
+
+            // Lógica para iniciar el flujo de pago con Stripe
+            fetch('/create-checkout-session/')
+                .then(response => response.json())
+                .then(session => {
+                    console.log('Sesión creada:', session);
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                })
+                .then(result => {
+                    console.log('Resultado del pago:', result);
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+{% endblock content %}
+
