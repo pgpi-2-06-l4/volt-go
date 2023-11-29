@@ -3,20 +3,42 @@
 {% block title %}Edit your account{% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-8 offset-md-2 text-center mx-auto">
-                <h1 class="display-4 text-center mb-4">Edita tus datos personales</h1>
-                <p class="lead text-center">Puedes editar tu perfil cambiando estos campos:</p>
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ user_form.as_p }}
-                    {{ profile_form.as_p }}
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+  <h2>Edita perfil</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+    <button type="submit">Guardar Cambios</button>
+  </form>
+
+  <h2>Mi dirección</h2>
+  {% for direccion in direcciones %}
+    <p>
+      {{ direccion }}
+      <a href="{% url 'direccion_editar' direccion.id %}">Editar</a>
+      <a href="{% url 'eliminar_direccion' direccion.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta dirección?')">Eliminar</a>
+    </p>
+  {% endfor %}
+
+  {% if not direcciones %}
+    <a href="{% url 'direccion_nueva' %}">
+      <button type="button">Añadir dirección</button>
+    </a>
+  {% endif %}
+
+  <h2>Mi tarjeta</h2>
+  {% for tarjeta in tarjetas %}
+    <p>
+      {{ tarjeta }}
+      <a href="{% url 'tarjeta_editar' tarjeta.id %}">Editar</a>
+      <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarjeta?')">Eliminar</a>
+    </p>
+  {% endfor %}
+
+  {% if not tarjetas %}
+    <a href="{% url 'tarjeta_nueva' %}">
+      <button type="button">Añadir tarjeta</button>
+    </a>
+  {% endif %}
+
 {% endblock %}
