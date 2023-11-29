@@ -83,15 +83,14 @@ def validar_fecha(fecha):
     
 class Perfil(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    fecha_nacimiento = models.DateField(validators=[validar_fecha])
+    fecha_nacimiento = models.DateField(validators=[validar_fecha], blank=True, null=True)
     
     telefono_validator = RegexValidator(
         regex=r'^\+?1?\d{9,15}$',
         message="Formato invalido."
     )
     
-    telefono = models.CharField(max_length=15, validators=[telefono_validator], help_text="El numero de telefono debe ser ingresado en formato internacional")
-
+    telefono = models.CharField(max_length=15, validators=[telefono_validator], blank=True, null=True)
 
     def __str__(self):
         return self.usuario.username
