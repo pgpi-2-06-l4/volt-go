@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Usuario
+from .models import Usuario, Perfil, Direccion, TarjetaCredito
+from datetime import datetime
+import re
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -26,9 +28,23 @@ class UserRegistrationForm(forms.ModelForm):
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ['first_name', 'last_name', 'email']
 
-class ProfileEditForm(forms.ModelForm):
+class UserProfileEditForm(forms.ModelForm):
     class Meta:
-        model = Usuario
-        fields = ('date_of_birth', 'direction', 'photo')
+        model = Perfil
+        fields = ['fecha_nacimiento', 'telefono']
+
+class DireccionForm(forms.ModelForm):
+    class Meta:
+        model = Direccion
+        fields = ['calle', 'apartamento', 'pais', 'ciudad', 'codigo_postal']
+
+class TarjetaCreditoForm(forms.ModelForm):
+    class Meta:
+        model = TarjetaCredito
+        fields = ['iban', 'fecha_caducidad', 'cvv']
+        widgets = {
+            'fecha_caducidad': forms.TextInput(attrs={'placeholder': 'MM/YY'}),
+        }
+

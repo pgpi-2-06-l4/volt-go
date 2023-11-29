@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{% if modo_edicion %}Editar{% else %}Añadir{% endif %} tarjeta</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if modo_edicion %}Guardar cambios{% else %}Añadir tarjeta{% endif %}</button>
+  </form>
+  <p><a href="{% url 'gestionar_perfil' %}">Volver a la gestión de perfil</a></p>
+{% endblock %}

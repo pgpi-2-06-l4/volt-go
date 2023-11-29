@@ -33,18 +33,24 @@
               <h7 style="color: white;">Catálogo</h7>
             </a>
           </li>
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/about/">
+              <h7 style="color: white;">Sobre la US</h7>
+            </a>
+          </li>
+          <!-- Poner más elementos aquí -->
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4">
           {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <span class="navbar-text mr-3" style="color: white;">Hola, {{ request.user.first_name }}</span>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="http://localhost:8000/usuario/logout">
-              <button type="button" class="btn btn-danger">
-                <h7>Cerrar sesión</h7>
-              </button>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="/tienda/avatars/default_avatar.png" alt="Avatar" width="30" height="30" class="rounded-circle" id="dropdownMenuButton">
             </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="http://localhost:8000/usuario/gestionar_perfil/">Editar Perfil</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="http://localhost:8000/usuario/logout">Cerrar Sesión</a>
+            </div>
           </li>
           {% else %}
           <li class="nav-item">
