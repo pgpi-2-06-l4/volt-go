@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MinValueValidator
+from django.conf import settings
 
 
 class Empresa(models.Model):
@@ -47,3 +49,19 @@ class Producto(models.Model):
 
     def __str__(self) -> str:
         return self.nombre
+
+class ItemCarrito(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    session_id = models.CharField(max_length=100, blank=True, null=True)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+
+    def __str__(self):
+        return f'{self.producto.nombre} x {self.cantidad}'
+    
+    def get_precio_total_producto(self):
+        return self.producto.precio_base * self.cantidad
+    
+    def aumentar_cantidad(self, cantidad):  
+        self.cantidad += cantidad
+        self.save()
