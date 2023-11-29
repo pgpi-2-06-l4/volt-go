@@ -1,10 +1,11 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxLengthValidator, MinValueValidator, RegexValidator
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.urls import reverse
 
 
 PAISES_CHOICES = [
@@ -96,14 +97,36 @@ class Perfil(models.Model):
         return self.usuario.username
     
 class Direccion(models.Model):
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "direccion"
+        verbose_name_plural = "direcciones"
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null = True, blank = True)
     calle = models.CharField(max_length=100)
     apartamento = models.CharField(max_length=100)
     pais = models.CharField(max_length=100, choices=PAISES_CHOICES)
     ciudad = models.CharField(max_length=100, choices=CIUDADES_CHOICES)
-    codigo_postal = models.IntegerField(validators=[MaxLengthValidator(limit_value=5, message="El codigo postal debe contener 5 digitos exactamente"), MinValueValidator(limit_value=5, message="El codigo postal debe contener 5 digitos exactamente")])
+    codigo_postal = models.IntegerField(max_length=5, validators=[RegexValidator(regex='^\d{5}$', message='El código postal debe contener 5 dígitos exactamente')])
+
 
     def __str__(self):
         return f"{self.calle}, {self.apartamento}, {self.ciudad} {self.pais}"
+    
+
+class TarjetaCredito(models.Model):
+
+    class Meta:
+        verbose_name = "tarjeta"
+        verbose_name_plural = "tarjetas"
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null = True, blank = True)
+    iban = models.CharField(max_length=30)
+    fecha_caducidad = models.CharField(max_length=5, validators=[RegexValidator(regex='^\d{2}/\d{2}$', message='El formato de la fecha de caducidad no es el correcto')])
+    cvv = models.CharField(max_length=4)
+
+    
+    def __str__(self):
+        return f'Tarjeta de crédito para {self.usuario.username}'
 
 
