@@ -33,6 +33,11 @@
               <h7 style="color: white;">Catálogo</h7>
             </a>
           </li>
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/productos/catalogo/carrito/">
+              <h7 style="color: white;">Cesta</h7>
+            </a>
+          </li>
           {% if request.user.is_staff %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/tienda/gestion/">
@@ -80,5 +85,4 @@
     </div>
   </nav>
 </body>
-
 </html>
