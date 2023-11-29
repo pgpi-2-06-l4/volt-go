@@ -1,12 +1,11 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Usuario
+from .models import Usuario, Perfil
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm
 from django.contrib import messages
-from django.shortcuts import redirect
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -46,6 +45,9 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
+            
+            perfil = Perfil(usuario=new_user)
+            perfil.save()
 
             # Autenticar al usuario después de registrarse
             username = user_form.cleaned_data['username']
@@ -57,13 +59,13 @@ def register(request):
 
                 # Redirigir al usuario al dashboard
                 return redirect('dashboard')  # Reemplaza 'dashboard' con la URL de tu dashboard
+            else:
+                messages.error(request, 'Error en la autenticación después del registro.')
         else:
             # Si hay errores en el formulario, los agregamos al contexto
             messages.error(request, 'Corrige los errores marcados en rojo.')
-
     else:
         user_form = UserRegistrationForm()
-
     return render(request, 'account/register.html', {'user_form': user_form})
 
 @login_required
