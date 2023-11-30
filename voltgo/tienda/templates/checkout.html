@@ -2,26 +2,36 @@
 {% block content %}
 
 <main>
-    <section>
-        <h1>Información del pago</h1>
-        <h3>Artículos</h3>
+    <section class="container mt-4">
         <form action='' method='POST'>
-            {% for item in items %}
-                <article>
-                    {{ item.producto.nombre }} x {{ item.cantidad }}
-                </article>
-            {% endfor %}
-            <hr>
-            <strong></strong>
-            <input type='hidden' name='total' value='{{ total }}'>
-            <strong>TOTAL: </strong> {{ total }}
-            <hr>    
             {% csrf_token %}
-            <label for='tipo-pago-select'>Elige un método de pago:</label>
-            <select name='tipo-pago' id='tipo-pago-select'>
-                <option value='pasarela'>Pasarela de pago</option>
-                <option value='contrareembolso'>Contrareembolso</option>
-            </select>
+            <h1 class="mb-4">Información del pago</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Artículos</h3>
+                    <ul class="list-group">
+                        {% for item in items %}
+                        <li class="list-group-item">{{ item.producto.nombre }} x {{ item.cantidad }}</li>
+                        {% endfor %}
+                    </ul>
+                    <hr>
+                    <strong>PEDIDO: </strong> {{ pedido }} €<br>
+                    <strong>ENVÍO: </strong> {{ envio }} €<br>
+                    {% if envio == 0 %}
+                    <p>*Al alcanzar 50€ en su compra el envío es <strong>gratuito</strong></p>
+                    {% endif %}
+                    <input type='hidden' name='total' value='{{ total }}'>
+                    <strong>TOTAL: </strong> {{ total }} €
+                </div>
+                <div class="col-md-6">
+                    <h3>Características del pago</h3>
+                    <select name='tipo-pago' id='tipo-pago-select' class="form-select mb-3">
+                        <option value='pasarela'>Pasarela de pago</option>
+                        <option value='contrareembolso'>Contrareembolso</option>
+                    </select>
+                    <button type='submit' class="btn btn-primary">Encargar/pagar</button>
+                </div>
+            </div>
         </form>
     </section>
 </main>

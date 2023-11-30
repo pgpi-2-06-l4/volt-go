@@ -28,12 +28,22 @@ def checkout(request):
         context = {}
         items = [ItemCarrito.objects.get(pk=i) for i in request.session.get('items')]
         
+        envio = 5
         total = 0
+        pedido = 0
         for item in items:
-            total += item.producto.precio_base * item.cantidad
+            pedido += item.producto.precio_base * item.cantidad
+        
+        if pedido < 50:
+            total = envio + pedido
+            context['envio'] = envio
+        else:
+            total = pedido
+            context['envio'] = 0
         
         context['items'] = items
-        context['total'] = total
+        context['pedido'] = pedido        
+        context['total'] = total        
         
         return render(request, 'checkout.html', context)
     elif request.method == 'POST':
