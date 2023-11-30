@@ -43,17 +43,24 @@
   </div>
   <article>
     <h1>Comentarios</h1>
-    {% for comentario in comentarios %}
-      <p>{{ comentario.comentario }} - {{ comentario.usuario }}, {{ comentario.fecha_comentario }}</p>
-    {% endfor %}
-
-    <div class="mt-4">
-      <form method="post" action="{% url 'detalle-producto' pk=object.pk %}">
-        {% csrf_token %}
-        {{ formulario_comentario.as_p }}
-        <button type="submit" class="btn btn-primary">Enviar comentario</button>
-      </form>
-    </div>
+    {% if comentarios %}
+      {% for comentario in comentarios %}
+        <p>{{ comentario.comentario }} - {{ comentario.usuario }}, {{ comentario.fecha_comentario }}</p>
+      {% endfor %}
+    {% else %}  
+      <p>No hay comentarios. ¡Se el primero en valorar el producto!</p>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+      <div class="mt-4">
+        <form method="post" action="{% url 'detalle-producto' pk=object.pk %}">
+          {% csrf_token %}
+          {{ formulario_comentario.as_p }}
+          <button type="submit" class="btn btn-primary">Enviar comentario</button>
+        </form>
+      </div>
+    {% else %}
+      <p>¡Registrate para poder comentar!</p> 
+    {% endif %}
   </article>
 </main>
 {% endblock content %}
