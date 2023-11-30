@@ -102,12 +102,7 @@ def vaciar_carrito(request):
 def pagar_carrito(request):
     if request.method == 'POST':
         items = request.POST.getlist('item[]')
-        
-        data = {'items': items}
-        encoded_data = urlencode(data)
-        
-        print(request)
-        
-        return redirect(f'/tienda/checkout/?{encoded_data}')
+        request.session['items'] = items
+        return redirect('/tienda/checkout/')
     else:
         return redirect('/productos/catalogo/carrito/')

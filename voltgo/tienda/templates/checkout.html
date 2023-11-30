@@ -3,12 +3,26 @@
 
 <main>
     <section>
-        <header><h1>Pasarela de pago</h1></header>
-        {% for producto in productos %}
-            <article>
-                <strong>producto.nombre</strong>
-            </article>
-        {% endfor %}
+        <h1>Información del pago</h1>
+        <h3>Artículos</h3>
+        <form action='' method='POST'>
+            {% for item in items %}
+                <article>
+                    {{ item.producto.nombre }} x {{ item.cantidad }}
+                </article>
+            {% endfor %}
+            <hr>
+            <strong></strong>
+            <input type='hidden' name='total' value='{{ total }}'>
+            <strong>TOTAL: </strong> {{ total }}
+            <hr>    
+            {% csrf_token %}
+            <label for='tipo-pago-select'>Elige un método de pago:</label>
+            <select name='tipo-pago' id='tipo-pago-select'>
+                <option value='pasarela'>Pasarela de pago</option>
+                <option value='contrareembolso'>Contrareembolso</option>
+            </select>
+        </form>
     </section>
 </main>
 
