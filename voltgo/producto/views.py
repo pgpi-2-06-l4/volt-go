@@ -4,6 +4,7 @@ from django.views.generic.list import ListView
 from .models import Producto, ItemCarrito
 from django.shortcuts import render, redirect
 from .forms import BusquedaForm
+from urllib.parse import urlencode
 
 
 class ProductDetailView(DetailView):
@@ -97,3 +98,11 @@ def vaciar_carrito(request):
         if item.usuario == clave or item.session_id == clave:
             item.delete()
     return ver_carrito(request)
+
+def pagar_carrito(request):
+    if request.method == 'POST':
+        items = request.POST.getlist('item[]')
+        request.session['items'] = items
+        return redirect('/tienda/checkout/')
+    else:
+        return redirect('/productos/catalogo/carrito/')
