@@ -21,3 +21,9 @@ def eliminar_venta(request, pk):
 
 def about_view(request):
     return render(request, 'about.html')
+
+def checkout(request):
+    context = {}
+    productos = []
+    
+    return render(request, 'checkout.html')

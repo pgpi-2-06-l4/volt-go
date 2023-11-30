@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<main>
+    <section>
+        <header><h1>Pasarela de pago</h1></header>
+        {% for producto in productos %}
+            <article>
+                <strong>producto.nombre</strong>
+            </article>
+        {% endfor %}
+    </section>
+</main>
+
+{% endblock content %}
