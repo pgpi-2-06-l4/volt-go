@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
 from django.urls import reverse
+import re
 
 
 PAISES_CHOICES = [
@@ -122,19 +123,22 @@ class TarjetaCredito(models.Model):
 
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null = True, blank = True)
     iban = models.CharField(max_length=16, validators=[RegexValidator(regex='^\d{16}$', message='El IBAN debe tener 16 dígitos numéricos')])
-    fecha_caducidad = models.CharField(max_length=7, validators=[RegexValidator(regex='^\d{2}/\d{4}$', message='El formato de la fecha de caducidad no es el correcto')])
+    fecha_caducidad = models.CharField(max_length=7, validators=[RegexValidator(regex='^\d{2}/\d{2}$', message='El formato de la fecha de caducidad no es el correcto')])
     cvv = models.CharField(max_length=3, validators=[RegexValidator(regex='^\d{3}$', message='El CVV debe tener 3 dígitos numéricos')])
 
     def clean(self):
         super().clean()
-        mes, anio = map(int, self.fecha_caducidad.split('/'))
-        fecha_caducidad = timezone.datetime(anio, mes, 1)
+        patron = re.compile(r'^\d{2}/\d{2}$')
+        if patron.match(self.fecha_caducidad):
+            mes, anio = map(int, self.fecha_caducidad.split('/'))
+            fecha_caducidad = timezone.datetime(2000+anio, mes, 1)
 
-        fecha_actual = timezone.now().replace(tzinfo=None)
+            fecha_actual = timezone.now().replace(tzinfo=None)
 
-        if fecha_caducidad <= fecha_actual:
-            raise ValidationError('La tarjeta de crédito está caducada.')
-
+            if fecha_caducidad <= fecha_actual:
+                raise ValidationError('La tarjeta de crédito está caducada.')
+        else:
+            raise ValidationError('El formato de la fecha no es correcto.')
     
     def __str__(self):
         return f'Tarjeta de crédito para {self.usuario.username}'

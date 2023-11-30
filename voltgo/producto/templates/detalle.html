@@ -1,51 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %} 
-<main class="container">
-  <div class="card">
+<main class="container mt-4">
+  <div class="card mb-4">
     <div class="row no-gutters">
       <div class="col-md-6">
-        <img
-          src="{{ object.url_imagen }}"
-          alt="Foto de {{ object.nombre }}"
-          class="card-img"
-        />
+        <img src="{{ object.url_imagen }}" alt="Foto de {{ object.nombre }}" class="card-img" />
       </div>
       <div class="col-md-6">
         <div class="card-body">
           <h1 class="card-title display-4">Tecnología de {{ object.empresa.nombre }}</h1>
           <h2 class="h3">{{ object.nombre }}</h2>
           <p class="lead">{{ object.precio_base }} €/hora</p>
-          <a href="{% url 'agregar-al-carrito' pk=object.pk %}">
-            <button type="button" class="btn btn-primary">
-                Reservar
-            </button>
-        </a>
+          <a href="{% url 'agregar-al-carrito' pk=object.pk %}" class="btn btn-primary">
+            Reservar
+          </a>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row mt-4">
-    <article class="col-md-6">
-      <div>
+  <div class="row">
+    <div class="col-md-6">
+      <article>
         <h1>Descripción</h1>
-      </div>
-      <p>{{ object.descripcion }}</p>
-    </article>
+        <p>{{ object.descripcion }}</p>
+      </article>
+    </div>
 
     {% if object.caracteristicas %}
-    <article class="col-md-6">
-      <div>
-        <h1>Características</h1>
+      <div class="col-md-6">
+        <article>
+          <h1>Características</h1>
+          <ul class="list-group">
+            {% for c in object.caracteristicas.all %}
+              <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
+            {% endfor %}
+          </ul>
+        </article>
       </div>
-      <ul class="list-group">
-        {% for c in object.caracteristicas.all %}
-        <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
-        {% endfor %}
-      </ul>
-    </article>
     {% endif %}
   </div>
+  <article>
+    <h1>Comentarios</h1>
+    {% for comentario in comentarios %}
+      <p>{{ comentario.comentario }} - {{ comentario.usuario }}, {{ comentario.fecha_comentario }}</p>
+    {% endfor %}
+
+    <div class="mt-4">
+      <form method="post" action="{% url 'detalle-producto' pk=object.pk %}">
+        {% csrf_token %}
+        {{ formulario_comentario.as_p }}
+        <button type="submit" class="btn btn-primary">Enviar comentario</button>
+      </form>
+    </div>
+  </article>
 </main>
 {% endblock content %}
