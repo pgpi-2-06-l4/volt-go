@@ -3,42 +3,48 @@
 {% block title %}Edit your account{% endblock %}
 
 {% block content %}
-  <h2>Edita perfil</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-    <button type="submit">Guardar Cambios</button>
-  </form>
+  <div class="container text-center">
+    <h1 class="text-center">Edita tu perfil</h1>
+    <br />
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        {{ user_form.as_p }}
+      </div>
+      <div class="form-group">
+        {{ profile_form.as_p }}
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar Cambios</button>
+    </form>
 
-  <h2>Mi dirección</h2>
-  {% for direccion in direcciones %}
-    <p>
-      {{ direccion }}
-      <a href="{% url 'direccion_editar' direccion.id %}">Editar</a>
-      <a href="{% url 'eliminar_direccion' direccion.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta dirección?')">Eliminar</a>
-    </p>
-  {% endfor %}
+    <h2 class="text-center mt-4">Mi dirección</h2>
+    {% for direccion in direcciones %}
+      <p>
+        {{ direccion }}
+        <a href="{% url 'direccion_editar' direccion.id %}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Editar</a>
+        <a href="{% url 'eliminar_direccion' direccion.id %}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta dirección?')"><i class="fas fa-trash-alt"></i> Eliminar</a>
+      </p>
+    {% endfor %}
 
-  {% if not direcciones %}
-    <a href="{% url 'direccion_nueva' %}">
-      <button type="button">Añadir dirección</button>
-    </a>
-  {% endif %}
+    {% if not direcciones %}
+      <a href="{% url 'direccion_nueva' %}" class="btn btn-success">
+        <i class="fa fa-plus"></i> Añadir dirección
+      </a>
+    {% endif %}
 
-  <h2>Mi tarjeta</h2>
-  {% for tarjeta in tarjetas %}
-    <p>
-      {{ tarjeta }}
-      <a href="{% url 'tarjeta_editar' tarjeta.id %}">Editar</a>
-      <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarjeta?')">Eliminar</a>
-    </p>
-  {% endfor %}
+    <h2 class="text-center mt-4">Mi tarjeta</h2>
+    {% for tarjeta in tarjetas %}
+      <p>
+        {{ tarjeta }}
+        <a href="{% url 'tarjeta_editar' tarjeta.id %}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Editar</a>
+        <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarjeta?')"><i class="fas fa-trash-alt"></i> Eliminar</a>
+      </p>
+    {% endfor %}
 
-  {% if not tarjetas %}
-    <a href="{% url 'tarjeta_nueva' %}">
-      <button type="button">Añadir tarjeta</button>
-    </a>
-  {% endif %}
-
+    {% if not tarjetas %}
+      <a href="{% url 'tarjeta_nueva' %}" class="btn btn-success">
+        <i class="fa fa-plus"></i> Añadir tarjeta
+      </a>
+    {% endif %}
+  </div>
 {% endblock %}

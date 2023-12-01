@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .views import reclamacion_view
 
 app_name = 'tienda'
 
@@ -8,5 +9,8 @@ urlpatterns = [
     path('gestion/', manage_view, name='manage'),
     path('venta/eliminar/<int:pk>/', eliminar_venta, name="eliminar_venta"),
     path('about/', about_view, name='about'),
-    path('checkout/', checkout)
+    path('checkout/', checkout),
+    path('reclamacion/<int:pk>/', reclamacion_view, name='reclamacion'),
+    path('reclamaciones/', reclamaciones_by_user, name='reclamaciones'),
+    path('compras/', compras_by_user, name='compras'),    
 ]

@@ -10,8 +10,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Venta #{{venta.pk}}</h5>
-                <p class="card-text"><strong>Cliente:</strong> {{ venta.usuario.user.first_name }} {{
-                    venta.usuario.user.last_name }} </p>
+                <p class="card-text"><strong>Cliente:</strong> {{ venta.usuario.user.first_name }} {{ venta.usuario.user.last_name }} </p>
                 <p class="card-text"><strong>Producto:</strong> {{ venta.producto }}</p>
                 <p class="card-text"><strong>Fecha de venta:</strong> {{ venta.fecha_inicio }}</p>
                 <p class="card-text"><strong>Pago:</strong> {{ venta.get_tipo_pago_display }}</p>
@@ -19,7 +18,7 @@
                 <p class="card-text"><strong>Envío:</strong> {{ venta.get_estado_envio_display }}</p>
                 <a href="{% url 'tienda:eliminar_venta' venta.pk %}">
                     <button type="button" class="btn btn-danger">
-                        Eliminar
+                        <i class="fa fa-trash-o fa-lg"></i> Eliminar
                     </button>
                 </a>
             </div>
