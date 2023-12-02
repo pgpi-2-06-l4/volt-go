@@ -24,19 +24,22 @@
             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
         </form>
     </div>
-
-
-        <div class="mt-4 pt-4 row">
-            {% for producto_dict in productos %}
-                <div class="col-md-3 mb-4">
+    {% for empresa, productos in productos_por_empresa.items %}
+        <h2>{{ empresa }}</h2>
+        <div class="row">
+            {% for producto in productos %}
+                <div class="col-md-3">
                     <div class="card">
-                        <img class="card-img-top" src="{{ producto_dict.producto.url_imagen }}" alt="{{ producto_dict.producto.nombre }}">
+                        <a href="{% url 'detalle-producto' pk=producto.producto.id %}">
+                            <img class="card-img-top" src="{{ producto.producto.url_imagen }}" alt="{{ producto.producto.nombre }}">
+                        </a>
                         <div class="card-body">
-                            <h5 class="card-title">{{ producto_dict.producto.nombre }}</h5>
-                            <p class="card-text">Precio: ${{ producto_dict.producto.precio_base }}</p>
-                            <p class="card-text">Autonomía: {{ producto_dict.autonomia }} horas</p>
-                            <p class="card-text">Velocidad Máxima: {{ producto_dict.velocidad_maxima }} Km/h</p>
-                            <a href="{% url 'detalle-producto' pk=producto_dict.producto.id %}" class="btn btn-primary"><i class="fa fa-info-circle"></i> Detalles</a>
+                            <h5 class="card-title">{{ producto.producto.nombre }}</h5>
+                            <p class="card-text">Precio: ${{ producto.producto.precio_base }}</p>
+                            <p class="card-text">Autonomía: {{ producto.autonomia }} horas</p>
+                            <p class="card-text">Velocidad Máxima: {{ producto.velocidad_maxima }} Km/h</p>
+                            <p class="card-text">Stock: {{ producto.producto.stock }} uds</p>
+                            <a href="{% url 'detalle-producto' pk=producto.producto.id %}" class="btn btn-primary">Detalles</a>
                         </div>
                     </div>
                 </div>
@@ -46,23 +49,10 @@
                 {% endif %}
             {% endfor %}
         </div>
+    {% endfor %}
 
-        {% if not productos %}
-            <br />
-            <br />
-            <p class="text-center">No se encontraron productos</p>
-        {% endif %}
-    </div>
+    {% if not productos_por_empresa %}
+        <p>No se encontraron productos</p>
+    {% endif %}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var productos = document.querySelectorAll('.card');
-            productos.forEach(function (producto) {
-                producto.addEventListener('click', function () {
-                    var url = '/productos/' + producto.getAttribute('data-url') + '/';
-                    window.location.href = url;
-                });
-            });
-        });
-    </script>
 {% endblock %}

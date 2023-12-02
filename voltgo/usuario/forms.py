@@ -45,6 +45,6 @@ class TarjetaCreditoForm(forms.ModelForm):
         model = TarjetaCredito
         fields = ['iban', 'fecha_caducidad', 'cvv']
         widgets = {
-            'fecha_caducidad': forms.TextInput(attrs={'placeholder': 'MM/YYYY'}),
+            'fecha_caducidad': forms.TextInput(attrs={'placeholder': 'MM/YY'}),
         }
 
