@@ -13,11 +13,6 @@ def home_view(request):
 def is_admin(user):
     return user.is_staff
 
-@user_passes_test(is_admin, login_url='/')
-def manage_view(request):
-    ventas = Venta.objects.all()
-    return render(request, 'manage.html', {'ventas': ventas})
-
 def eliminar_venta(request, pk):
     venta = Venta.objects.get(pk=pk)
     venta.delete()
