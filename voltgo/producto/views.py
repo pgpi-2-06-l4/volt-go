@@ -5,6 +5,7 @@ from .models import Producto, ItemCarrito
 from django.shortcuts import render, redirect
 from .forms import BusquedaForm
 from urllib.parse import urlencode
+from collections import defaultdict
 
 
 class ProductDetailView(DetailView):
@@ -12,24 +13,26 @@ class ProductDetailView(DetailView):
     template_name = "detalle.html"
 
 def catalogo(request):
-
     form = BusquedaForm(request.GET)
     productos = Producto.objects.all()
     productos_con_caracteristicas = []
 
     if form.is_valid():
-        autonomia = form.cleaned_data.get('autonomia')
-        velocidad_maxima = form.cleaned_data.get('velocidad_maxima')
+        nombre = form.cleaned_data.get('nombre')
+        empresa = form.cleaned_data.get('empresa')
         precio_maximo = form.cleaned_data.get('precio_maximo')
 
-        if autonomia is not None:
-            productos = productos.filter(caracteristicas__nombre='AT', caracteristicas__valor__gte=int(autonomia))
+        if nombre:
+            # Cambia exact por icontains para búsqueda parcial
+            productos = productos.filter(nombre__icontains=nombre)
 
-        if velocidad_maxima is not None:
-            productos = productos.filter(caracteristicas__nombre='VM', caracteristicas__valor__lte=int(velocidad_maxima))
+        if empresa:
+            productos = productos.filter(empresa__icontains=empresa)
 
         if precio_maximo is not None:
             productos = productos.filter(precio_base__lte=float(precio_maximo))
+
+    productos_por_empresa = defaultdict(list)
 
     for producto in productos:
         autonomia = producto.caracteristicas.filter(nombre='AT').first()
@@ -37,16 +40,15 @@ def catalogo(request):
 
         autonomia_valor = autonomia.valor if autonomia else '0'
         velocidad_maxima_valor = velocidad_maxima.valor if velocidad_maxima else '0'
-        
 
         producto_dict = {
             'producto': producto,
             'autonomia': autonomia_valor,
             'velocidad_maxima': velocidad_maxima_valor,
         }
-        productos_con_caracteristicas.append(producto_dict)
-    
-    return render(request, 'catalogo.html', {'productos': productos_con_caracteristicas, 'form':form})
+        productos_por_empresa[producto.empresa].append(producto_dict)
+
+    return render(request, 'catalogo.html', {'productos_por_empresa': dict(productos_por_empresa), 'form': form})
 
 def agregar_al_carrito(request, pk):
     
