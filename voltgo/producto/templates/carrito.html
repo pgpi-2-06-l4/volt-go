@@ -15,7 +15,7 @@
                     <th>Opciones</th>
                 </tr>
             </thead>
-            <form action="/productos/catalogo/carrito/pagar/" method="POST">
+            <form action="{% url 'pagar-carrito' %}" method="POST">
                 {% csrf_token %}
                 <tbody>
                     {% for item in carrito %}

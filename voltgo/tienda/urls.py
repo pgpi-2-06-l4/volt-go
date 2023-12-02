@@ -8,5 +8,7 @@ urlpatterns = [
     path('gestion/', manage_view, name='manage'),
     path('venta/eliminar/<int:pk>/', eliminar_venta, name="eliminar_venta"),
     path('about/', about_view, name='about'),
-    path('checkout/', checkout)
+    path('info-pago/', InfoPago.as_view(), name='info-pago'),
+    path('resumen-pedido/', ResumenPedido.as_view(), name='resumen-pedido'),
+    path('checkout/', Checkout.as_view(), name='checkout'),
 ]

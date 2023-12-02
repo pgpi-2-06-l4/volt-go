@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+    <form action="{% url 'tienda:checkout' %}">
+        {% csrf_token %}
+        <section class="d-flex flex-column align-items-center">
+            <header>
+                <h1>Resumen del pedido</h1>
+            </header>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información de los artículos</h2>
+                </header>
+                <ul>
+                    {% for item in items %}
+                        <li>{{ item.producto.nombre }} x {{ item.cantidad }}</li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                <p><strong>PEDIDO:</strong> {{ pedido }} €</p>
+                <p>
+                    <strong>ENVÍO:</strong> {{ envio }} €
+                    {% if envio == 0 %}
+                    <br>* Pedidos superiores a 50€ no pagan envío.
+                {% endif %}
+                </p>
+                
+                <p><strong>TOTAL:</strong> {{ total }} €</p>
+            </article>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información personal</h2>
+                </header>
+                <input type="text" class="form-control mb-3" name="nombre" value="{{ info_pago.nombre }}" readonly>
+                <input type="email" class="form-control mb-3" name="correo" value="{{ info_pago.email }}" readonly>
+                <input type="tel" class="form-control mb-3" name="tel" value="{{ info_pago.tel }}" readonly>
+            </article>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información del envío</h2>
+                </header>
+                <input type="text" class="form-control mb-3" name="calle" value="{{info_pago.direccion.calle}}" readonly>
+                <input type="text" class="form-control mb-3" name="apartamento" value="{{info_pago.direccion.apartamento}}" readonly>
+                <input type="text" class="form-control mb-3" name="pais" value="{{info_pago.direccion.pais}}" readonly>
+                <input type="text" class="form-control mb-3" name="ciudad" value="{{info_pago.direccion.ciudad}}" readonly>
+                <input type="text" class="form-control mb-3" name="codigo_postal" value="{{info_pago.direccion.codigo_postal}}" readonly>
+            </article>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información del pago</h2>
+                </header>
+                <input type="text" class="form-control mb-3" name="iban" value="{{ info_pago.tarjeta.iban }}" readonly>
+                <input type="text" class="form-control mb-3" name="fecha-cad" value="{{ info_pago.tarjeta.fecha_caducidad }}" readonly>
+                <input type="text" class="form-control mb-3" name="cvv" value="{{ info_pago.tarjeta.cvv }}" readonly>
+            </article>
+            <button type="submit" class="btn btn-success mb-3"><strong>Encargar/pagar ahora</strong></button>
+        </section>
+    </form>
+    
+</main>
+{% endblock content %}
