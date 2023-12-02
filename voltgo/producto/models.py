@@ -43,6 +43,7 @@ class Producto(models.Model):
     descripcion = models.TextField(max_length=200, blank=True, null=True)
     url_imagen = models.URLField(null=False)
     precio_base = models.FloatField(null=False, default=0.0)
+    stock = models.PositiveIntegerField(null=False, default=1)
 
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False)
     caracteristicas = models.ManyToManyField(Caracteristica)
