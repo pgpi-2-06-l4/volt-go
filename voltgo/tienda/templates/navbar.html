@@ -22,8 +22,8 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-4" >
-          <li class="nav-item" id="nav-elemento" >
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-4">
+          <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/home">
               <h7 style="color: white;">Home</h7>
             </a>
@@ -34,13 +34,24 @@
             </a>
           </li>
           <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/productos/catalogo/carrito/">
+              <h7 style="color: white;">Cesta</h7>
+            </a>
+          </li>
+          {% if request.user.is_staff %}
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/tienda/gestion/">
+              <h7 style="color: white;">Gestión de Ventas</h7>
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/about/">
               <h7 style="color: white;">Sobre la US</h7>
             </a>
           </li>
-          <!-- Poner más elementos aquí -->
         </ul>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4 mr-5 pr-5">
           {% if request.user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -73,5 +84,4 @@
     </div>
   </nav>
 </body>
-
 </html>
