@@ -1,6 +1,9 @@
 from django.db import models
 from producto.models import Producto
 from usuario.models import Usuario
+from django.db import models
+from producto.models import Producto
+from usuario.models import Usuario
 
 class Venta(models.Model):
     class Meta():
@@ -45,3 +48,15 @@ class Venta(models.Model):
         Usuario,
         on_delete=models.CASCADE
     )
+
+
+class Reclamacion(models.Model):
+    class Meta():
+        verbose_name = "reclamacion"
+        verbose_name_plural = "reclamaciones"
+
+    titulo = models.CharField(max_length=255)
+    descripcion = models.TextField()
+    resuelta = models.BooleanField(default=False)
+    
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
