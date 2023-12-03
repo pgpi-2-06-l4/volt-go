@@ -148,3 +148,6 @@ class ReclamacionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReclamacionForm, self).__init__(*args, **kwargs)
+
+class BuscarPedidoForm(forms.Form):
+    id_pedido = forms.IntegerField(label='ID del Pedido')
