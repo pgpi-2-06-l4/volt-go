@@ -4,6 +4,7 @@ from django.views.generic.list import ListView
 from .models import Producto, ItemCarrito
 from django.shortcuts import render, redirect
 from .forms import BusquedaForm
+from urllib.parse import urlencode
 
 
 class ProductDetailView(DetailView):
@@ -48,16 +49,22 @@ def catalogo(request):
     return render(request, 'catalogo.html', {'productos': productos_con_caracteristicas, 'form':form})
 
 def agregar_al_carrito(request, pk):
+    
+    if request.method == 'POST':
+        cantidad = request.POST.get('cantidad')
+        print('cantidad ' + str(cantidad))
     producto = Producto.objects.get(pk=pk)
+
     if request.user.is_authenticated:
         item, creado = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
     else:
         session_key = request.session.session_key
         item, creado = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
+        
+    print('item cantidad: ' + str(item.cantidad))
     
-    if not creado:
-        item.cantidad += 1
-        item.save()
+    item.cantidad = cantidad if creado else item.cantidad + 1
+    item.save()
     return redirect('carrito')
     
 def eliminar_del_carrito(request, pk):
@@ -97,3 +104,11 @@ def vaciar_carrito(request):
         if item.usuario == clave or item.session_id == clave:
             item.delete()
     return ver_carrito(request)
+
+def pagar_carrito(request):
+    if request.method == 'POST':
+        items = request.POST.getlist('item[]')
+        request.session['items'] = items
+        return redirect('/tienda/checkout/')
+    else:
+        return redirect('/productos/catalogo/carrito/')

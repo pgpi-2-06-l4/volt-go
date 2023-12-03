@@ -5,6 +5,7 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.utils import timezone
 from django.urls import reverse
 
 
@@ -106,7 +107,7 @@ class Direccion(models.Model):
     apartamento = models.CharField(max_length=100)
     pais = models.CharField(max_length=100, choices=PAISES_CHOICES)
     ciudad = models.CharField(max_length=100, choices=CIUDADES_CHOICES)
-    codigo_postal = models.IntegerField(max_length=5, validators=[RegexValidator(regex='^\d{5}$', message='El código postal debe contener 5 dígitos exactamente')])
+    codigo_postal = models.CharField(max_length=5, validators=[RegexValidator(regex='^\d{5}$', message='El código postal debe contener 5 dígitos exactamente')])
 
 
     def __str__(self):
@@ -120,9 +121,19 @@ class TarjetaCredito(models.Model):
         verbose_name_plural = "tarjetas"
 
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null = True, blank = True)
-    iban = models.CharField(max_length=30)
-    fecha_caducidad = models.CharField(max_length=5, validators=[RegexValidator(regex='^\d{2}/\d{2}$', message='El formato de la fecha de caducidad no es el correcto')])
-    cvv = models.CharField(max_length=4)
+    iban = models.CharField(max_length=16, validators=[RegexValidator(regex='^\d{16}$', message='El IBAN debe tener 16 dígitos numéricos')])
+    fecha_caducidad = models.CharField(max_length=7, validators=[RegexValidator(regex='^\d{2}/\d{4}$', message='El formato de la fecha de caducidad no es el correcto')])
+    cvv = models.CharField(max_length=3, validators=[RegexValidator(regex='^\d{3}$', message='El CVV debe tener 3 dígitos numéricos')])
+
+    def clean(self):
+        super().clean()
+        mes, anio = map(int, self.fecha_caducidad.split('/'))
+        fecha_caducidad = timezone.datetime(anio, mes, 1)
+
+        fecha_actual = timezone.now().replace(tzinfo=None)
+
+        if fecha_caducidad <= fecha_actual:
+            raise ValidationError('La tarjeta de crédito está caducada.')
 
     
     def __str__(self):

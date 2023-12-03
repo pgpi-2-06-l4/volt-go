@@ -1,35 +1,74 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<body>
-    <!-- Contenido de la página de pago -->
-    <button id="checkout-button">Pagar</button>
-    <script>
-        var stripePublicKey = '{{ stripe_public_key }}';
-        console.log('Stripe Public Key:', stripePublicKey);
-        var stripe = Stripe(stripePublicKey);
-        var checkoutButton = document.getElementById('checkout-button');
+<main>
+    <section class="container mt-4">
+            {% csrf_token %}
+            <h1 class="mb-4">Información del pago</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Artículos</h3>
+                    <ul class="list-group">
+                        {% for item in items %}
+                        <li class="list-group-item">{{ item.producto.nombre }} x {{ item.cantidad }}</li>
+                        {% endfor %}
+                    </ul>
+                    <hr>
+                    <strong>PEDIDO: </strong> {{ pedido }} €<br>
+                    <strong>ENVÍO: </strong> {{ envio }} €<br>
+                    {% if envio == 0 %}
+                    <p>*Al alcanzar 50€ en su compra el envío es <strong>gratuito</strong></p>
+                    {% endif %}
+                    <input type='hidden' name='total' value='{{ total }}'>
+                    <strong>TOTAL: </strong> {{ total }} €
+                </div>
+                <div class="col-md-6">
+                    <h3>Características del pago</h3>
+                    <select name='tipo-pago' id='tipo-pago-select' class="form-select mb-3">
+                        <option value='pasarela'>Pasarela de pago</option>
+                        <option value='contrareembolso'>Contrareembolso</option>
+                    </select>
+                    <button class="btn btn-primary" id="boton-checkout" onclick="crear_sesion_pago()">Encargar/pagar</button>
+                </div>
+            </div>
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                var stripePublicKey = "{{ stripe_public_key }}";
+                var stripe = Stripe(stripePublicKey);
+                var tipoPago = document.getElementById('tipo-pago-select').value;
 
-        checkoutButton.addEventListener('click', function () {
+                function crear_sesion_pago(){
 
-            // Lógica para iniciar el flujo de pago con Stripe
-            fetch('/create-checkout-session/')
-                .then(response => response.json())
-                .then(session => {
-                    console.log('Sesión creada:', session);
-                    return stripe.redirectToCheckout({ sessionId: session.id });
-                })
-                .then(result => {
-                    console.log('Resultado del pago:', result);
-                    if (result.error) {
-                        alert(result.error.message);
+                    if(tipoPago == 'pasarela'){
+                        fetch('/tienda/checkout/', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            body: JSON.stringify({
+                                total: "{{ total }}"
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(session => {
+                            return stripe.redirectToCheckout({ sessionId: session.id });
+                        })
+                        .then(result => {
+                            if(result.error) {
+                                alert(result.error.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error: ", error);
+                        })
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-    </script>
-</body>
-{% endblock content %}
+                }
+            </script>
+    </section>
+  
+        
+   
+</main>
 
+{% endblock %}

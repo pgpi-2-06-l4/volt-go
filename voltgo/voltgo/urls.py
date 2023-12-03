@@ -26,10 +26,8 @@ urlpatterns = [
     path('home', views.home_view, name='home'),
     path('', views.home_view, name='home'),
     path('productos/', include('producto.urls')),
-    path('tienda/', include('tienda.urls'), name='tienda'),
+    path('tienda/', include('tienda.urls')),
     path('about/', views.about_view, name='about'),
-    path('checkout/', views.checkout, name='checkout'),
-    path('create-checkout-session/', views.create_checkout_session, name='create_checkout_session')
 ]
 
 if settings.DEBUG:
