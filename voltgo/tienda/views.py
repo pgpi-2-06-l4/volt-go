@@ -1,10 +1,16 @@
-from django.shortcuts import render
-from .models import Venta
+from django.shortcuts import render, redirect
+from django.views import View
+from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import redirect
+from django.contrib.auth.models import User
+
+from .models import Venta
 from producto.models import ItemCarrito
+
+from usuario.models import *
+from typing import Any
+from .forms import *
 from django.shortcuts import get_object_or_404
-from .forms import ReclamacionForm
 from .models import Reclamacion
 
 def home_view(request):
@@ -21,11 +27,69 @@ def eliminar_venta(request, pk):
 def about_view(request):
     return render(request, 'about.html')
 
-def checkout(request):
-    if request.method == 'GET':
-        context = {}
-        items = [ItemCarrito.objects.get(pk=i) for i in request.session.get('items')]
+
+class InfoPago(TemplateView):
+    template_name = 'info_pago.html'
+    
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        datos_usuario = {}
         
+        if self.request.user.is_authenticated:
+            context['autenticado'] = True
+
+            usuario = User.objects.get(pk=self.request.user.pk)
+            perfil,_ = Perfil.objects.get_or_create(usuario=usuario)
+            direccion,_ = Direccion.objects.get_or_create(usuario=usuario)
+            tarjeta,_ = TarjetaCredito.objects.get_or_create(usuario=usuario)
+            
+            datos_usuario = {
+                'nombre': usuario.first_name + ' ' + usuario.last_name,
+                'email': usuario.email,
+                'telefono': perfil.telefono
+            }
+            datos_direccion = {
+                'calle': direccion.calle,
+                'apartamento': direccion.apartamento,
+                'pais': direccion.pais,
+                'ciudad': direccion.ciudad,
+                'codigo_postal': direccion.codigo_postal
+            }
+            datos_tarjeta = { 
+                'iban': tarjeta.iban,
+                'caducidad': tarjeta.fecha_caducidad,
+                'cvv': tarjeta.cvv
+            }
+            
+            info_pago_cliente = InfoPagoClienteForm(initial=datos_usuario)
+            info_pago_direccion = InfoPagoDireccionForm(initial=datos_direccion)
+            info_pago_tarjeta = InfoPagoTarjetaForm(initial=datos_tarjeta)
+            
+        else:
+            context['autenticado'] = False
+            info_pago_cliente = InfoPagoClienteForm()
+            info_pago_direccion = InfoPagoDireccionForm()
+            info_pago_tarjeta = InfoPagoTarjetaForm()
+
+        template_form = 'info_pago_form.html'
+        context['form_cliente'] = info_pago_cliente.render(template_form)
+        context['form_direccion'] = info_pago_direccion.render(template_form)
+        context['form_tarjeta'] = info_pago_tarjeta.render(template_form)
+        
+        return context
+    
+    
+class ResumenPedido(TemplateView):
+    template_name = 'resumen_pedido.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        items_id = self.request.session.get('items')
+        items = []
+        for item_id in items_id:
+            item = ItemCarrito.objects.get(pk=item_id)
+            items.append(item)
+            
         envio = 5
         total = 0
         pedido = 0
@@ -40,11 +104,39 @@ def checkout(request):
             context['envio'] = 0
         
         context['items'] = items
-        context['pedido'] = pedido        
-        context['total'] = total        
+        context['pedido'] = pedido
+        context['total'] = total
         
-        return render(request, 'checkout.html', context)
-    elif request.method == 'POST':
+        return context
+
+    def post(self, request):
+        context = self.get_context_data()
+        template_form = 'info_pago_form.html'
+        
+        form_cliente = InfoPagoClienteForm(request.POST)
+        if form_cliente.is_valid():
+            self.request.session['form_cliente'] = form_cliente.cleaned_data
+            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data)
+            context['form_cliente'] = form_cliente_res.render(template_form)
+        
+        form_direccion = InfoPagoDireccionForm(request.POST)
+        if form_direccion.is_valid():
+            self.request.session['form_direccion'] = form_direccion.cleaned_data
+            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data)
+            context['form_direccion'] = form_direccion_res.render(template_form)
+
+        form_tarjeta = InfoPagoTarjetaForm(request.POST)
+        if form_tarjeta.is_valid():
+            form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
+            self.request.session['form_tarjeta'] = form_tarjeta.cleaned_data
+            form_tarjeta_res = InfoPagoTarjetaForm(initial=form_tarjeta.cleaned_data)
+            context['form_tarjeta'] = form_tarjeta_res.render(template_form)
+        
+        return render(request, 'resumen_pedido.html', context)
+
+class Checkout(View):
+    
+    def post(self, request):
         #TODO - PASARELA DE PAGO CON SPRITE
         return redirect('')
     
@@ -72,5 +164,3 @@ def compras_by_user(request):
     compras = Venta.objects.filter(usuario__user__username=request.user.username)
     return render(request, 'compras_by_user.html', {'compras': compras})
 
-
-    

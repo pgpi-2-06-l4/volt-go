@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <main>
+        <section>
+            <header>
+                <h1>Información del pago</h1>
+                <p>
+                    Rellene los siguientes campos con su información personal.
+                </p> 
+            </header>
+
+            <form action="{% url 'tienda:resumen-pedido' %}" method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-around">
+                    <div>
+                        <article>
+                            <header>
+                                <h2>Paso 1: Datos del cliente</h2>
+                            </header>
+                            {{ form_cliente }}
+                            {% if not autenticado %}
+                                <p>¿Tienes una cuenta? <a href="/usuario/login">Inicia sesión</a> o por el contrario, <a href="/usuario/register">registrate</a> en nuestra tienda.</p>
+                            {% endif %}
+                        </article>
+            
+                        <article>
+                            <header>
+                                <h2>Paso 2: Datos del envío</h2>
+                            </header>
+                            {{ form_direccion }}
+                        </article>
+                    </div>
+        
+                    <article>
+                        <header>
+                            <h2>Paso 3: Datos del pago</h2>
+                        </header>
+                        {{ form_tarjeta }}
+
+                        <button type="submit" class="btn btn-primary">Continuar</button>
+                    </article>
+                </div>
+            </form>
+
+        </section>
+    </main>
+
+{% endblock content %}

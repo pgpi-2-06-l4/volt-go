@@ -34,13 +34,6 @@ body {
   margin: auto;
 }
 
-header {
-  background-color: rgb(62, 204, 62);
-  color: white;
-  height: 140px;
-  display: flex;
-}
-
 #logo {
   width: 130px;
   height: 130px;
