@@ -128,5 +128,15 @@ class InfoPagoTarjetaForm(forms.Form):
         }),
         validators=[validar_cvv]
     )
+    tipo_pago = forms.ChoiceField(
+        choices=[
+            (0, 'Contrareembolso'),
+            (1, 'Pasarela de pago')
+        ],
+        widget=forms.Select(attrs={
+            'class': 'form-control mb-3',
+            'selected':'Pasarela de pago'
+        })
+    )
 
     
