@@ -84,6 +84,11 @@ def validar_fecha(fecha):
                               params={'fecha_limite': fecha_limite})
     
 class Perfil(models.Model):
+    
+    class Meta:
+        verbose_name = "perfil"
+        verbose_name_plural = "perfiles"
+            
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     fecha_nacimiento = models.DateField(validators=[validar_fecha], blank=True, null=True)
     
@@ -134,7 +139,6 @@ class TarjetaCredito(models.Model):
             fecha_caducidad = timezone.datetime(2000+anio, mes, 1)
 
             fecha_actual = timezone.now().replace(tzinfo=None)
-
             if fecha_caducidad <= fecha_actual:
                 raise ValidationError('La tarjeta de crédito está caducada.')
         else:

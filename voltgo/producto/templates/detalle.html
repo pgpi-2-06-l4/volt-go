@@ -9,7 +9,7 @@
       </div>
       <div class="col-md-6">
         <div class="card-body">
-          <h1 class="card-title display-4">Tecnología de {{ object.empresa.nombre }}</h1>
+          <h1 class="card-title display-4">Tecnología de {{ object.empresa }}</h1>
           <h2 class="h3">{{ object.nombre }}</h2>
           <p class="lead">{{ object.precio_base }} €/hora</p>
           <a href="{% url 'agregar-al-carrito' pk=object.pk %}" class="btn btn-primary">
