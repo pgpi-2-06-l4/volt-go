@@ -80,37 +80,18 @@ class InfoPago(TemplateView):
         
         return context
     
-    def post(self, request):
-        context = self.get_context_data()
-        self.request.session['info_pago'] = {
-            'nombre': context['nombre'],
-            'email': context['email'],
-            'tel': context['perfil'].telefono,
-            'direccion': {
-                'calle': context['direccion'].calle,
-                'apartamento': context['direccion'].apartamento,
-                'pais': context['direccion'].pais,
-                'ciudad': context['direccion'].ciudad,
-                'codigo_postal': context['direccion'].codigo_postal,
-            },
-            'tarjeta': {
-                'iban': context['tarjeta'].iban,
-                'fecha_caducidad': context['tarjeta'].fecha_caducidad,
-                'cvv': context['tarjeta'].cvv
-            }
-        }
-        
-        return super().post(request, context)
     
 class ResumenPedido(TemplateView):
     template_name = 'resumen_pedido.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        items = [ItemCarrito.objects.get(pk=i)
-                 for i in self.request.session.get('items')]
-        
+        items_id = self.request.session.get('items')
+        items = []
+        for item_id in items_id:
+            item = ItemCarrito.objects.get(pk=item_id)
+            items.append(item)
+            
         envio = 5
         total = 0
         pedido = 0
@@ -127,12 +108,33 @@ class ResumenPedido(TemplateView):
         context['items'] = items
         context['pedido'] = pedido
         context['total'] = total
-        context['info_pago'] = self.request.session.get('info_pago')
         
         return context
-    
+
     def post(self, request):
-        return render(request, 'resumen_pedido.html', self.get_context_data())
+        context = self.get_context_data()
+        template_form = 'info_pago_form.html'
+        
+        form_cliente = InfoPagoClienteForm(request.POST)
+        if form_cliente.is_valid():
+            self.request.session['form_cliente'] = form_cliente.cleaned_data
+            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data)
+            context['form_cliente'] = form_cliente_res.render(template_form)
+        
+        form_direccion = InfoPagoDireccionForm(request.POST)
+        if form_direccion.is_valid():
+            self.request.session['form_direccion'] = form_direccion.cleaned_data
+            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data)
+            context['form_direccion'] = form_direccion_res.render(template_form)
+
+        form_tarjeta = InfoPagoTarjetaForm(request.POST)
+        if form_tarjeta.is_valid():
+            form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
+            self.request.session['form_tarjeta'] = form_tarjeta.cleaned_data
+            form_tarjeta_res = InfoPagoTarjetaForm(initial=form_tarjeta.cleaned_data)
+            context['form_tarjeta'] = form_tarjeta_res.render(template_form)
+        
+        return render(request, 'resumen_pedido.html', context)
 
 class Checkout(View):
     
