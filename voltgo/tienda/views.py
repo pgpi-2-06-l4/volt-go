@@ -6,20 +6,18 @@ from django.contrib.auth.models import User
 
 from .models import Venta
 from producto.models import ItemCarrito
+
 from usuario.models import *
 from typing import Any
 from .forms import *
+from django.shortcuts import get_object_or_404
+from .models import Reclamacion
 
 def home_view(request):
     return render(request, 'home.html')
 
 def is_admin(user):
     return user.is_staff
-
-@user_passes_test(is_admin, login_url='/')
-def manage_view(request):
-    ventas = Venta.objects.all()
-    return render(request, 'manage.html', {'ventas': ventas})
 
 def eliminar_venta(request, pk):
     venta = Venta.objects.get(pk=pk)
@@ -141,3 +139,28 @@ class Checkout(View):
     def post(self, request):
         #TODO - PASARELA DE PAGO CON SPRITE
         return redirect('')
+    
+def reclamacion_view(request, pk):
+    venta = get_object_or_404(Venta, pk=pk)
+    form = ReclamacionForm()
+
+    if request.method == 'POST':
+        form = ReclamacionForm(request.POST)
+        if form.is_valid():
+            reclamacion = form.save(commit=False)
+            reclamacion.venta = venta
+            reclamacion.resuelta = False
+            reclamacion.save()
+            return render(request, 'reclamacion_exitosa.html', {'venta': venta, 'reclamacion': reclamacion})
+
+    return render(request, 'reclamation.html', {'venta': venta, 'form': form})
+
+
+def reclamaciones_by_user(request):
+    reclamaciones = Reclamacion.objects.filter(venta__usuario__user__username=request.user.username)
+    return render(request, 'reclamaciones_by_user.html', {'reclamaciones': reclamaciones})
+
+def compras_by_user(request):
+    compras = Venta.objects.filter(usuario__user__username=request.user.username)
+    return render(request, 'compras_by_user.html', {'compras': compras})
+
