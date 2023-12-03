@@ -23,7 +23,6 @@ def catalogo(request):
         precio_maximo = form.cleaned_data.get('precio_maximo')
 
         if nombre:
-            # Cambia exact por icontains para búsqueda parcial
             productos = productos.filter(nombre__icontains=nombre)
 
         if empresa:
