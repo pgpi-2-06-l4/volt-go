@@ -74,3 +74,13 @@ class ItemCarrito(models.Model):
     def aumentar_cantidad(self, cantidad):  
         self.cantidad += cantidad
         self.save()
+
+class Comentario(models.Model):
+    class Meta:
+        verbose_name = "comentario"
+        verbose_name_plural = "comentarios"
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    comentario = models.TextField(max_length=500, blank=False)
+    fecha_comentario = models.DateField(auto_now=True)

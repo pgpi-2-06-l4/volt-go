@@ -1,9 +1,9 @@
 from typing import Any
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from .models import Producto, ItemCarrito
-from django.shortcuts import render, redirect
-from .forms import BusquedaForm
+from .models import Producto, ItemCarrito, Comentario
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import BusquedaForm, ComentarioForm
 from urllib.parse import urlencode
 from collections import defaultdict
 
@@ -11,6 +11,26 @@ from collections import defaultdict
 class ProductDetailView(DetailView):
     model = Producto
     template_name = "detalle.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        producto = self.get_object()
+        comentarios = Comentario.objects.filter(producto=producto)
+        context['comentarios'] = comentarios
+        context['formulario_comentario'] = ComentarioForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        producto = self.get_object()
+        formulario_comentario = ComentarioForm(request.POST)
+
+        if formulario_comentario.is_valid():
+            comentario = formulario_comentario.save(commit=False)
+            comentario.producto = producto
+            comentario.usuario = request.user
+            comentario.save()
+
+        return redirect('catalogo')
 
 def catalogo(request):
     form = BusquedaForm(request.GET)
