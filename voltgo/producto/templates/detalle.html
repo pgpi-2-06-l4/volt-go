@@ -2,52 +2,65 @@
 
 {% block content %} 
 <main class="container mt-4">
-  <div class="card">
-    <div class="row g-0">
+  <div class="card mb-4">
+    <div class="row no-gutters">
       <div class="col-md-6">
-        <img
-          src="{{ object.url_imagen }}"
-          alt="Foto de {{ object.nombre }}"
-          class="card-img-top"
-        />
+        <img src="{{ object.url_imagen }}" alt="Foto de {{ object.nombre }}" class="card-img" />
       </div>
       <div class="col-md-6">
         <div class="card-body">
           <h1 class="card-title display-4">Tecnología de {{ object.empresa }}</h1>
           <h2 class="h3">{{ object.nombre }}</h2>
           <p class="lead">{{ object.precio_base }} €/hora</p>
-          <p class="lead">Stock: {{ object.stock }} uds.</p>
-          <form method="post" action="{% url 'agregar-al-carrito' pk=object.pk %}">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="cantidad" class="form-label">Cantidad:</label>
-              <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" max="{{ object.stock }}" value="1">
-            </div>
-            <button type="submit" class="btn btn-primary">
-              Reservar
-            </button>
-          </form>
+          <a href="{% url 'agregar-al-carrito' pk=object.pk %}" class="btn btn-primary">
+            Reservar
+          </a>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row mt-4">
+  <div class="row">
     <div class="col-md-6">
-      <h1>Descripción</h1>
-      <p>{{ object.descripcion }}</p>
+      <article>
+        <h1>Descripción</h1>
+        <p>{{ object.descripcion }}</p>
+      </article>
     </div>
 
     {% if object.caracteristicas %}
-    <div class="col-md-6">
-      <h1>Características</h1>
-      <ul class="list-group">
-        {% for c in object.caracteristicas.all %}
-        <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+      <div class="col-md-6">
+        <article>
+          <h1>Características</h1>
+          <ul class="list-group">
+            {% for c in object.caracteristicas.all %}
+              <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+      </div>
     {% endif %}
   </div>
+  <article>
+    <h1>Comentarios</h1>
+    {% if comentarios %}
+      {% for comentario in comentarios %}
+        <p>{{ comentario.comentario }} - {{ comentario.usuario }}, {{ comentario.fecha_comentario }}</p>
+      {% endfor %}
+    {% else %}  
+      <p>No hay comentarios. ¡Se el primero en valorar el producto!</p>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+      <div class="mt-4">
+        <form method="post" action="{% url 'detalle-producto' pk=object.pk %}">
+          {% csrf_token %}
+          {{ formulario_comentario.as_p }}
+          <button type="submit" class="btn btn-primary">Enviar comentario</button>
+        </form>
+      </div>
+    {% else %}
+      <p>¡Registrate para poder comentar!</p> 
+    {% endif %}
+  </article>
 </main>
 {% endblock content %}
