@@ -11,6 +11,7 @@ from usuario.models import *
 from typing import Any
 from .forms import *
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
 from .models import Reclamacion
 
 def home_view(request):
@@ -137,7 +138,17 @@ class ResumenPedido(TemplateView):
 class Checkout(View):
     
     def post(self, request):
-        #TODO - PASARELA DE PAGO CON SPRITE
+        #TODO - PASARELA DE PAGO CON STRIPE
+        
+        # Reservar unidades de producto para cliente
+        for item_id in self.request.session.get('items'):
+            item = ItemCarrito.objects.get(pk=item_id)
+            if item.cantidad <= item.producto.stock:
+                item.producto.stock -= item.cantidad
+                item.producto.save()
+            else:
+                return PermissionDenied('No está permitido comprar más unidades de las que existen en stock, cuidado.')
+        
         return redirect('')
     
 def reclamacion_view(request, pk):
