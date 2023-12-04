@@ -35,7 +35,6 @@ class ProductDetailView(DetailView):
 def catalogo(request):
     form = BusquedaForm(request.GET)
     productos = Producto.objects.all()
-    productos_con_caracteristicas = []
 
     if form.is_valid():
         nombre = form.cleaned_data.get('nombre')
