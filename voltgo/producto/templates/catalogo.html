@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container pb-5 mb-5">
     <h1 class="text-center">Catálogo de Motos Eléctricas</h1>
 
     <div class="row mt-4 ml-4 pl-4 pb-4">
-        <form method="get" class="form-inline mx-auto">
+        <form method="get" class="form-inline mx-auto" id="filtroForm">
             <div class="form-group mr-2">
                 <label for="{{ form.nombre.id_for_label }}">Nombre:&nbsp;&nbsp;</label>
                 {{ form.nombre }}
@@ -21,12 +21,13 @@
                 {{ form.precio_maximo }}
             </div>
 
-            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+            <button type="submit" class="btn btn-primary mr-3"><i class="fa fa-search"></i> Buscar</button>
+            <button type="button" class="btn btn-danger" onclick="resetFilters()">Limpiar</button>
         </form>
     </div>
     {% for empresa, productos in productos_por_empresa.items %}
-    <h2>{{ empresa }}</h2>
-    <div class="row">
+    <h2 class="text-center">{{ empresa }}</h2>
+    <div class="row mb-3 pb-3">
         {% for producto in productos %}
         <div class="col-md-3">
             <div class="card">
@@ -61,4 +62,11 @@
     <p>No se encontraron productos</p>
     {% endif %}
 </div>
+<script>
+    function resetFilters() {
+        var form = document.getElementById("filtroForm");
+        form.reset();
+    }
+</script>
 {% endblock %}
+
