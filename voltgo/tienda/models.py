@@ -1,5 +1,8 @@
 from django.db import models
-from usuario.models import Usuario
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+
+from producto.models import Producto
 
 class Venta(models.Model):
     class Meta():
@@ -34,10 +37,18 @@ class Venta(models.Model):
         choices=TipoPago.choices
     )
     usuario = models.ForeignKey(
-        Usuario,
+        User,
         on_delete=models.CASCADE
     )
 
+class ItemVenta(models.Model):
+    class Meta():
+        verbose_name = "item_venta"
+        verbose_name_plural = "items_venta"
+        
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE, null=True, default=None, related_name='items')
 
 class Reclamacion(models.Model):
     class Meta():

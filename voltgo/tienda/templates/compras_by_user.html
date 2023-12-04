@@ -9,8 +9,17 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Compra #{{ compra.pk }}</h5>
-                        <p class="card-text"><strong>Cliente:</strong> {{ compra.usuario.user.first_name }} {{ compra.usuario.user.last_name }} </p>
-                        <p class="card-text"><strong>Producto:</strong> {{ compra.producto }}</p>
+                        <p class="card-text"><strong>Cliente:</strong> {{ compra.usuario.first_name }} {{ compra.usuario.last_name }} </p>
+                        <p class="card-text"><strong>Productos:</strong></p>
+                        <ul>
+                            {% for compra_id, items in items_compra.items %}
+                                {% if compra_id == compra.id %}
+                                    {% for item in items %}
+                                        <li><p class="card-text"> <strong>{{ item.producto.nombre }}</strong> x {{ item.cantidad }} uds.</p></li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                         <p class="card-text"><strong>Fecha de compra:</strong> {{ compra.fecha_inicio }}</p>
                         <p class="card-text"><strong>Pago:</strong> {{ compra.get_tipo_pago_display }}</p>
                         <p class="card-text"><strong>Estado:</strong> {{ compra.get_estado_venta_display }}</p>

@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from .forms import *
-from .models import Venta, Reclamacion
+from .models import Venta, Reclamacion, ItemVenta
 from usuario.models import *
 from producto.models import ItemCarrito
 
 from typing import Any
-from datetime import date
 
 def home_view(request):
     return render(request, 'home.html')
@@ -141,40 +141,58 @@ class Checkout(View):
             estado_venta = Venta.EstadoVenta.POR_PAGAR
             estado_envio = Venta.EstadoEnvio.EN_ALMACEN
             tipo_pago = int(request.POST.get('tipo_pago'))
-            usuario = Usuario.objects.get(user=self.request.user)
+            
+            # TODO - Implementar función para usuarios no autenticados
+            usuario = self.request.user
+
+            venta = Venta(
+                fecha_inicio=timezone.now(),
+                fecha_fin=None,
+                estado_venta=estado_venta,
+                estado_envio=estado_envio,
+                tipo_pago=tipo_pago,
+                usuario=usuario
+            )
+            venta.save()
 
             # Reservar unidades de producto para cliente y crear venta
             for item_id in self.request.session.get('items'):
                 item = ItemCarrito.objects.get(pk=item_id)
-                if item.cantidad <= item.producto.stock:
+                if item.producto.stock - item.cantidad >= 0:
                     item.producto.stock -= item.cantidad
                     item.producto.save()
-                    
-                    venta = Venta(
-                        fecha_inicio=date.today(),
-                        fecha_fin=None,
-                        estado_venta=estado_venta,
-                        estado_envio=estado_envio,
-                        tipo_pago=tipo_pago,
-                        usuario=usuario
-                    )
-                    
-                    venta.save()
-                
-                    if tipo_pago == 1:   
-                        # Pasarela de pago
-
-                        # TODO                    
-                        
-                        # Actualizamos estado venta
-                        venta.fecha_fin = date.today()
-                        venta.estado_venta = Venta.EstadoVenta.PAGADO
-                        venta.save()
-                        
                 else:
+                    venta.delete()
                     return render(request, '403.html')
+                
+            if tipo_pago == 1:   
+                # Pasarela de pago
+
+                # TODO                    
+                
+                # Actualizamos estado venta
+                venta.fecha_fin = timezone.now()
+                venta.estado_venta = Venta.EstadoVenta.PAGADO
+                venta.save()
+                
             
-            return redirect('')
+            # TODO - Enviar email
+            
+            # Si todo sale bien, eliminamos items del carrito 
+            # y creamos items de la venta
+            for item_id in self.request.session.get('items'):
+                item_carrito = ItemCarrito.objects.get(pk=item_id)
+
+                item_venta = ItemVenta(
+                    producto=item_carrito.producto,
+                    cantidad=item_carrito.cantidad,
+                    venta=venta
+                )
+                
+                item_venta.save()
+                item_carrito.delete()
+            
+            return redirect('tienda:compras')
     
 def reclamacion_view(request, pk):
     venta = get_object_or_404(Venta, pk=pk)
@@ -197,6 +215,12 @@ def reclamaciones_by_user(request):
     return render(request, 'reclamaciones_by_user.html', {'reclamaciones': reclamaciones})
 
 def compras_by_user(request):
-    compras = Venta.objects.filter(usuario__user__username=request.user.username)
-    return render(request, 'compras_by_user.html', {'compras': compras})
+    compras = Venta.objects.filter(usuario=request.user)
+    items_compra = {}
+    for compra in compras:
+        if compra.id in items_compra:
+            continue
+        else:
+            items_compra[compra.id] = compra.items.all()
+    return render(request, 'compras_by_user.html', {'compras': compras, 'items_compra': items_compra})
 
