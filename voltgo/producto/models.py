@@ -4,6 +4,7 @@ from django.conf import settings
 
 
 MARCAS_CHOICES = [
+    ('', 'Todos los modelos'),
     ('Harley Davidson', 'Harley Davidson'),
     ('Ducati', 'Ducati'),
     ('Aprilia', 'Aprilia'),
