@@ -1,21 +1,15 @@
 from django.db import models
-from producto.models import Producto
-from usuario.models import Usuario
-from django.db import models
-from producto.models import Producto
 from usuario.models import Usuario
 
 class Venta(models.Model):
     class Meta():
         verbose_name = "venta"
         verbose_name_plural = "ventas"
-        
-    class EstadoProducto(models.IntegerChoices):
-        EN_CARRITO = 0, ('En carrito')
-        PENDIENTE = 1, ('Pendiente')
-        RESERVADO = 2, ('Reservado')
-        FINALIZADO = 3, ('Finalizado')
 
+    class EstadoVenta(models.IntegerChoices):
+        POR_PAGAR = 0, ('Por pagar')
+        PAGADO = 1, ('Pagado')
+        
     class EstadoEnvio(models.IntegerChoices):
         EN_ALMACEN = 0, ('En almacen')
         EN_REPARTO = 1, ('En reparto')
@@ -26,11 +20,11 @@ class Venta(models.Model):
         PASARELA = 1, ('Pasarela')
      
     fecha_inicio = models.DateTimeField(null=False)
-    fecha_fin = models.DateTimeField(null=True)   
-    estado_producto = models.IntegerField(
-        default=EstadoProducto.EN_CARRITO, 
-        choices=EstadoProducto.choices
-    )
+    fecha_fin = models.DateTimeField(null=True)
+    estado_venta = models.IntegerField(
+        default=EstadoVenta.POR_PAGAR,
+        choices=EstadoVenta.choices
+    )   
     estado_envio = models.IntegerField(
         default=EstadoEnvio.EN_ALMACEN,
         choices=EstadoEnvio.choices
@@ -38,11 +32,6 @@ class Venta(models.Model):
     tipo_pago = models.IntegerField(
         default=TipoPago.PASARELA,
         choices=TipoPago.choices
-    )
-    producto = models.OneToOneField(
-        Producto, 
-        on_delete=models.CASCADE, 
-        primary_key=True
     )
     usuario = models.ForeignKey(
         Usuario,
@@ -58,5 +47,4 @@ class Reclamacion(models.Model):
     titulo = models.CharField(max_length=255)
     descripcion = models.TextField()
     resuelta = models.BooleanField(default=False)
-    
-    venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE, null=True, default=None)

@@ -13,7 +13,7 @@
                         <p class="card-text"><strong>Producto:</strong> {{ compra.producto }}</p>
                         <p class="card-text"><strong>Fecha de compra:</strong> {{ compra.fecha_inicio }}</p>
                         <p class="card-text"><strong>Pago:</strong> {{ compra.get_tipo_pago_display }}</p>
-                        <p class="card-text"><strong>Estado:</strong> {{ compra.get_estado_producto_display }}</p>
+                        <p class="card-text"><strong>Estado:</strong> {{ compra.get_estado_venta_display }}</p>
                         <p class="card-text"><strong>Envío:</strong> {{ compra.get_estado_envio_display }}</p>
                         <a href="{% url 'tienda:reclamacion' compra.pk %}">
                             <button type="button" class="btn btn-primary">

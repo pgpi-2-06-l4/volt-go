@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.conf import settings
 
+from tienda.models import Venta
+
 
 MARCAS_CHOICES = [
     ('', 'Todos los modelos'),
@@ -48,7 +50,7 @@ class Producto(models.Model):
         verbose_name = "producto"
         verbose_name_plural = "productos"
 
-    nombre = models.CharField(max_length=50, null=False, unique=True)
+    nombre = models.CharField(max_length=50, null=False, unique=False)
     descripcion = models.TextField(max_length=200, blank=True, null=True)
     url_imagen = models.URLField(null=False)
     precio_base = models.FloatField(null=False, default=0.0, validators=[MinValueValidator(0)])
@@ -65,6 +67,7 @@ class ItemCarrito(models.Model):
     session_id = models.CharField(max_length=100, blank=True, null=True)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    venta = models.ForeignKey(Venta, null=True, on_delete=models.CASCADE, default=None, related_name='venta_item_carrito')
 
     def __str__(self):
         return f'{self.producto.nombre} x {self.cantidad}'

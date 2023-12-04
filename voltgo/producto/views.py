@@ -1,10 +1,9 @@
-from typing import Any
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
-from .models import Producto, ItemCarrito, Comentario
-from django.shortcuts import render, redirect, get_object_or_404
+
 from .forms import BusquedaForm, ComentarioForm
-from urllib.parse import urlencode
+from .models import Producto, ItemCarrito, Comentario
+
 from collections import defaultdict
 
 
@@ -70,19 +69,29 @@ def catalogo(request):
 
 def agregar_al_carrito(request, pk):
     
-    if request.method == 'POST':
-        cantidad = request.POST.get('cantidad')
-    producto = Producto.objects.get(pk=pk)
-
-    if request.user.is_authenticated:
-        item, es_nuevo = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+    if request.user.is_superuser:
+        return render(request, '403.html')
     else:
-        session_key = request.session.session_key
-        item, es_nuevo = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
-    
-    item.cantidad = cantidad if es_nuevo else item.cantidad + 1
-    item.save()
-    return redirect('carrito')
+        cantidad = int(request.POST.get('cantidad')) if request.POST else None
+        producto = Producto.objects.get(pk=pk)
+
+        if request.user.is_authenticated:
+            item, _ = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+        else:
+            session_key = request.session.session_key
+            item, _ = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
+        
+        if cantidad:
+            if cantidad <= item.producto.stock:
+                item.cantidad = cantidad
+            else:
+                return render(request, '403.html')
+        else:
+            if item.cantidad+1 <= item.producto.stock:
+                item.cantidad += 1
+
+        item.save()
+        return redirect('producto:carrito')
     
 def eliminar_del_carrito(request, pk):
     producto = Producto.objects.get(pk=pk)

@@ -1,18 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.base import TemplateView
-from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 
-from .models import Venta
+from .forms import *
+from .models import Venta, Reclamacion
+from usuario.models import *
 from producto.models import ItemCarrito
 
-from usuario.models import *
 from typing import Any
-from .forms import *
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import PermissionDenied
-from .models import Reclamacion
+from datetime import date
 
 def home_view(request):
     return render(request, 'home.html')
@@ -138,18 +135,46 @@ class ResumenPedido(TemplateView):
 class Checkout(View):
     
     def post(self, request):
-        #TODO - PASARELA DE PAGO CON STRIPE
-        
-        # Reservar unidades de producto para cliente
-        for item_id in self.request.session.get('items'):
-            item = ItemCarrito.objects.get(pk=item_id)
-            if item.cantidad <= item.producto.stock:
-                item.producto.stock -= item.cantidad
-                item.producto.save()
-            else:
-                return PermissionDenied('No está permitido comprar más unidades de las que existen en stock, cuidado.')
-        
-        return redirect('')
+        if self.request.user.is_superuser:
+            return render(request, '403.html')
+        else:
+            estado_venta = Venta.EstadoVenta.POR_PAGAR
+            estado_envio = Venta.EstadoEnvio.EN_ALMACEN
+            tipo_pago = int(request.POST.get('tipo_pago'))
+            usuario = Usuario.objects.get(user=self.request.user)
+
+            # Reservar unidades de producto para cliente y crear venta
+            for item_id in self.request.session.get('items'):
+                item = ItemCarrito.objects.get(pk=item_id)
+                if item.cantidad <= item.producto.stock:
+                    item.producto.stock -= item.cantidad
+                    item.producto.save()
+                    
+                    venta = Venta(
+                        fecha_inicio=date.today(),
+                        fecha_fin=None,
+                        estado_venta=estado_venta,
+                        estado_envio=estado_envio,
+                        tipo_pago=tipo_pago,
+                        usuario=usuario
+                    )
+                    
+                    venta.save()
+                
+                    if tipo_pago == 1:   
+                        # Pasarela de pago
+
+                        # TODO                    
+                        
+                        # Actualizamos estado venta
+                        venta.fecha_fin = date.today()
+                        venta.estado_venta = Venta.EstadoVenta.PAGADO
+                        venta.save()
+                        
+                else:
+                    return render(request, '403.html')
+            
+            return redirect('')
     
 def reclamacion_view(request, pk):
     venta = get_object_or_404(Venta, pk=pk)

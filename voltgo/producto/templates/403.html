@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container mt-4">
+    <section class="text-center">
+        <h1 class="display-4">Operación no permitida</h1>
+        <p class="lead">Lo siento, no tienes permiso para realizar esta acción.</p>
+        <a href="{% url 'producto:catalogo' %}" class="btn btn-primary">Volver al catálogo</a>
+    </section>
+</main>
+{% endblock content %}
