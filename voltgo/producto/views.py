@@ -1,34 +1,56 @@
 from typing import Any
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from .models import Producto, ItemCarrito
-from django.shortcuts import render, redirect
-from .forms import BusquedaForm
+from .models import Producto, ItemCarrito, Comentario
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import BusquedaForm, ComentarioForm
+from urllib.parse import urlencode
+from collections import defaultdict
 
 
 class ProductDetailView(DetailView):
     model = Producto
     template_name = "detalle.html"
 
-def catalogo(request):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        producto = self.get_object()
+        comentarios = Comentario.objects.filter(producto=producto)
+        context['comentarios'] = comentarios
+        context['formulario_comentario'] = ComentarioForm()
+        return context
 
+    def post(self, request, *args, **kwargs):
+        producto = self.get_object()
+        formulario_comentario = ComentarioForm(request.POST)
+
+        if formulario_comentario.is_valid():
+            comentario = formulario_comentario.save(commit=False)
+            comentario.producto = producto
+            comentario.usuario = request.user
+            comentario.save()
+
+        return redirect('catalogo')
+
+def catalogo(request):
     form = BusquedaForm(request.GET)
     productos = Producto.objects.all()
-    productos_con_caracteristicas = []
 
     if form.is_valid():
-        autonomia = form.cleaned_data.get('autonomia')
-        velocidad_maxima = form.cleaned_data.get('velocidad_maxima')
+        nombre = form.cleaned_data.get('nombre')
+        empresa = form.cleaned_data.get('empresa')
         precio_maximo = form.cleaned_data.get('precio_maximo')
 
-        if autonomia is not None:
-            productos = productos.filter(caracteristicas__nombre='AT', caracteristicas__valor__gte=int(autonomia))
+        if nombre:
+            productos = productos.filter(nombre__icontains=nombre)
 
-        if velocidad_maxima is not None:
-            productos = productos.filter(caracteristicas__nombre='VM', caracteristicas__valor__lte=int(velocidad_maxima))
+        if empresa:
+            productos = productos.filter(empresa__icontains=empresa)
 
         if precio_maximo is not None:
             productos = productos.filter(precio_base__lte=float(precio_maximo))
+
+    productos_por_empresa = defaultdict(list)
 
     for producto in productos:
         autonomia = producto.caracteristicas.filter(nombre='AT').first()
@@ -36,28 +58,30 @@ def catalogo(request):
 
         autonomia_valor = autonomia.valor if autonomia else '0'
         velocidad_maxima_valor = velocidad_maxima.valor if velocidad_maxima else '0'
-        
 
         producto_dict = {
             'producto': producto,
             'autonomia': autonomia_valor,
             'velocidad_maxima': velocidad_maxima_valor,
         }
-        productos_con_caracteristicas.append(producto_dict)
-    
-    return render(request, 'catalogo.html', {'productos': productos_con_caracteristicas, 'form':form})
+        productos_por_empresa[producto.empresa].append(producto_dict)
+
+    return render(request, 'catalogo.html', {'productos_por_empresa': dict(productos_por_empresa), 'form': form})
 
 def agregar_al_carrito(request, pk):
+    
+    if request.method == 'POST':
+        cantidad = request.POST.get('cantidad')
     producto = Producto.objects.get(pk=pk)
+
     if request.user.is_authenticated:
-        item, creado = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+        item, es_nuevo = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
     else:
         session_key = request.session.session_key
-        item, creado = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
+        item, es_nuevo = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
     
-    if not creado:
-        item.cantidad += 1
-        item.save()
+    item.cantidad = cantidad if es_nuevo else item.cantidad + 1
+    item.save()
     return redirect('carrito')
     
 def eliminar_del_carrito(request, pk):
@@ -97,3 +121,10 @@ def vaciar_carrito(request):
         if item.usuario == clave or item.session_id == clave:
             item.delete()
     return ver_carrito(request)
+
+def pagar_carrito(request):
+    if request.method == 'POST':
+        request.session['items'] = request.POST.getlist('item[]')
+        return redirect('/tienda/info-pago/')
+    else:
+        return redirect('/productos/catalogo/carrito/')
