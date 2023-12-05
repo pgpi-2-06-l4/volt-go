@@ -275,6 +275,10 @@ form div.field {
   background: #efefef;
 }
 
+.errorlist > li {
+  color: #f00;
+  list-style-type: none;
+}
 
 a {
   color: black;

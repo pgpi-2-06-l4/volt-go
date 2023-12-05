@@ -110,25 +110,38 @@ class ResumenPedido(TemplateView):
     def post(self, request):
         context = self.get_context_data()
         template_form = 'info_pago_form.html'
+        context['autenticado'] = self.request.user.is_authenticated
         
         form_cliente = InfoPagoClienteForm(request.POST)
+        context['form_cliente'] = form_cliente.render(template_form)
         if form_cliente.is_valid():
             self.request.session['form_cliente'] = form_cliente.cleaned_data
             form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data)
             context['form_cliente'] = form_cliente_res.render(template_form)
+        else:
+            context['errores'] = form_cliente.errors
+            return render(request, 'info_pago.html', context)
         
         form_direccion = InfoPagoDireccionForm(request.POST)
+        context['form_direccion'] = form_direccion.render(template_form)
         if form_direccion.is_valid():
             self.request.session['form_direccion'] = form_direccion.cleaned_data
             form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data)
             context['form_direccion'] = form_direccion_res.render(template_form)
+        else:
+            context['errores'] = form_direccion.errors
+            return render(request, 'info_pago.html', context)
 
         form_tarjeta = InfoPagoTarjetaForm(request.POST)
+        context['form_tarjeta'] = form_tarjeta.render(template_form)
         if form_tarjeta.is_valid():
             form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
             self.request.session['form_tarjeta'] = form_tarjeta.cleaned_data
             form_tarjeta_res = InfoPagoTarjetaForm(initial=form_tarjeta.cleaned_data)
             context['form_tarjeta'] = form_tarjeta_res.render(template_form)
+        else:
+            context['errores'] = form_tarjeta.errors
+            return render(request, 'info_pago.html', context)
         
         return render(request, 'resumen_pedido.html', context)
 
