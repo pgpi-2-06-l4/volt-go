@@ -208,17 +208,23 @@ class Checkout(View):
                 item_carrito.delete()
 
             # Enviar email
-            self.enviar_correo_compra(venta, items_venta)
+            form_direccion = InfoPagoDireccionForm(request.POST)
+            form_direccion.is_valid()
+            datos_dir = form_direccion.cleaned_data
+            direccion = f"{datos_dir['calle']}, {datos_dir['apartamento']}, {datos_dir['ciudad']}, {datos_dir['pais']}"
+            self.enviar_correo_compra(venta, items_venta, direccion)
             messages.success(request, 'Se ha enviado un correo a tu cuenta.')
             return redirect('home')
         
-    def enviar_correo_compra(self, venta, items):
+    def enviar_correo_compra(self, venta, items, direccion):
         ASUNTO = 'VoltGo - Ticket compra {}'.format(venta.fecha_inicio.strftime('%d/%m/%Y %H:%M'))
         MENSAJE = """Hola {nombre}, aquí tienes el resumen de tu compra:\n
         {articulos}
         ------------------------------------
         TIPO DE PAGO: {tipo_pago}
         TOTAL: {total} €
+        
+        Dirección de envío: {direccion}
                 
         ¡Gracias por tu compra!
         
@@ -228,7 +234,8 @@ class Checkout(View):
             nombre=self.request.user.first_name,
             articulos='\n\t'.join([str(item) for item in items]),
             tipo_pago=venta.get_tipo_pago_display(),
-            total=venta.calcular_coste_total()
+            total=venta.calcular_coste_total(),
+            direccion=direccion
         )
         REMITENTE = settings.EMAIL_HOST_USER
         DESTINATARIO = [self.request.user.email]
