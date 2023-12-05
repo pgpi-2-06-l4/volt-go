@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import BusquedaForm, ComentarioForm
 from urllib.parse import urlencode
 from collections import defaultdict
-
+import uuid
 
 class ProductDetailView(DetailView):
     model = Producto
@@ -77,8 +77,9 @@ def agregar_al_carrito(request, pk):
     if request.user.is_authenticated:
         item, es_nuevo = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
     else:
-        session_key = request.session.session_key
-        item, es_nuevo = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
+        user_identifier = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
+        request.session['user_identifier'] = user_identifier
+        item, es_nuevo = ItemCarrito.objects.get_or_create(session_id=user_identifier, producto=producto)
     
     item.cantidad = cantidad if es_nuevo else item.cantidad + 1
     item.save()
@@ -89,8 +90,9 @@ def eliminar_del_carrito(request, pk):
     if request.user.is_authenticated:
         item = ItemCarrito.objects.get(usuario=request.user, producto=producto)
     else:
-        session_key = request.session.session_key
-        item = ItemCarrito.objects.get(session_id=session_key, producto=producto)
+        user_identifier = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
+        request.session['user_identifier'] = user_identifier
+        item = ItemCarrito.objects.get(session_id=user_identifier, producto=producto)
     if item.cantidad > 1:
         item.cantidad -= 1
         item.save()
@@ -102,7 +104,7 @@ def ver_carrito(request):
     if request.user.is_authenticated:
         clave = request.user
     else:
-        clave = request.session.session_key
+        clave = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
     carrito = []
     total = 0
     for item in ItemCarrito.objects.all():
