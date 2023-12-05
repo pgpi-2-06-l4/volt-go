@@ -3,7 +3,10 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.mail import EmailMessage
+from django.contrib import messages
 
+from django.conf import settings
 from .forms import *
 from .models import Venta, Reclamacion, ItemVenta
 from usuario.models import *
@@ -187,12 +190,10 @@ class Checkout(View):
                 venta.fecha_fin = timezone.now()
                 venta.estado_venta = Venta.EstadoVenta.PAGADO
                 venta.save()
-                
-            
-            # TODO - Enviar email
             
             # Si todo sale bien, eliminamos items del carrito 
             # y creamos items de la venta
+            items_venta = []
             for item_id in self.request.session.get('items'):
                 item_carrito = ItemCarrito.objects.get(pk=item_id)
 
@@ -203,9 +204,43 @@ class Checkout(View):
                 )
                 
                 item_venta.save()
+                items_venta.append(item_venta)
                 item_carrito.delete()
-            
-            return redirect('tienda:compras')
+
+            # Enviar email
+            self.enviar_correo_compra(venta, items_venta)
+            messages.success(request, 'Se ha enviado un correo a tu cuenta.')
+            return redirect('home')
+        
+    def enviar_correo_compra(self, venta, items):
+        ASUNTO = 'VoltGo - Ticket compra {}'.format(venta.fecha_inicio.strftime('%d/%m/%Y %H:%M'))
+        MENSAJE = """Hola {nombre}, aquí tienes el resumen de tu compra:\n
+        {articulos}
+        ------------------------------------
+        TIPO DE PAGO: {tipo_pago}
+        TOTAL: {total} €
+                
+        ¡Gracias por tu compra!
+        
+        Atentamente,
+        VoltGo.
+        """.format(
+            nombre=self.request.user.first_name,
+            articulos='\n\t'.join([str(item) for item in items]),
+            tipo_pago=venta.get_tipo_pago_display(),
+            total=venta.calcular_coste_total()
+        )
+        REMITENTE = settings.EMAIL_HOST_USER
+        DESTINATARIO = [self.request.user.email]
+        
+        email = EmailMessage(
+            ASUNTO,
+            MENSAJE,
+            REMITENTE,
+            DESTINATARIO
+        )
+        email.fail_silently = False
+        email.send()
     
 def reclamacion_view(request, pk):
     venta = get_object_or_404(Venta, pk=pk)

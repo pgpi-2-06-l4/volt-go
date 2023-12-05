@@ -40,6 +40,10 @@ class Venta(models.Model):
         User,
         on_delete=models.CASCADE
     )
+    
+    def calcular_coste_total(self):
+        items = ItemVenta.objects.filter(venta=self)
+        return sum(map(lambda i: i.calcular_coste_por_cantidad(), items))
 
 class ItemVenta(models.Model):
     class Meta():
@@ -49,6 +53,12 @@ class ItemVenta(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
     venta = models.ForeignKey(Venta, on_delete=models.CASCADE, null=True, default=None, related_name='items')
+
+    def __str__(self):
+        return '{} x {} uds.'.format(self.producto.nombre, self.cantidad)
+    
+    def calcular_coste_por_cantidad(self):
+        return self.producto.precio_base * self.cantidad
 
 class Reclamacion(models.Model):
     class Meta():
