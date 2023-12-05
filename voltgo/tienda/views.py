@@ -151,72 +151,87 @@ class ResumenPedido(TemplateView):
 class Checkout(View):
     
     def post(self, request):
-        if self.request.user.is_superuser:
+        usuario = request.user
+        sesion_id = None
+        if usuario.is_authenticated and usuario.is_superuser:
             return render(request, '403.html')
         else:
-            estado_venta = Venta.EstadoVenta.POR_PAGAR
-            estado_envio = Venta.EstadoEnvio.EN_ALMACEN
-            tipo_pago = int(request.POST.get('tipo_pago'))
+            # Usuarios no autenticados
+            sesion_id = request.session['user_identifier']
+            usuario = None
             
-            # TODO - Implementar función para usuarios no autenticados
-            usuario = self.request.user
-
-            venta = Venta(
-                fecha_inicio=timezone.now(),
-                fecha_fin=None,
-                estado_venta=estado_venta,
-                estado_envio=estado_envio,
-                tipo_pago=tipo_pago,
-                usuario=usuario
-            )
-            venta.save()
-
-            # Reservar unidades de producto para cliente y crear venta
-            for item_id in self.request.session.get('items'):
-                item = ItemCarrito.objects.get(pk=item_id)
-                if item.producto.stock - item.cantidad >= 0:
-                    item.producto.stock -= item.cantidad
-                    item.producto.save()
-                else:
-                    venta.delete()
-                    return render(request, '403.html')
-                
-            if tipo_pago == 1:   
-                # Pasarela de pago
-
-                # TODO                    
-                
-                # Actualizamos estado venta
-                venta.fecha_fin = timezone.now()
-                venta.estado_venta = Venta.EstadoVenta.PAGADO
-                venta.save()
+        # Guardamos datos en la sesión
+        info_cliente = {}
+        form_cliente = InfoPagoClienteForm(request.POST)
+        if form_cliente.is_valid():
+            info_cliente.update(form_cliente.cleaned_data)
+        form_dir = InfoPagoDireccionForm(request.POST)           
+        if form_dir.is_valid():
+            info_cliente.update(form_dir.cleaned_data)
+        form_tarjeta = InfoPagoTarjetaForm(request.POST)
+        if form_tarjeta.is_valid():
+            form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
+            info_cliente.update()
+        request.session['info_cliente'] = info_cliente
             
-            # Si todo sale bien, eliminamos items del carrito 
-            # y creamos items de la venta
-            items_venta = []
-            for item_id in self.request.session.get('items'):
-                item_carrito = ItemCarrito.objects.get(pk=item_id)
-
-                item_venta = ItemVenta(
-                    producto=item_carrito.producto,
-                    cantidad=item_carrito.cantidad,
-                    venta=venta
-                )
-                
-                item_venta.save()
-                items_venta.append(item_venta)
-                item_carrito.delete()
-
-            # Enviar email
-            form_direccion = InfoPagoDireccionForm(request.POST)
-            form_direccion.is_valid()
-            datos_dir = form_direccion.cleaned_data
-            direccion = f"{datos_dir['calle']}, {datos_dir['apartamento']}, {datos_dir['ciudad']}, {datos_dir['pais']}"
-            self.enviar_correo_compra(venta, items_venta, direccion)
-            messages.success(request, 'Se ha enviado un correo a tu cuenta.')
-            return redirect('home')
+        estado_venta = Venta.EstadoVenta.POR_PAGAR
+        estado_envio = Venta.EstadoEnvio.EN_ALMACEN
+        tipo_pago = int(request.POST.get('tipo_pago'))
         
-    def enviar_correo_compra(self, venta, items, direccion):
+        venta = Venta(
+            fecha_inicio=timezone.now(),
+            fecha_fin=None,
+            estado_venta=estado_venta,
+            estado_envio=estado_envio,
+            tipo_pago=tipo_pago,
+            usuario=usuario,
+            sesion_id=sesion_id
+        )
+        venta.save()
+
+        # Reservar unidades de producto para cliente y crear venta
+        for item_id in self.request.session.get('items'):
+            item = ItemCarrito.objects.get(pk=item_id)
+            if item.producto.stock - item.cantidad >= 0:
+                item.producto.stock -= item.cantidad
+                item.producto.save()
+            else:
+                venta.delete()
+                return render(request, '403.html')
+            
+        if tipo_pago == 1:   
+            # Pasarela de pago
+
+            # TODO                    
+            
+            # Actualizamos estado venta
+            venta.fecha_fin = timezone.now()
+            venta.estado_venta = Venta.EstadoVenta.PAGADO
+            venta.save()
+        
+        # Si todo sale bien, eliminamos items del carrito 
+        # y creamos items de la venta
+        items_venta = []
+        for item_id in request.session.get('items'):
+            item_carrito = ItemCarrito.objects.get(pk=item_id)
+
+            item_venta = ItemVenta(
+                producto=item_carrito.producto,
+                cantidad=item_carrito.cantidad,
+                venta=venta
+            )
+            
+            item_venta.save()
+            items_venta.append(item_venta)
+            item_carrito.delete()
+
+        self.enviar_correo_compra(venta, items_venta)
+        request.session.flush()
+        messages.success(request, 'Se ha enviado un correo a tu cuenta.')
+        return redirect('home')
+        
+    def enviar_correo_compra(self, venta, items):
+        cliente = self.request.session['info_cliente']
         ASUNTO = 'VoltGo - Ticket compra {}'.format(venta.fecha_inicio.strftime('%d/%m/%Y %H:%M'))
         MENSAJE = """Hola {nombre}, aquí tienes el resumen de tu compra:\n
         {articulos}
@@ -231,14 +246,14 @@ class Checkout(View):
         Atentamente,
         VoltGo.
         """.format(
-            nombre=self.request.user.first_name,
+            nombre=cliente['nombre'],
             articulos='\n\t'.join([str(item) for item in items]),
             tipo_pago=venta.get_tipo_pago_display(),
             total=venta.calcular_coste_total(),
-            direccion=direccion
+            direccion=f"{cliente['calle']},{cliente['apartamento']},{cliente['ciudad']},{cliente['pais']}"
         )
         REMITENTE = settings.EMAIL_HOST_USER
-        DESTINATARIO = [self.request.user.email]
+        DESTINATARIO = [cliente['email']]
         
         email = EmailMessage(
             ASUNTO,

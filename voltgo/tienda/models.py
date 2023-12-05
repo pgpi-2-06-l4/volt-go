@@ -38,7 +38,13 @@ class Venta(models.Model):
     )
     usuario = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    sesion_id = models.UUIDField(
+        null=True, 
+        blank=True
     )
     
     def calcular_coste_total(self):
