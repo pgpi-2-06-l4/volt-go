@@ -2,52 +2,87 @@
 
 {% block content %} 
 <main class="container mt-4">
-  <div class="card">
-    <div class="row g-0">
+  <div class="card mb-4">
+    <div class="row no-gutters">
       <div class="col-md-6">
-        <img
-          src="{{ object.url_imagen }}"
-          alt="Foto de {{ object.nombre }}"
-          class="card-img-top"
-        />
+        <img src="{{ object.url_imagen }}" alt="Foto de {{ object.nombre }}" class="card-img" />
       </div>
       <div class="col-md-6">
         <div class="card-body">
-          <h1 class="card-title display-4">Tecnología de {{ object.empresa.nombre }}</h1>
+          <h1 class="card-title display-4">Tecnología de {{ object.empresa }}</h1>
           <h2 class="h3">{{ object.nombre }}</h2>
           <p class="lead">{{ object.precio_base }} €/hora</p>
-          <p class="lead">Stock: {{ object.stock }} uds.</p>
-          <form method="post" action="{% url 'agregar-al-carrito' pk=object.pk %}">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="cantidad" class="form-label">Cantidad:</label>
-              <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" max="{{ object.stock }}" value="1">
-            </div>
-            <button type="submit" class="btn btn-primary">
-              Reservar
-            </button>
-          </form>
+          <a href="{% url 'agregar-al-carrito' pk=object.pk %}" class="btn btn-primary">
+            Reservar
+          </a>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row mt-4">
+  <div class="row">
     <div class="col-md-6">
-      <h1>Descripción</h1>
-      <p>{{ object.descripcion }}</p>
+      <article>
+        <h1>Descripción</h1>
+        <p>{{ object.descripcion }}</p>
+      </article>
     </div>
 
     {% if object.caracteristicas %}
-    <div class="col-md-6">
-      <h1>Características</h1>
-      <ul class="list-group">
-        {% for c in object.caracteristicas.all %}
-        <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+      <div class="col-md-6">
+        <article>
+          <h1>Características</h1>
+          <ul class="list-group">
+            {% for c in object.caracteristicas.all %}
+              <li class="list-group-item">{{ c.get_nombre_display }}: {{ c.valor }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+      </div>
     {% endif %}
   </div>
+  <article>
+    <h1>Comentarios</h1>
+    
+    <div class="row mb-4">
+      {% if request.user.is_authenticated %}
+      <div class="col-md-12">
+        <form method="post" action="{% url 'detalle-producto' pk=object.pk %}" class="form-inline">
+          {% csrf_token %}
+          <div class="form-group mr-2">
+            <input type="text" name="comentario" class="form-control" placeholder="Escribe tu comentario..." />
+          </div>
+          <button type="submit" class="btn btn-primary">Enviar comentario</button>
+        </form>
+      </div>
+      {% else %}
+      <div class="mt-4">
+        <h5 class="text-warning">¡Regístrate para poder comentar!</h5> 
+      </div>
+    {% endif %}
+    </div>
+
+    <div class="row pb-4">
+      {% if comentarios %}
+        {% for comentario in comentarios %}
+          <div class="col-md-5 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="card-title mb-2"><strong>{{ comentario.usuario.first_name }} {{ comentario.usuario.last_name }}</strong></h6>
+                  <small class="text-muted">{{ comentario.fecha_comentario }}</small>
+                </div>
+                <p class="card-text">{{ comentario.comentario }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}  
+        <div class="col-md-12">
+          <h5 class="text-info">¡Sé el primero en dejar un comentario!</h5>
+        </div>
+      {% endif %}
+    </div>
+  </article>
 </main>
 {% endblock content %}

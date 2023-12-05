@@ -19,12 +19,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from tienda import views
+from producto.views import catalogo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('usuario/', include('usuario.urls')),
     path('home', views.home_view, name='home'),
-    path('', views.home_view, name='home'),
+    path('', catalogo, name='catalogo'),
     path('productos/', include('producto.urls')),
     path('tienda/', include('tienda.urls')),
     path('about/', views.about_view, name='about'),

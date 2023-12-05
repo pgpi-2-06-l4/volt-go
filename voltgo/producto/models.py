@@ -3,16 +3,24 @@ from django.core.validators import MinValueValidator
 from django.conf import settings
 
 
-class Empresa(models.Model):
-    class Meta:
-        verbose_name = "empresa"
-        verbose_name_plural = "empresas"
-
-    nombre = models.CharField(max_length=50, null=False, unique=True)
-    descripcion = models.TextField(max_length=200, blank=True, null=True)
-
-    def __str__(self) -> str:
-        return self.nombre
+MARCAS_CHOICES = [
+    ('Harley Davidson', 'Harley Davidson'),
+    ('Ducati', 'Ducati'),
+    ('Aprilia', 'Aprilia'),
+    ('BMW', 'BMW'),
+    ('Yamaha', 'Yamaha'),
+    ('Honda', 'Honda'),
+    ('Suzuki', 'Suzuki'),
+    ('Kawasaki', 'Kawasaki'),
+    ('KTM', 'KTM'),
+    ('Triumph', 'Triumph'),
+    ('Aprilia', 'Aprilia'),
+    ('Benelli', 'Benelli'),
+    ('Kawasaki', 'Kawasaki'),
+    ('Suzuki', 'Suzuki'),
+    ('Montesa', 'Montesa'),
+    ('Moto Guzzi', 'Moto Guzzi')
+]
 
 
 class Caracteristica(models.Model):
@@ -28,7 +36,7 @@ class Caracteristica(models.Model):
     ]
 
     nombre = models.CharField(max_length=50, choices=TIPOS)
-    valor = models.IntegerField(blank=False)
+    valor = models.PositiveIntegerField(blank=False)
 
     def __str__(self) -> str:
         return self.nombre
@@ -42,10 +50,10 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=50, null=False, unique=True)
     descripcion = models.TextField(max_length=200, blank=True, null=True)
     url_imagen = models.URLField(null=False)
-    precio_base = models.FloatField(null=False, default=0.0)
+    precio_base = models.FloatField(null=False, default=0.0, validators=[MinValueValidator(0)])
     stock = models.PositiveIntegerField(null=False, default=1)
+    empresa = models.CharField(max_length=100, choices=MARCAS_CHOICES)
 
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False)
     caracteristicas = models.ManyToManyField(Caracteristica)
 
     def __str__(self) -> str:
@@ -66,3 +74,13 @@ class ItemCarrito(models.Model):
     def aumentar_cantidad(self, cantidad):  
         self.cantidad += cantidad
         self.save()
+
+class Comentario(models.Model):
+    class Meta:
+        verbose_name = "comentario"
+        verbose_name_plural = "comentarios"
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    comentario = models.TextField(max_length=500, blank=False)
+    fecha_comentario = models.DateField(auto_now=True)

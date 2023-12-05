@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 
@@ -8,14 +10,14 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
   <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="../../../font-awesome/css/font-awesome.min.css">
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary pt-4 pb-4">
     <div class="container-fluid bg-success">
-      <a class="navbar-brand" href="/home">
-        <img src="../../tienda/static/images/LogoVoltGo.jpeg" alt="Logo" width="60" height="60"
-          class="d-inline-block align-text-middle">
+      <a class="navbar-brand" href="/home">   
+        <img src="{% static 'images/LogoVoltGo.jpeg' %}" alt="Logo" width="60" height="60" class="d-inline-block align-text-middle">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,17 +36,15 @@
             </a>
           </li>
           <li class="nav-item" id="nav-elemento">
-            <a class="nav-link active" aria-current="page" href="/productos/catalogo/carrito/">
-              <h7 style="color: white;">Cesta</h7>
+            <a class="nav-link active" aria-current="page" href="/tienda/compras/">
+              <h7 style="color: white;">Mis compras</h7>
             </a>
           </li>
-          {% if request.user.is_staff %}
           <li class="nav-item" id="nav-elemento">
-            <a class="nav-link active" aria-current="page" href="/tienda/gestion/">
-              <h7 style="color: white;">Gestión de Ventas</h7>
+            <a class="nav-link active" aria-current="page" href="/tienda/reclamaciones/">
+              <h7 style="color: white;">Mis reclamaciones</h7>
             </a>
           </li>
-          {% endif %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/about/">
               <h7 style="color: white;">Sobre la US</h7>
@@ -52,10 +52,16 @@
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4 mr-5 pr-5">
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/productos/catalogo/carrito/">
+              <i class="fa fa-shopping-basket fa-lg
+              " aria-hidden="true"></i>
+            </a>
+          </li>
           {% if request.user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img src="/tienda/avatars/default_avatar.png" alt="Avatar" width="30" height="30" class="rounded-circle" id="dropdownMenuButton">
+              <img src="{% static 'images/default.png' %}" alt="Avatar" width="30" height="30" class="rounded-circle" id="dropdownMenuButton">
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="http://localhost:8000/usuario/gestionar_perfil/">Editar Perfil</a>

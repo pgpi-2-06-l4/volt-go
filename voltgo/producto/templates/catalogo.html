@@ -1,51 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Catálogo de Motos Eléctricas</h1>
-    <div id="buscador-container">
-        <form method="get">
-            {{ form.as_p }}
-            <button type="submit">Buscar</button>
-        </form>
-    </div>
-    <br/>
-    <div class="row">
-        {% for producto_dict in productos %}
-            <div class="col-md-3">
-                <div class="card">
-                    <img class="card-img-top" src="{{ producto_dict.producto.url_imagen }}" alt="{{ producto_dict.producto.nombre }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ producto_dict.producto.nombre }}</h5>
-                        <p class="card-text">Precio: ${{ producto_dict.producto.precio_base }}</p>
-                        <p class="card-text">Autonomía: {{ producto_dict.autonomia }} horas</p>
-                        <p class="card-text">Velocidad Máxima: {{ producto_dict.velocidad_maxima }} Km/h</p>
-                        <a href="{% url 'detalle-producto' pk=producto_dict.producto.id %}" class="btn btn-primary">Detalles</a>
-                    </div>
-                </div>
+<div class="container">
+    <h1 class="text-center">Catálogo de Motos Eléctricas</h1>
+
+    <div class="row mt-4 ml-4 pl-4 pb-4">
+        <form method="get" class="form-inline mx-auto">
+            <div class="form-group mr-2">
+                <label for="{{ form.nombre.id_for_label }}">Nombre:&nbsp;&nbsp;</label>
+                {{ form.nombre }}
+            </div>
+            &nbsp;
+            <div class="form-group mr-2">
+                <label for="{{ form.empresa.id_for_label }}">Empresa:&nbsp;&nbsp;</label>
+                {{ form.empresa }}
             </div>
 
-            {% if forloop.counter|divisibleby:4 %}
-                </div><div class="row">
-            {% endif %}
+            <div class="form-group mr-2">
+                <label for="{{ form.precio_maximo.id_for_label }}">Precio Máximo:&nbsp;&nbsp;</label>
+                {{ form.precio_maximo }}
+            </div>
+
+            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+        </form>
+    </div>
+    {% for empresa, productos in productos_por_empresa.items %}
+    <h2>{{ empresa }}</h2>
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-3">
+            <div class="card">
+                <a href="{% url 'detalle-producto' pk=producto.producto.id %}">
+                    <img class="card-img-top" src="{{ producto.producto.url_imagen }}"
+                        alt="{{ producto.producto.nombre }}">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.producto.nombre }}</h5>
+                    <p class="card-text">Precio: ${{ producto.producto.precio_base }}</p>
+                    <p class="card-text">Autonomía: {{ producto.autonomia }} horas</p>
+                    <p class="card-text">Velocidad Máxima: {{ producto.velocidad_maxima }} Km/h</p>
+                    {% if producto.producto.stock == 0 %}
+                    <p class="card-text text-danger"><strong>No hay stock</strong></p>
+                    {% else %}
+                    <p class="card-text"><strong>Stock: {{ producto.producto.stock }} uds</strong></p>
+                    {% endif %}
+                    <a href="{% url 'detalle-producto' pk=producto.producto.id %}" class="btn btn-primary">Detalles</a>
+                </div>
+            </div>
+        </div>
+
+        {% if forloop.counter|divisibleby:4 %}
+    </div>
+    <div class="row">
+        {% endif %}
         {% endfor %}
     </div>
+    {% endfor %}
 
-    <br/>
-    <br/>
-
-    {% if not productos %}
-        <p>No se encontraron productos</p>
+    {% if not productos_por_empresa %}
+    <p>No se encontraron productos</p>
     {% endif %}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var productos = document.querySelectorAll('.card');
-            productos.forEach(function (producto) {
-                producto.addEventListener('click', function () {
-                    var url = '/productos/' + producto.getAttribute('data-url') + '/';
-                    window.location.href = url;
-                });
-            });
-        });
-    </script>
+</div>
 {% endblock %}
