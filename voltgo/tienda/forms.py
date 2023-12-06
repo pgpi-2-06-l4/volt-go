@@ -165,3 +165,6 @@ class ReclamacionForm(forms.ModelForm):
                 'required': 'La descripción es obligatoria.',
             },
         }
+
+class BuscarPedidoForm(forms.Form):
+    id_pedido = forms.IntegerField(label='ID del Pedido')

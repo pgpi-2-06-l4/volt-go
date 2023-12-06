@@ -434,3 +434,21 @@ def success(request):
         print('El pago se realizará contrareembolso.')
         return render(request, 'success.html')
 
+def seguimiento(request):
+    resultado_pedido = None
+    mensaje_error = None
+
+    if request.method == 'POST':
+        form = BuscarPedidoForm(request.POST)
+
+        if form.is_valid():
+            id_pedido = form.cleaned_data['id_pedido']
+            resultado_pedido = Venta.objects.filter(pk=id_pedido).first()
+
+            if not resultado_pedido:
+                mensaje_error = "No se encontró ningún pedido con ese ID."
+
+    else:
+        form = BuscarPedidoForm()
+
+    return render(request, 'seguimiento.html', {'form': form, 'resultado_pedido': resultado_pedido, 'mensaje_error': mensaje_error})

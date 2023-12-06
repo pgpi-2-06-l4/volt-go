@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4 text-center">Seguimiento de pedido</h1>
+<div class="container mt-5 d-flex align-items-center justify-content-center text-center">
+  <div class="col-md-6">
+    <form method="post" action="{% url 'tienda:seguimiento' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    {% if mensaje_error %}
+    <div class="mt-5 pt-5">
+      <h4 class="text-danger">{{ mensaje_error }}</h4>
+    </div>
+    {% elif resultado_pedido %}
+    <div class="mt-5 pt-2">
+      <h4>ID: {{ resultado_pedido.pk }}</h4>
+      <h4>Fecha de inicio: {{ resultado_pedido.fecha_inicio }}</h4>
+      <h4>Fecha de fin: {{ resultado_pedido.fecha_fin }}</h4>
+      <h4>Estado del producto: {{ resultado_pedido.get_estado_producto_display }}</h4>
+      <h4>Estado de envío: {{ resultado_pedido.get_estado_envio_display }}</h4>
+      <h4>Tipo de pago: {{ resultado_pedido.get_tipo_pago_display }}</h4>
+      <h4>Nombre del producto: {{ resultado_pedido.producto.nombre }}</h4>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from .views import reclamacion_view
 
 app_name = 'tienda'
 
@@ -14,6 +13,7 @@ urlpatterns = [
     path('reclamacion/<int:pk>/', reclamacion_view, name='reclamacion'),
     path('reclamaciones/', reclamaciones_by_user, name='reclamaciones'),
     path('compras/', compras_by_user, name='compras'),  
-    path('success/', success, name='success')  
+    path('success/', success, name='success') , 
+    path('seguimiento/', seguimiento, name='seguimiento')
 ]
 
