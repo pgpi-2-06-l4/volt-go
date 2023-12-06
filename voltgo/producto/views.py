@@ -17,6 +17,7 @@ class ProductDetailView(DetailView):
         comentarios = Comentario.objects.filter(producto=producto)
         context['comentarios'] = comentarios
         context['formulario_comentario'] = ComentarioForm()
+        context['hay_stock'] = producto.stock >= 1
         return context
 
     def post(self, request, *args, **kwargs):

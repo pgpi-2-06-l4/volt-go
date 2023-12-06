@@ -13,16 +13,18 @@
           <h2 class="h3">{{ object.nombre }}</h2>
           <p class="lead">{{ object.precio_base }} €/hora</p>
           <p class="lead">Stock: {{ object.stock }} uds.</p>
-          <form method="post" action="{% url 'producto:agregar-al-carrito' pk=object.pk %}">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="cantidad" class="form-label">Cantidad:</label>
-              <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" max="{{ object.stock }}" value="1">
-            </div>
-            <button type="submit" class="btn btn-primary">
-              Reservar
-            </button>
-          </form>
+          {% if hay_stock %}
+            <form method="post" action="{% url 'producto:agregar-al-carrito' pk=object.pk %}">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad:</label>
+                <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" max="{{ object.stock }}" value="1">
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Reservar
+              </button>
+            </form>
+          {% endif %}
         </div>
       </div>
     </div>
