@@ -176,9 +176,7 @@ class Checkout(View):
         # Guardamos datos en la sesión
         info_cliente = {}
         form_cliente = InfoPagoClienteForm(request.POST)
-        print(form_cliente)
         if form_cliente.is_valid():
-            print(form_cliente.cleaned_data)
             info_cliente.update(form_cliente.cleaned_data)
         form_dir = InfoPagoDireccionForm(request.POST)           
         if form_dir.is_valid():
@@ -188,11 +186,9 @@ class Checkout(View):
             form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
             info_cliente.update(form_tarjeta.cleaned_data)
         request.session['info_cliente'] = info_cliente
-            
+
         estado_venta = Venta.EstadoVenta.POR_PAGAR
         estado_envio = Venta.EstadoEnvio.EN_ALMACEN
-
-        print(info_cliente)
 
         tipo_pago = int(info_cliente['tipo_pago'])
         
@@ -207,6 +203,7 @@ class Checkout(View):
             sesion_id=sesion_id
         )
         venta.save()
+        request.session["venta_id"] = venta.id
 
         # Reservar unidades de producto para cliente y crear venta
         for item_id in self.request.session.get('items'):
@@ -217,7 +214,7 @@ class Checkout(View):
             else:
                 venta.delete()
                 return render(request, '403.html')
-            
+         
         if tipo_pago == 1:   
             # Pasarela de pago
             print("Recibida solicitud de creación de sesión de pago.")
@@ -276,9 +273,9 @@ class Checkout(View):
             except stripe.error.StripeError as e:
                 print("Error al crear la sesión de pago:", str(e))
                 return JsonResponse({'error': str(e)}, status=400)
-        request.session["venta_id"] = venta.id
         return redirect("tienda:success")
         
+    
     
 def reclamacion_view(request, pk):
     venta = get_object_or_404(Venta, pk=pk)
@@ -324,7 +321,7 @@ def enviar_correo_compra(request, venta, items):
         TOTAL: {total} €
         
         Dirección de envío: {direccion}
-                
+        ID del pedido: {id_pedido} 
         ¡Gracias por tu compra!
         
         Atentamente,
@@ -334,7 +331,8 @@ def enviar_correo_compra(request, venta, items):
             articulos='\n\t'.join([str(item) for item in items]),
             tipo_pago=venta.get_tipo_pago_display(),
             total=venta.calcular_coste_total(),
-            direccion=f"{cliente['calle']},{cliente['apartamento']},{cliente['ciudad']},{cliente['pais']}"
+            direccion=f"{cliente['calle']},{cliente['apartamento']},{cliente['ciudad']},{cliente['pais']}",
+            id_pedido= venta.id
         )
         REMITENTE = settings.EMAIL_HOST_USER
         DESTINATARIO = [cliente['email']]
@@ -355,9 +353,14 @@ def success(request):
     info_cliente = request.session['info_cliente'] 
   
     tipoPago = int(info_cliente["tipo_pago"])
-    
+
     venta_id = request.session.get("venta_id")
-    venta = Venta.objects.get(pk=venta_id)
+    if venta_id is not None:
+        venta = Venta.objects.get(pk=venta_id)
+        print(venta)
+    else:
+    # Manejar el caso cuando venta_id es None
+        print("Error: venta_id no encontrado en la sesión.")
 
     if(tipoPago == 1): 
         if session_id:
@@ -433,7 +436,7 @@ def success(request):
         messages.success(request, 'Se ha enviado un correo a tu cuenta.')
         print('El pago se realizará contrareembolso.')
         return render(request, 'success.html')
-
+        
 def seguimiento(request):
     resultado_pedido = None
     mensaje_error = None
