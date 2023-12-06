@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <main>
-    <form action="{% url 'tienda:checkout' %}">
+    <form method="post" action="{% url 'tienda:checkout' %}">
         {% csrf_token %}
         <section class="d-flex flex-column align-items-center">
             <header>
@@ -13,6 +13,7 @@
                 </header>
                 <ul>
                     {% for item in items %}
+                        <input type="hidden" name="item[]" value="{{item.id}}">
                         <li>{{ item.producto.nombre }} x {{ item.cantidad }}</li>
                     {% endfor %}
                 </ul>
@@ -48,6 +49,5 @@
             <button type="submit" class="btn btn-success mb-3"><strong>Encargar/pagar ahora</strong></button>
         </section>
     </form>
-    
 </main>
 {% endblock content %}

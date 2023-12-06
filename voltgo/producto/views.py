@@ -1,12 +1,11 @@
-from typing import Any
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
-from .models import Producto, ItemCarrito, Comentario
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import BusquedaForm, ComentarioForm
-from urllib.parse import urlencode
-from collections import defaultdict
 
+from .forms import BusquedaForm, ComentarioForm
+from .models import Producto, ItemCarrito, Comentario
+
+from collections import defaultdict
+import uuid
 
 class ProductDetailView(DetailView):
     model = Producto
@@ -18,6 +17,7 @@ class ProductDetailView(DetailView):
         comentarios = Comentario.objects.filter(producto=producto)
         context['comentarios'] = comentarios
         context['formulario_comentario'] = ComentarioForm()
+        context['hay_stock'] = producto.stock >= 1
         return context
 
     def post(self, request, *args, **kwargs):
@@ -35,7 +35,6 @@ class ProductDetailView(DetailView):
 def catalogo(request):
     form = BusquedaForm(request.GET)
     productos = Producto.objects.all()
-    productos_con_caracteristicas = []
 
     if form.is_valid():
         nombre = form.cleaned_data.get('nombre')
@@ -71,30 +70,39 @@ def catalogo(request):
 
 def agregar_al_carrito(request, pk):
     
-    if request.method == 'POST':
-        cantidad = request.POST.get('cantidad')
-        print('cantidad ' + str(cantidad))
-    producto = Producto.objects.get(pk=pk)
-
-    if request.user.is_authenticated:
-        item, creado = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+    if request.user.is_superuser:
+        return render(request, '403.html')
     else:
-        session_key = request.session.session_key
-        item, creado = ItemCarrito.objects.get_or_create(session_id=session_key, producto=producto)
+        cantidad = int(request.POST.get('cantidad')) if request.POST else None
+        producto = Producto.objects.get(pk=pk)
+
+        if request.user.is_authenticated:
+            item, _ = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+        else:
+            user_identifier = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
+            request.session['user_identifier'] = user_identifier
+            item, _ = ItemCarrito.objects.get_or_create(session_id=user_identifier, producto=producto)
         
-    print('item cantidad: ' + str(item.cantidad))
-    
-    item.cantidad = cantidad if creado else item.cantidad + 1
-    item.save()
-    return redirect('carrito')
+        if cantidad:
+            if cantidad <= item.producto.stock:
+                item.cantidad = cantidad
+            else:
+                return render(request, '403.html')
+        else:
+            if item.cantidad+1 <= item.producto.stock:
+                item.cantidad += 1
+
+        item.save()
+        return redirect('producto:carrito')
     
 def eliminar_del_carrito(request, pk):
     producto = Producto.objects.get(pk=pk)
     if request.user.is_authenticated:
         item = ItemCarrito.objects.get(usuario=request.user, producto=producto)
     else:
-        session_key = request.session.session_key
-        item = ItemCarrito.objects.get(session_id=session_key, producto=producto)
+        user_identifier = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
+        request.session['user_identifier'] = user_identifier
+        item = ItemCarrito.objects.get(session_id=user_identifier, producto=producto)
     if item.cantidad > 1:
         item.cantidad -= 1
         item.save()
@@ -106,7 +114,7 @@ def ver_carrito(request):
     if request.user.is_authenticated:
         clave = request.user
     else:
-        clave = request.session.session_key
+        clave = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
     carrito = []
     total = 0
     for item in ItemCarrito.objects.all():
@@ -119,7 +127,7 @@ def vaciar_carrito(request):
     if request.user.is_authenticated:
         clave = request.user
     else:
-        clave = request.session.session_key
+        clave = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
     carrito = []
     for item in ItemCarrito.objects.all():
         if item.usuario == clave or item.session_id == clave:

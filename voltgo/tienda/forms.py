@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from datetime import date
 
 class InfoPagoClienteForm(forms.Form):
-    template_name = 'info_pago_form_template.html'
+    template_name = 'info_pago_form.html'
     
     def validar_telefono(valor: str):
         if valor.isdigit():
@@ -37,7 +37,7 @@ class InfoPagoClienteForm(forms.Form):
     )
     
 class InfoPagoDireccionForm(forms.Form):
-    template_name = 'info_pago_form_template.html'
+    template_name = 'info_pago_form.html'
     
     def validar_cp(valor: str):
         if valor.isdigit():
@@ -84,7 +84,7 @@ class InfoPagoDireccionForm(forms.Form):
 
     
 class InfoPagoTarjetaForm(forms.Form):
-    template_name = 'info_pago_form_template.html'
+    template_name = 'info_pago_form.html'
     
     def validar_iban(valor: str):
         if valor.startswith('ES') and valor.isalnum() and len(valor) == 24:
@@ -145,9 +145,26 @@ class ReclamacionForm(forms.ModelForm):
     class Meta:
         model = Reclamacion
         fields = ['titulo', 'descripcion']
-
-    def __init__(self, *args, **kwargs):
-        super(ReclamacionForm, self).__init__(*args, **kwargs)
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+        }
+        required = {
+            'titulo': True,
+            'descripcion': True,
+        }
+        error_messages = {
+            'titulo': {
+                'required': 'El título es obligatorio.',
+            },
+            'descripcion': {
+                'required': 'La descripción es obligatoria.',
+            },
+        }
 
 class BuscarPedidoForm(forms.Form):
     id_pedido = forms.IntegerField(label='ID del Pedido')

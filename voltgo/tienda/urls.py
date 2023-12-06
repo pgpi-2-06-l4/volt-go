@@ -12,7 +12,8 @@ urlpatterns = [
     path('checkout/', Checkout.as_view(), name='checkout'),
     path('reclamacion/<int:pk>/', reclamacion_view, name='reclamacion'),
     path('reclamaciones/', reclamaciones_by_user, name='reclamaciones'),
-    path('compras/', compras_by_user, name='compras'),
-    path('seguimiento/', seguimiento, name='seguimiento'),
+    path('compras/', compras_by_user, name='compras'),  
+    path('success/', success, name='success') , 
+    path('seguimiento/', seguimiento, name='seguimiento')
 ]
 

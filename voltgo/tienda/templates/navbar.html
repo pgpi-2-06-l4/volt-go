@@ -10,7 +10,7 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
   <link rel="stylesheet" href="../static/css/style.css">
-  <link rel="stylesheet" href="../../../font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../../iconos/font-awesome/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -35,6 +35,7 @@
               <h7 style="color: white;">Catálogo</h7>
             </a>
           </li>
+          {% if request.user.is_authenticated %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/tienda/compras/">
               <h7 style="color: white;">Mis compras</h7>
@@ -45,6 +46,7 @@
               <h7 style="color: white;">Mis reclamaciones</h7>
             </a>
           </li>
+          {% endif %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/tienda/seguimiento/">
               <h7 style="color: white;">Seguimiento de pedido</h7>

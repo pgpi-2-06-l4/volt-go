@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container pb-5 mb-5">
     <h1 class="text-center">Catálogo de Motos Eléctricas</h1>
 
     <div class="row mt-4 ml-4 pl-4 pb-4">
-        <form method="get" class="form-inline mx-auto">
+        <form method="get" class="form-inline mx-auto" id="filtroForm">
             <div class="form-group mr-2">
                 <label for="{{ form.nombre.id_for_label }}">Nombre:&nbsp;&nbsp;</label>
                 {{ form.nombre }}
@@ -21,38 +21,55 @@
                 {{ form.precio_maximo }}
             </div>
 
-            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+            <button type="submit" class="btn btn-primary mr-3"><i class="fa fa-search"></i> Buscar</button>
+            <button type="button" class="btn btn-danger" onclick="resetFilters()">Limpiar</button>
         </form>
     </div>
     {% for empresa, productos in productos_por_empresa.items %}
-        <h2>{{ empresa }}</h2>
-        <div class="row">
-            {% for producto in productos %}
-                <div class="col-md-3">
-                    <div class="card">
-                        <a href="{% url 'detalle-producto' pk=producto.producto.id %}">
-                            <img class="card-img-top" src="{{ producto.producto.url_imagen }}" alt="{{ producto.producto.nombre }}">
-                        </a>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto.producto.nombre }}</h5>
-                            <p class="card-text">Precio: ${{ producto.producto.precio_base }}</p>
-                            <p class="card-text">Autonomía: {{ producto.autonomia }} horas</p>
-                            <p class="card-text">Velocidad Máxima: {{ producto.velocidad_maxima }} Km/h</p>
-                            <p class="card-text">Stock: {{ producto.producto.stock }} uds</p>
-                            <a href="{% url 'detalle-producto' pk=producto.producto.id %}" class="btn btn-primary">Detalles</a>
-                        </div>
-                    </div>
+    <h2 class="text-center">{{ empresa }}</h2>
+    <div class="row mb-3 pb-3">
+        {% for producto in productos %}
+        <div class="col-md-3">
+            <div class="card">
+                <a href="{% url 'producto:detalle-producto' pk=producto.producto.id %}">
+                    <img class="card-img-top" src="{{ producto.producto.url_imagen }}"
+                        alt="{{ producto.producto.nombre }}">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.producto.nombre }}</h5>
+                    <p class="card-text">Precio: ${{ producto.producto.precio_base }}</p>
+                    <p class="card-text">Autonomía: {{ producto.autonomia }} horas</p>
+                    <p class="card-text">Velocidad Máxima: {{ producto.velocidad_maxima }} Km/h</p>
+                    {% if producto.producto.stock == 0 %}
+                    <p class="card-text text-danger"><strong>No hay stock</strong></p>
+                    {% else %}
+                    <p class="card-text"><strong>Stock: {{ producto.producto.stock }} uds</strong></p>
+                    {% endif %}
+                    <a href="{% url 'producto:detalle-producto' pk=producto.producto.id %}"
+                        class="btn btn-primary">Detalles</a>
                 </div>
-
-                {% if forloop.counter|divisibleby:4 %}
-                    </div><div class="row">
-                {% endif %}
-            {% endfor %}
+            </div>
         </div>
+
+        {% if forloop.counter|divisibleby:4 %}
+    </div>
+    <div class="row">
+        {% endif %}
+        {% endfor %}
+    </div>
     {% endfor %}
 
     {% if not productos_por_empresa %}
-        <p>No se encontraron productos</p>
+    <p>No se encontraron productos</p>
     {% endif %}
 </div>
+<script>
+    function resetFilters() {
+        var form = document.getElementById("filtroForm");
+        form.nombre.value = '';
+        form.empresa.value = '';
+        form.precio_maximo.value = '';
+        form.submit();
+    }
+</script>
 {% endblock %}
