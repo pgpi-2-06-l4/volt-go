@@ -13,7 +13,7 @@
           <h2 class="h3">{{ object.nombre }}</h2>
           <p class="lead">{{ object.precio_base }} €/hora</p>
           <p class="lead">Stock: {{ object.stock }} uds.</p>
-          <form method="post" action="{% url 'agregar-al-carrito' pk=object.pk %}">
+          <form method="post" action="{% url 'producto:agregar-al-carrito' pk=object.pk %}">
             {% csrf_token %}
             <div class="mb-3">
               <label for="cantidad" class="form-label">Cantidad:</label>
@@ -55,7 +55,7 @@
     <div class="row mb-4">
       {% if request.user.is_authenticated %}
       <div class="col-md-12">
-        <form method="post" action="{% url 'detalle-producto' pk=object.pk %}" class="form-inline">
+        <form method="post" action="{% url 'producto:detalle-producto' pk=object.pk %}" class="form-inline">
           {% csrf_token %}
           <div class="form-group mr-2">
             <input type="text" name="comentario" class="form-control" placeholder="Escribe tu comentario..." />

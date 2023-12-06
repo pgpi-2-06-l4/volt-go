@@ -48,7 +48,7 @@ class Producto(models.Model):
         verbose_name = "producto"
         verbose_name_plural = "productos"
 
-    nombre = models.CharField(max_length=50, null=False, unique=True)
+    nombre = models.CharField(max_length=50, null=False, unique=False)
     descripcion = models.TextField(max_length=200, blank=True, null=True)
     url_imagen = models.URLField(null=False)
     precio_base = models.FloatField(null=False, default=0.0, validators=[MinValueValidator(0)])

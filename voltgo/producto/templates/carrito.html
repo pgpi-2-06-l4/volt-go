@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="container mt-5">
-    <h1 class="mb-4">Carrito de Compras</h1>
+    <h1 class="mb-4">Compra</h1>
 
     {% if carrito %}
         <table class="table table-bordered">
@@ -15,7 +15,7 @@
                     <th>Opciones</th>
                 </tr>
             </thead>
-            <form action="{% url 'pagar-carrito' %}" method="POST">
+            <form action="{% url 'producto:pagar-carrito' %}" method="POST">
                 {% csrf_token %}
                 <tbody>
                     {% for item in carrito %}
@@ -27,12 +27,12 @@
                             <td>{{ item.get_precio_total_producto }} €</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{% url 'agregar-al-carrito' pk=item.producto.pk %}">
+                                    <a href="{% url 'producto:agregar-al-carrito' pk=item.producto.pk %}">
                                         <button type="button" class="btn btn-success btn-lg">
                                             +
                                         </button>
                                     </a>
-                                    <a href="{% url 'eliminar-del-carrito' pk=item.producto.pk %}">
+                                    <a href="{% url 'producto:eliminar-del-carrito' pk=item.producto.pk %}">
                                         <button type="button" class="btn btn-danger btn-lg mx-2">
                                             -
                                         </button>
@@ -47,7 +47,7 @@
                         <td colspan="3"></td>
                         <td><strong>Total: {{ total }} €</strong></td>
                         <td>
-                            <a href="{% url 'vaciar-carrito' %}">
+                            <a href="{% url 'producto:vaciar-carrito' %}">
                                 <button type="button" class="btn btn-warning">
                                     Vaciar carrito
                                 </button>
