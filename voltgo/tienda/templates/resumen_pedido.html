@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <main>
-    <form action="{% url 'tienda:checkout' %}">
+    <form method="post" id="checkout-form">
         {% csrf_token %}
         <section class="d-flex flex-column align-items-center">
             <header>
@@ -45,9 +45,55 @@
                 </header>
                 {{ form_tarjeta }}
             </article>
-            <button type="submit" class="btn btn-success mb-3"><strong>Encargar/pagar ahora</strong></button>
+            <button type="button" class="btn btn-success mb-3" onclick="crear_sesion_pago()"><strong>Encargar/pagar ahora</strong></button>
         </section>
     </form>
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                var stripePublicKey = "{{ stripe_public_key }}";
+                var stripe = Stripe(stripePublicKey);
+                var tipoPago = "pasarela";
+               
+                var tipoPagoInput = document.querySelector('#id_tipo_pago');
+                var refererUrl = document.referrer;
+                console.log(refererUrl)
+
+                function crear_sesion_pago(){
+                var tipoPago = tipoPagoInput.options[tipoPagoInput.selectedIndex].text;
+                console.log(tipoPago)
+                var emailInput = document.querySelector('#id_email'); 
+                var email = emailInput.value;
+               
+                
+                
+                    if(tipoPago == 'Pasarela de pago'){
+                        fetch('/tienda/checkout/', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            body: JSON.stringify({
+                                items: "{{ items }}",
+                                email: email,
+                                refererUrl: refererUrl
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(session => {
+                            return stripe.redirectToCheckout({sessionId: session.id});
+                        })
+                        .then(result => {
+                            if(result.error) {
+                                alert(result.error.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error: ", error);
+                        })
+                    }
+                }
+            </script>
     
 </main>
 {% endblock content %}
