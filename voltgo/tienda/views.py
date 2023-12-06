@@ -117,7 +117,7 @@ class ResumenPedido(TemplateView):
         context['form_cliente'] = form_cliente.render(template_form)
         if form_cliente.is_valid():
             self.request.session['form_cliente'] = form_cliente.cleaned_data
-            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data)
+            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data, disabled=True)
             context['form_cliente'] = form_cliente_res.render(template_form)
         else:
             context['errores'] = form_cliente.errors
@@ -127,7 +127,7 @@ class ResumenPedido(TemplateView):
         context['form_direccion'] = form_direccion.render(template_form)
         if form_direccion.is_valid():
             self.request.session['form_direccion'] = form_direccion.cleaned_data
-            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data)
+            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data, disabled=True)
             context['form_direccion'] = form_direccion_res.render(template_form)
         else:
             context['errores'] = form_direccion.errors
@@ -137,7 +137,7 @@ class ResumenPedido(TemplateView):
         context['form_tipo_pago'] = form_tipo_pago.render(template_form)
         if form_tipo_pago.is_valid():
             self.request.session['form_tipo_pago'] = form_tipo_pago.cleaned_data
-            form_tipo_pago_res = InfoTipoPagoForm(initial=form_tipo_pago.cleaned_data)
+            form_tipo_pago_res = InfoTipoPagoForm(initial=form_tipo_pago.cleaned_data, disabled=True)
             context['form_tipo_pago'] = form_tipo_pago_res.render(template_form)
         else:
             context['errores'] = form_tipo_pago.errors

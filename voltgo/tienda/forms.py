@@ -1,10 +1,18 @@
 from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from datetime import date
+
 
 class InfoPagoClienteForm(forms.Form):
     template_name = 'info_pago_form.html'
+    
+    def __init__(self, *args, **kwargs):
+        if 'disabled' in kwargs:
+            del kwargs['disabled']
+            for field in self.declared_fields.values():
+                field.disabled = 'disabled'
+        super(InfoPagoClienteForm, self).__init__(*args, **kwargs)
+            
     
     def validar_nombre(valor: str):
         if valor.isalpha():
@@ -49,6 +57,13 @@ class InfoPagoClienteForm(forms.Form):
     
 class InfoPagoDireccionForm(forms.Form):
     template_name = 'info_pago_form.html'
+    
+    def __init__(self, *args, **kwargs):
+        if 'disabled' in kwargs:
+            del kwargs['disabled']
+            for field in self.declared_fields.values():
+                field.disabled = 'disabled'
+        super(InfoPagoDireccionForm, self).__init__(*args, **kwargs)
     
     PAISES_CHOICES = [
         ('ESP', 'ESP')
@@ -168,6 +183,13 @@ class InfoPagoDireccionForm(forms.Form):
 class InfoTipoPagoForm(forms.Form):
     template_name = 'info_pago_form.html'
     
+    def __init__(self, *args, **kwargs):
+        if 'disabled' in kwargs:
+            del kwargs['disabled']
+            for field in self.declared_fields.values():
+                field.disabled = 'disabled'
+        super(InfoTipoPagoForm, self).__init__(*args, **kwargs)
+    
     tipo_pago = forms.ChoiceField(
         choices=[
             (0, 'Contrareembolso'),
@@ -178,6 +200,7 @@ class InfoTipoPagoForm(forms.Form):
             'selected':'Pasarela de pago'
         })
     )
+
 
 from .models import Reclamacion
 
