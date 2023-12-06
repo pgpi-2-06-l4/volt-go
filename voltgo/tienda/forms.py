@@ -6,18 +6,27 @@ from datetime import date
 class InfoPagoClienteForm(forms.Form):
     template_name = 'info_pago_form.html'
     
+    def validar_nombre(valor: str):
+        if valor.isalpha():
+            return valor()
+        else:
+            raise ValidationError('Nombre inválido.')
+    
     def validar_telefono(valor: str):
         if valor.isdigit():
             return valor
         else:
-            raise ValidationError('Email inválido.')
+            raise ValidationError('Teléfono inválido.')
         
     nombre = forms.CharField(
         max_length=100, 
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
-            'placeholder': 'Nombre'
-        })
+            'placeholder': 'Nombre',
+            'pattern': '[A-Za-z ]+',
+            'type': 'text'
+        }),
+        validators=[validar_nombre]
     )
     email = forms.EmailField(
         max_length=100,
@@ -31,13 +40,76 @@ class InfoPagoClienteForm(forms.Form):
         max_length=9,
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
-            'placeholder': 'Teléfono'
+            'placeholder': 'Teléfono',
+            'pattern': '[0-9]+'
         }),
         validators=[validar_telefono]
     )
+
     
 class InfoPagoDireccionForm(forms.Form):
     template_name = 'info_pago_form.html'
+    
+    PAISES_CHOICES = [
+        ('ESP', 'ESP')
+    ]
+
+    CIUDADES_CHOICES = [
+        ('Huelva', 'Huelva'),
+        ('Sevilla', 'Sevilla'),
+        ('Cordoba', 'Cordoba'),
+        ('Jaen', 'Jaen'),
+        ('Cadiz', 'Cadiz'),
+        ('Malaga', 'Malaga'),
+        ('Granada', 'Granada'),
+        ('Almeria', 'Almeria'),
+        ('Badajoz', 'Badajoz'),
+        ('Ciudad Real', 'Ciudad Real'),
+        ('Albacete', 'Albacete'),
+        ('Murcia', 'Murcia'),
+        ('Alicante', 'Alicante'),
+        ('Caceres', 'Caceres'),
+        ('Toledo', 'Toledo'),
+        ('Cuenca', 'Cuenca'),
+        ('Valencia', 'Valencia'),
+        ('Salamanca', 'Salamanca'),
+        ('Avila', 'Avila'),
+        ('Madrid', 'Madrid'),
+        ('Guadalajara', 'Guadalajara'),
+        ('Teruel', 'Teruel'),
+        ('Castellon', 'Castellon'),
+        ('Zamora', 'Zamora'),
+        ('Valladolid', 'Valladolid'),
+        ('Segovia', 'Segovia'),
+        ('Soria', 'Soria'),
+        ('Zaragoza', 'Zaragoza'),
+        ('Tarragona', 'Tarragona'),
+        ('Pontevedra', 'Pontevedra'),
+        ('Orense', 'Orense'),
+        ('Leon', 'Leon'),
+        ('Palencia', 'Palencia'),
+        ('Burgos', 'Burgos'),
+        ('La Rioja', 'La Rioja'),
+        ('Navarra', 'Navarra'),
+        ('Huesca', 'Huesca'),
+        ('Lerida', 'Lerida'),
+        ('Barcelona', 'Barcelona'),
+        ('Gerona', 'Gerona'),
+        ('Navarra', 'Navarra'),
+        ('Vizacaya', 'Vizcaya'),
+        ('Guipuzcoa', 'Guipuzcoa'),
+        ('Alava', 'Alava'),
+        ('Cantabria', 'Cantabria'),
+        ('Asturias', 'Asturias'),
+        ('Lugo', 'Lugo'),
+        ('La Coruña', 'La Coruña')    
+    ]
+    
+    def validar_calle(valor: str):
+        if valor.isalpha():
+            return valor()
+        else:
+            raise ValidationError('Calle inválida.')
     
     def validar_cp(valor: str):
         if valor.isdigit():
@@ -49,35 +121,45 @@ class InfoPagoDireccionForm(forms.Form):
         max_length=200,
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
-            'placeholder': 'Calle'
-        })
+            'placeholder': 'Calle',
+            'pattern': '[A-Za-z ]+',
+            'type': 'text'
+        }),
+        validators=[validar_calle]
     )
     apartamento = forms.CharField(
-        max_length=4,
+        max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control mb-3',
-            'placeholder': 'Apartamento'
+            'placeholder': 'Apartamento',
+            'type': 'text'
         })
     )
-    pais = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control mb-3',
-            'placeholder': 'País'
-        })
+    pais = forms.ChoiceField(
+        widget=forms.Select(
+            attrs={
+                'class': 'form-control mb-3',
+                'placeholder': 'País'
+            }
+        ),
+        choices=PAISES_CHOICES
     )
-    ciudad = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control mb-3',
-            'placeholder': 'Ciudad'
-        })
+    ciudad = forms.ChoiceField(
+        widget=forms.Select(
+            attrs={
+                'class': 'form-control mb-3',
+                'placeholder': 'Ciudad'
+            }
+        ),
+        choices=CIUDADES_CHOICES
     )
     codigo_postal = forms.CharField(
         max_length=5,
         widget=forms.TextInput(attrs={
             'class': 'form-control mb-3',
-            'placeholder': 'Código postal'
+            'placeholder': 'Código postal',
+            'pattern': '[0-9]+',
+            'type': 'number'
         }),
         validators=[validar_cp]
     )
