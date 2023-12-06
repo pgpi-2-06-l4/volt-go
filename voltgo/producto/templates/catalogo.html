@@ -45,7 +45,8 @@
                     {% else %}
                     <p class="card-text"><strong>Stock: {{ producto.producto.stock }} uds</strong></p>
                     {% endif %}
-                    <a href="{% url 'producto:detalle-producto' pk=producto.producto.id %}" class="btn btn-primary">Detalles</a>
+                    <a href="{% url 'producto:detalle-producto' pk=producto.producto.id %}"
+                        class="btn btn-primary">Detalles</a>
                 </div>
             </div>
         </div>
@@ -65,8 +66,10 @@
 <script>
     function resetFilters() {
         var form = document.getElementById("filtroForm");
-        form.reset();
+        form.nombre.value = '';
+        form.empresa.value = '';
+        form.precio_maximo.value = '';
+        form.submit();
     }
 </script>
 {% endblock %}
-

@@ -35,6 +35,7 @@
               <h7 style="color: white;">Catálogo</h7>
             </a>
           </li>
+          {% if request.user.is_authenticated %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/tienda/compras/">
               <h7 style="color: white;">Mis compras</h7>
@@ -45,6 +46,7 @@
               <h7 style="color: white;">Mis reclamaciones</h7>
             </a>
           </li>
+          {% endif %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/about/">
               <h7 style="color: white;">Sobre la US</h7>

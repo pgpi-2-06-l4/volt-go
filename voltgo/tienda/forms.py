@@ -145,6 +145,23 @@ class ReclamacionForm(forms.ModelForm):
     class Meta:
         model = Reclamacion
         fields = ['titulo', 'descripcion']
-
-    def __init__(self, *args, **kwargs):
-        super(ReclamacionForm, self).__init__(*args, **kwargs)
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+        }
+        required = {
+            'titulo': True,
+            'descripcion': True,
+        }
+        error_messages = {
+            'titulo': {
+                'required': 'El título es obligatorio.',
+            },
+            'descripcion': {
+                'required': 'La descripción es obligatoria.',
+            },
+        }
