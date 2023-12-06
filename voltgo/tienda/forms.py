@@ -83,51 +83,9 @@ class InfoPagoDireccionForm(forms.Form):
     )
 
     
-class InfoPagoTarjetaForm(forms.Form):
+class InfoTipoPagoForm(forms.Form):
     template_name = 'info_pago_form.html'
     
-    def validar_iban(valor: str):
-        if valor.startswith('ES') and valor.isalnum() and len(valor) == 24:
-            return valor
-        else:
-            raise ValidationError('IBAN inválido.')
-        
-    def validar_caducidad(valor: date):
-        if valor > date.today():
-            return valor
-        else:
-            raise ValidationError('Fecha de caducidad debe ser posterior al día de hoy.')
-    
-    def validar_cvv(valor: str):
-        if valor.isnumeric():
-            return valor
-        else:
-            raise ValidationError('CVV inválido.')
-    
-    iban = forms.CharField(
-    max_length=24,
-    widget=forms.TextInput(attrs={
-        'class': 'form-control mb-3',
-        'placeholder': 'IBAN'
-    }),
-    validators=[validar_iban]
-    )
-    caducidad = forms.DateField(
-        input_formats=['%d/%m/%Y'],
-        widget=forms.DateInput(attrs={
-            'class': 'form-control mb-3',
-            'placeholder': 'Caducidad (DD/MM/YYYY)'
-        }),
-        validators=[validar_caducidad]
-    )
-    cvv = forms.CharField(
-        max_length=3,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control mb-3',
-            'placeholder': 'CVV'
-        }),
-        validators=[validar_cvv]
-    )
     tipo_pago = forms.ChoiceField(
         choices=[
             (0, 'Contrareembolso'),
