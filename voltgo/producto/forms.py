@@ -11,3 +11,10 @@ class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Comentario
         fields = ['comentario']
+
+    def clean_comentario(self):
+        cd = self.cleaned_data['comentario']
+        if len(cd)==0 or cd.isspace():
+            raise forms.ValidationError('No puedes comentar en blanco.')
+        return cd
+

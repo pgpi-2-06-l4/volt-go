@@ -77,10 +77,10 @@
             <div class="card">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="card-title mb-2"><strong>{{ comentario.usuario.first_name }} {{ comentario.usuario.last_name }}</strong></h6>
-                  <small class="text-muted">{{ comentario.fecha_comentario }}</small>
+                  <h6 class="card-title mb-2"><strong>{{ comentario.usuario.username }}</strong> - {{ comentario.usuario.first_name }} </h6>
+                  <small class="text-muted">El {{ comentario.fecha_comentario }}, comentó</small>
                 </div>
-                <p class="card-text">{{ comentario.comentario }}</p>
+                <p class="card-text"> {{ comentario.comentario }}</p>
               </div>
             </div>
           </div>

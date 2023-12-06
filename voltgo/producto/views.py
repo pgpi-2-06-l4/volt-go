@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.contrib import messages
 
 from .forms import BusquedaForm, ComentarioForm
 from .models import Producto, ItemCarrito, Comentario
@@ -28,8 +31,11 @@ class ProductDetailView(DetailView):
             comentario.producto = producto
             comentario.usuario = request.user
             comentario.save()
+            messages.success(request, 'Comentario enviado con éxito.')
+        else:
+            messages.error(request, 'Error al enviar el comentario. Asegúrate de completar todos los campos.')
 
-        return redirect('catalogo')
+        return redirect(reverse('producto:detalle-producto', kwargs={'pk': producto.pk}))
 
 def catalogo(request):
     form = BusquedaForm(request.GET)
@@ -126,7 +132,7 @@ def vaciar_carrito(request):
     if request.user.is_authenticated:
         clave = request.user
     else:
-        clave = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
+        clave = request.session.session_key
     carrito = []
     for item in ItemCarrito.objects.all():
         if item.usuario == clave or item.session_id == clave:
