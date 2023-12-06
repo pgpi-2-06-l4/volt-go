@@ -8,7 +8,7 @@ class InfoPagoClienteForm(forms.Form):
     
     def validar_nombre(valor: str):
         if valor.isalpha():
-            return valor()
+            return valor
         else:
             raise ValidationError('Nombre inválido.')
     
@@ -107,7 +107,7 @@ class InfoPagoDireccionForm(forms.Form):
     
     def validar_calle(valor: str):
         if valor.isalpha():
-            return valor()
+            return valor
         else:
             raise ValidationError('Calle inválida.')
     

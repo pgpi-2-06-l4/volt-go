@@ -294,10 +294,14 @@ def compras_by_user(request):
 def enviar_correo_compra(request, venta, items):
         cliente = request.session['info_cliente']
         ASUNTO = 'VoltGo - Ticket compra {}'.format(venta.fecha_inicio.strftime('%d/%m/%Y %H:%M'))
+        total = venta.calcular_coste_total()
+        envio = 5 if total < 50 else 0
+        total = total + envio if envio else total
         MENSAJE = """Hola {nombre}, aquí tienes el resumen de tu compra:\n
         {articulos}
         ------------------------------------
         TIPO DE PAGO: {tipo_pago}
+        ENVÍO: {envio} €
         TOTAL: {total} €
         
         Dirección de envío: {direccion}
@@ -310,7 +314,8 @@ def enviar_correo_compra(request, venta, items):
             nombre=cliente['nombre'],
             articulos='\n\t'.join([str(item) for item in items]),
             tipo_pago=venta.get_tipo_pago_display(),
-            total=venta.calcular_coste_total(),
+            envio=envio,
+            total=total,
             direccion=f"{cliente['calle']},{cliente['apartamento']},{cliente['ciudad']},{cliente['pais']}"
         )
         REMITENTE = settings.EMAIL_HOST_USER
