@@ -126,7 +126,7 @@ def vaciar_carrito(request):
     if request.user.is_authenticated:
         clave = request.user
     else:
-        clave = request.session.session_key
+        clave = str(uuid.uuid5(uuid.NAMESPACE_DNS, request.META['REMOTE_ADDR']))
     carrito = []
     for item in ItemCarrito.objects.all():
         if item.usuario == clave or item.session_id == clave:
