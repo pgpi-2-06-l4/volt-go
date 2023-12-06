@@ -27,7 +27,7 @@ urlpatterns = [
     path('home', views.home_view, name='home'),
     path('', catalogo, name='catalogo'),
     path('productos/', include('producto.urls')),
-    path('tienda/', include('tienda.urls'), name='tienda'),
+    path('tienda/', include('tienda.urls')),
     path('about/', views.about_view, name='about'),
 ]
 

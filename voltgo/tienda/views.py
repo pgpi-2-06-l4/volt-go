@@ -11,8 +11,17 @@ from .forms import *
 from .models import Venta, Reclamacion, ItemVenta
 from usuario.models import *
 from producto.models import ItemCarrito
-
+from producto.views import vaciar_carrito
+from usuario.models import *
 from typing import Any
+from .forms import *
+from django.shortcuts import get_object_or_404
+from .models import Reclamacion
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+from typing import Any
+import json
 
 def home_view(request):
     return render(request, 'home.html')
@@ -35,6 +44,7 @@ class InfoPago(TemplateView):
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         datos_usuario = {}
+
         
         if self.request.user.is_authenticated:
             context['autenticado'] = True
@@ -84,6 +94,7 @@ class ResumenPedido(TemplateView):
     template_name = 'resumen_pedido.html'
     
     def get_context_data(self, **kwargs):
+        stripe_public_key = settings.STRIPE_PUBLIC_KEY
         context = super().get_context_data(**kwargs)
         items_id = self.request.session.get('items')
         items = []
@@ -107,7 +118,8 @@ class ResumenPedido(TemplateView):
         context['items'] = items
         context['pedido'] = pedido
         context['total'] = total
-        
+        context['stripe_public_key'] = stripe_public_key
+
         return context
 
     def post(self, request):
@@ -164,7 +176,9 @@ class Checkout(View):
         # Guardamos datos en la sesión
         info_cliente = {}
         form_cliente = InfoPagoClienteForm(request.POST)
+        print(form_cliente)
         if form_cliente.is_valid():
+            print(form_cliente.cleaned_data)
             info_cliente.update(form_cliente.cleaned_data)
         form_dir = InfoPagoDireccionForm(request.POST)           
         if form_dir.is_valid():
@@ -172,12 +186,16 @@ class Checkout(View):
         form_tarjeta = InfoPagoTarjetaForm(request.POST)
         if form_tarjeta.is_valid():
             form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
-            info_cliente.update()
+            info_cliente.update(form_tarjeta.cleaned_data)
         request.session['info_cliente'] = info_cliente
             
         estado_venta = Venta.EstadoVenta.POR_PAGAR
         estado_envio = Venta.EstadoEnvio.EN_ALMACEN
-        tipo_pago = int(request.POST.get('tipo_pago'))
+
+        print(info_cliente)
+
+        tipo_pago = int(info_cliente['tipo_pago'])
+        
         
         venta = Venta(
             fecha_inicio=timezone.now(),
@@ -202,37 +220,98 @@ class Checkout(View):
             
         if tipo_pago == 1:   
             # Pasarela de pago
+            print("Recibida solicitud de creación de sesión de pago.")
+            try:
+                customer_email = info_cliente["email"]
+                items_id = self.request.session.get('items')
+                line_items = []
+                precio_total_items = 0
+                for item_id in items_id:
+                    item = ItemCarrito.objects.get(pk=item_id)
+                    precio_total_items += item.producto.precio_base * item.cantidad
+                    producto = stripe.Product.create(
+                        name = item.producto.nombre,
+                        description = item.producto.descripcion,
+                        images=[item.producto.url_imagen]
+                    )
+                    
+                    precio = stripe.Price.create(
+                        unit_amount=int(item.producto.precio_base * 100),
+                        currency= "eur",
+                        product= producto.id,
+                    )
+          
+                    line_items.append({
+                        'price': precio.id,
+                        "quantity": item.cantidad,
+                    })
+                
+                if precio_total_items < 50:
+                    line_items.append({
+                        'price_data': {
+                        'currency': 'eur',
+                        'unit_amount': int(5.00 * 100),
+                        'product_data': {
+                            'name': 'Tasa de envío',
+                            'description': 'Monto de envío',
+                            },
+                        },
+                    'quantity': 1,
+                    })
+              
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                request.session['payment_processed'] = False
 
-            # TODO                    
-            
-            # Actualizamos estado venta
-            venta.fecha_fin = timezone.now()
-            venta.estado_venta = Venta.EstadoVenta.PAGADO
-            venta.save()
+                session = stripe.checkout.Session.create(
+                    payment_method_types=["card"],
+                    line_items= line_items,
+                    mode='payment',
+                    customer_email= customer_email,
+                    success_url=request.build_absolute_uri('/tienda/success/'),
+                    cancel_url=request.build_absolute_uri('/tienda/info-pago/'),
+                )
+                print("ID de la sesión creada:", session.id)
+                request.session['stripe_session_id'] = session.id
+                return redirect(session.url)
+            except stripe.error.StripeError as e:
+                print("Error al crear la sesión de pago:", str(e))
+                return JsonResponse({'error': str(e)}, status=400)
+        request.session["venta_id"] = venta.id
+        return redirect("tienda:success")
         
-        # Si todo sale bien, eliminamos items del carrito 
-        # y creamos items de la venta
-        items_venta = []
-        for item_id in request.session.get('items'):
-            item_carrito = ItemCarrito.objects.get(pk=item_id)
+    
+def reclamacion_view(request, pk):
+    venta = get_object_or_404(Venta, pk=pk)
+    form = ReclamacionForm()
 
-            item_venta = ItemVenta(
-                producto=item_carrito.producto,
-                cantidad=item_carrito.cantidad,
-                venta=venta
-            )
-            
-            item_venta.save()
-            items_venta.append(item_venta)
-            item_carrito.delete()
+    if request.method == 'POST':
+        form = ReclamacionForm(request.POST)
+        if form.is_valid():
+            reclamacion = form.save(commit=False)
+            reclamacion.venta = venta
+            reclamacion.resuelta = False
+            reclamacion.save()
+            return render(request, 'reclamacion_exitosa.html', {'venta': venta, 'reclamacion': reclamacion})
 
-        self.enviar_correo_compra(venta, items_venta)
-        request.session.flush()
-        messages.success(request, 'Se ha enviado un correo a tu cuenta.')
-        return redirect('home')
-        
-    def enviar_correo_compra(self, venta, items):
-        cliente = self.request.session['info_cliente']
+    return render(request, 'reclamation.html', {'venta': venta, 'form': form})
+
+
+def reclamaciones_by_user(request):
+    reclamaciones = Reclamacion.objects.filter(venta__usuario__user__username=request.user.username)
+    return render(request, 'reclamaciones_by_user.html', {'reclamaciones': reclamaciones})
+
+def compras_by_user(request):
+    compras = Venta.objects.filter(usuario=request.user)
+    items_compra = {}
+    for compra in compras:
+        if compra.id in items_compra:
+            continue
+        else:
+            items_compra[compra.id] = compra.items.all()
+    return render(request, 'compras_by_user.html', {'compras': compras, 'items_compra': items_compra})
+
+def enviar_correo_compra(request, venta, items):
+        cliente = request.session['info_cliente']
         ASUNTO = 'VoltGo - Ticket compra {}'.format(venta.fecha_inicio.strftime('%d/%m/%Y %H:%M'))
         MENSAJE = """Hola {nombre}, aquí tienes el resumen de tu compra:\n
         {articulos}
@@ -264,34 +343,90 @@ class Checkout(View):
         )
         email.fail_silently = False
         email.send()
+
+def success(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY  
+
+    session_id = request.session.get('stripe_session_id')
+    info_cliente = request.session['info_cliente'] 
+  
+    tipoPago = int(info_cliente["tipo_pago"])
     
-def reclamacion_view(request, pk):
-    venta = get_object_or_404(Venta, pk=pk)
-    form = ReclamacionForm()
+    venta_id = request.session.get("venta_id")
+    venta = Venta.objects.get(pk=venta_id)
 
-    if request.method == 'POST':
-        form = ReclamacionForm(request.POST)
-        if form.is_valid():
-            reclamacion = form.save(commit=False)
-            reclamacion.venta = venta
-            reclamacion.resuelta = False
-            reclamacion.save()
-            return render(request, 'reclamacion_exitosa.html', {'venta': venta, 'reclamacion': reclamacion})
+    if(tipoPago == 1): 
+        if session_id:
+            if not request.session.get('payment_processed'):
+                try:
+                    session = stripe.checkout.Session.retrieve(session_id)
+                    payment_intent_id = session.payment_intent
+                    payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+                    estado_pago = payment_intent.status
 
-    return render(request, 'reclamation.html', {'venta': venta, 'form': form})
+                    print("ID de sesión de pago:", session.id)
+                    print("Situación del pago:", estado_pago)
 
+                    if estado_pago == "succeeded":
+                        print("El pago se ha completado con éxito.")
+                        request.session['payment_processed'] = True
+                        # Actualizamos estado venta 
+                        venta.tipo_pago = Venta.TipoPago.PASARELA
+                        venta.estado_venta = Venta.EstadoVenta.PAGADO
+                        venta.fecha_fin = timezone.now()
+                        venta.save()
+                        
+                        # Si todo sale bien, eliminamos items del carrito 
+                        # y creamos items de la venta
+                        items_venta = []
+                        for item_id in request.session.get('items'):
+                            item_carrito = ItemCarrito.objects.get(pk=item_id)
 
-def reclamaciones_by_user(request):
-    reclamaciones = Reclamacion.objects.filter(venta__usuario__user__username=request.user.username)
-    return render(request, 'reclamaciones_by_user.html', {'reclamaciones': reclamaciones})
+                            item_venta = ItemVenta(
+                                producto=item_carrito.producto,
+                                cantidad=item_carrito.cantidad,
+                                venta=venta
+                            )
+                            
+                            item_venta.save()
+                            items_venta.append(item_venta)
+                            item_carrito.delete()
 
-def compras_by_user(request):
-    compras = Venta.objects.filter(usuario=request.user)
-    items_compra = {}
-    for compra in compras:
-        if compra.id in items_compra:
-            continue
+                        enviar_correo_compra(request, venta, items_venta)
+                        request.session.flush()
+                        messages.success(request, 'Se ha enviado un correo a tu cuenta.')
+                        return render(request, 'success.html')
+                    else:
+                        print("Error: El pago no se ha completado.")
+                except stripe.error.StripeError as e:
+                    print("Error al recuperar la sesión de pago:", str(e))
+            else:
+                print("Error: La sesión ya ha sido procesada.")
         else:
-            items_compra[compra.id] = compra.items.all()
-    return render(request, 'compras_by_user.html', {'compras': compras, 'items_compra': items_compra})
+            print("Error: No se encontró información de pago en la sesión.")
+    else:
+        # Si todo sale bien, eliminamos items del carrito 
+        # y creamos items de la venta
+        items_venta = []
+        for item_id in request.session.get('items'):
+            item_carrito = ItemCarrito.objects.get(pk=item_id)
+
+            item_venta = ItemVenta(
+                producto=item_carrito.producto,
+                cantidad=item_carrito.cantidad,
+                venta=venta
+            )
+            
+            item_venta.save()
+            items_venta.append(item_venta)
+            item_carrito.delete()
+        
+        venta.tipo_pago = Venta.TipoPago.CONTRAREEMBOLSO
+        venta.fecha_fin = timezone.now()
+        venta.save()
+        enviar_correo_compra(request, venta, items_venta)
+        request.session.flush()
+        messages.success(request, 'Se ha enviado un correo a tu cuenta.')
+        print('El pago se realizará contrareembolso.')
+        return render(request, 'success.html')
 

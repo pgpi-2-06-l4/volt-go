@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from datetime import date
 
 class InfoPagoClienteForm(forms.Form):
-    template_name = 'info_pago_form_template.html'
+    template_name = 'info_pago_form.html'
     
     def validar_telefono(valor: str):
         if valor.isdigit():
@@ -37,7 +37,7 @@ class InfoPagoClienteForm(forms.Form):
     )
     
 class InfoPagoDireccionForm(forms.Form):
-    template_name = 'info_pago_form_template.html'
+    template_name = 'info_pago_form.html'
     
     def validar_cp(valor: str):
         if valor.isdigit():
@@ -84,7 +84,7 @@ class InfoPagoDireccionForm(forms.Form):
 
     
 class InfoPagoTarjetaForm(forms.Form):
-    template_name = 'info_pago_form_template.html'
+    template_name = 'info_pago_form.html'
     
     def validar_iban(valor: str):
         if valor.startswith('ES') and valor.isalnum() and len(valor) == 24:

@@ -128,6 +128,7 @@ ENV/
 entv/
 env.bak/
 venv.bak/
+pgpienv
 
 # Spyder project settings
 .spyderproject

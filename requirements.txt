@@ -14,12 +14,11 @@ oauthlib==3.0.1
 pep8==1.7.1
 Pillow
 pycodestyle==2.5.0
-python-decouple==3.1
+python-decouple
 python3-openid==3.1.0
 pytz==2018.5
 requests==2.21.0
 requests-oauthlib==1.2.0
-stripe==2.27.0
-urllib3
+stripe
 celery==4.4.2
 PyYAML==6.0.1
