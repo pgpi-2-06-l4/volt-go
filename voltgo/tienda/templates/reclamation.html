@@ -8,11 +8,24 @@
       <form method="post" class="needs-validation" novalidate>
         {% csrf_token %}
         
+        {% if form.errors %}
+          <div class="alert alert-danger">
+            <strong>¡Error!</strong> Por favor, corrija los siguientes errores.
+          </div>
+        {% endif %}
+
         {% for field in form %}
           <div class="mb-3 text-center">
             <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
             <br />
             {{ field }}
+            {% if field.errors %}
+              <div class="text-danger">
+                {% for error in field.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
         {% endfor %}
 

@@ -282,10 +282,14 @@ def reclamacion_view(request, pk):
 
 
 def reclamaciones_by_user(request):
-    reclamaciones = Reclamacion.objects.filter(venta__usuario__user__username=request.user.username)
+    if (not request.user.is_authenticated):
+        return redirect('/home')
+    reclamaciones = Reclamacion.objects.filter(venta__usuario=request.user)
     return render(request, 'reclamaciones_by_user.html', {'reclamaciones': reclamaciones})
 
 def compras_by_user(request):
+    if (not request.user.is_authenticated):
+        return redirect('/home')
     compras = Venta.objects.filter(usuario=request.user)
     items_compra = {}
     for compra in compras:
