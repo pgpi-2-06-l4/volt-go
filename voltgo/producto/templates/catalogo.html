@@ -31,7 +31,7 @@
         {% for producto in productos %}
         <div class="col-md-3">
             <div class="card">
-                <a href="{% url 'detalle-producto' pk=producto.producto.id %}">
+                <a href="{% url 'producto:detalle-producto' pk=producto.producto.id %}">
                     <img class="card-img-top" src="{{ producto.producto.url_imagen }}"
                         alt="{{ producto.producto.nombre }}">
                 </a>
@@ -45,7 +45,7 @@
                     {% else %}
                     <p class="card-text"><strong>Stock: {{ producto.producto.stock }} uds</strong></p>
                     {% endif %}
-                    <a href="{% url 'detalle-producto' pk=producto.producto.id %}" class="btn btn-primary">Detalles</a>
+                    <a href="{% url 'producto:detalle-producto' pk=producto.producto.id %}" class="btn btn-primary">Detalles</a>
                 </div>
             </div>
         </div>
