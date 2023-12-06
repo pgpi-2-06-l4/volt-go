@@ -5,23 +5,16 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.mail import EmailMessage
 from django.contrib import messages
-
 from django.conf import settings
+from django.http import JsonResponse
+
 from .forms import *
 from .models import Venta, Reclamacion, ItemVenta
 from usuario.models import *
 from producto.models import ItemCarrito
-from producto.views import vaciar_carrito
-from usuario.models import *
-from typing import Any
-from .forms import *
-from django.shortcuts import get_object_or_404
-from .models import Reclamacion
+
 import stripe
-from django.conf import settings
-from django.http import JsonResponse
 from typing import Any
-import json
 
 def home_view(request):
     return render(request, 'home.html')
@@ -52,7 +45,6 @@ class InfoPago(TemplateView):
             usuario = User.objects.get(pk=self.request.user.pk)
             perfil,_ = Perfil.objects.get_or_create(usuario=usuario)
             direccion,_ = Direccion.objects.get_or_create(usuario=usuario)
-            tarjeta,_ = TarjetaCredito.objects.get_or_create(usuario=usuario)
             
             datos_usuario = {
                 'nombre': usuario.first_name + ' ' + usuario.last_name,
@@ -66,26 +58,20 @@ class InfoPago(TemplateView):
                 'ciudad': direccion.ciudad,
                 'codigo_postal': direccion.codigo_postal
             }
-            datos_tarjeta = { 
-                'iban': tarjeta.iban,
-                'caducidad': tarjeta.fecha_caducidad,
-                'cvv': tarjeta.cvv
-            }
             
             info_pago_cliente = InfoPagoClienteForm(initial=datos_usuario)
             info_pago_direccion = InfoPagoDireccionForm(initial=datos_direccion)
-            info_pago_tarjeta = InfoPagoTarjetaForm(initial=datos_tarjeta)
             
         else:
             context['autenticado'] = False
             info_pago_cliente = InfoPagoClienteForm()
             info_pago_direccion = InfoPagoDireccionForm()
-            info_pago_tarjeta = InfoPagoTarjetaForm()
 
+        info_tipo_pago = InfoTipoPagoForm()
         template_form = 'info_pago_form.html'
         context['form_cliente'] = info_pago_cliente.render(template_form)
         context['form_direccion'] = info_pago_direccion.render(template_form)
-        context['form_tarjeta'] = info_pago_tarjeta.render(template_form)
+        context['form_tarjeta'] = info_tipo_pago.render(template_form)
         
         return context
     
@@ -131,7 +117,7 @@ class ResumenPedido(TemplateView):
         context['form_cliente'] = form_cliente.render(template_form)
         if form_cliente.is_valid():
             self.request.session['form_cliente'] = form_cliente.cleaned_data
-            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data)
+            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data, disabled=True)
             context['form_cliente'] = form_cliente_res.render(template_form)
         else:
             context['errores'] = form_cliente.errors
@@ -141,21 +127,20 @@ class ResumenPedido(TemplateView):
         context['form_direccion'] = form_direccion.render(template_form)
         if form_direccion.is_valid():
             self.request.session['form_direccion'] = form_direccion.cleaned_data
-            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data)
+            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data, disabled=True)
             context['form_direccion'] = form_direccion_res.render(template_form)
         else:
             context['errores'] = form_direccion.errors
             return render(request, 'info_pago.html', context)
 
-        form_tarjeta = InfoPagoTarjetaForm(request.POST)
-        context['form_tarjeta'] = form_tarjeta.render(template_form)
-        if form_tarjeta.is_valid():
-            form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
-            self.request.session['form_tarjeta'] = form_tarjeta.cleaned_data
-            form_tarjeta_res = InfoPagoTarjetaForm(initial=form_tarjeta.cleaned_data)
-            context['form_tarjeta'] = form_tarjeta_res.render(template_form)
+        form_tipo_pago = InfoTipoPagoForm(request.POST)
+        context['form_tipo_pago'] = form_tipo_pago.render(template_form)
+        if form_tipo_pago.is_valid():
+            self.request.session['form_tipo_pago'] = form_tipo_pago.cleaned_data
+            form_tipo_pago_res = InfoTipoPagoForm(initial=form_tipo_pago.cleaned_data, disabled=True)
+            context['form_tipo_pago'] = form_tipo_pago_res.render(template_form)
         else:
-            context['errores'] = form_tarjeta.errors
+            context['errores'] = form_tipo_pago.errors
             return render(request, 'info_pago.html', context)
         
         return render(request, 'resumen_pedido.html', context)
@@ -176,26 +161,19 @@ class Checkout(View):
         # Guardamos datos en la sesión
         info_cliente = {}
         form_cliente = InfoPagoClienteForm(request.POST)
-        print(form_cliente)
         if form_cliente.is_valid():
-            print(form_cliente.cleaned_data)
             info_cliente.update(form_cliente.cleaned_data)
         form_dir = InfoPagoDireccionForm(request.POST)           
         if form_dir.is_valid():
             info_cliente.update(form_dir.cleaned_data)
-        form_tarjeta = InfoPagoTarjetaForm(request.POST)
-        if form_tarjeta.is_valid():
-            form_tarjeta.cleaned_data['caducidad'] = form_tarjeta.cleaned_data['caducidad'].strftime('%d/%m/%Y')
-            info_cliente.update(form_tarjeta.cleaned_data)
+        form_tipo_pago = InfoTipoPagoForm(request.POST)
+        if form_tipo_pago.is_valid():
+            info_cliente.update(form_tipo_pago.cleaned_data)
         request.session['info_cliente'] = info_cliente
             
         estado_venta = Venta.EstadoVenta.POR_PAGAR
         estado_envio = Venta.EstadoEnvio.EN_ALMACEN
-
-        print(info_cliente)
-
         tipo_pago = int(info_cliente['tipo_pago'])
-        
         
         venta = Venta(
             fecha_inicio=timezone.now(),
@@ -218,9 +196,8 @@ class Checkout(View):
                 venta.delete()
                 return render(request, '403.html')
             
+        # Pasarela de pago
         if tipo_pago == 1:   
-            # Pasarela de pago
-            print("Recibida solicitud de creación de sesión de pago.")
             try:
                 customer_email = info_cliente["email"]
                 items_id = self.request.session.get('items')
@@ -270,11 +247,11 @@ class Checkout(View):
                     success_url=request.build_absolute_uri('/tienda/success/'),
                     cancel_url=request.build_absolute_uri('/tienda/info-pago/'),
                 )
-                print("ID de la sesión creada:", session.id)
+                # print("ID de la sesión creada:", session.id)
                 request.session['stripe_session_id'] = session.id
                 return redirect(session.url)
             except stripe.error.StripeError as e:
-                print("Error al crear la sesión de pago:", str(e))
+                # print("Error al crear la sesión de pago:", str(e))
                 return JsonResponse({'error': str(e)}, status=400)
         request.session["venta_id"] = venta.id
         return redirect("tienda:success")
@@ -317,10 +294,14 @@ def compras_by_user(request):
 def enviar_correo_compra(request, venta, items):
         cliente = request.session['info_cliente']
         ASUNTO = 'VoltGo - Ticket compra {}'.format(venta.fecha_inicio.strftime('%d/%m/%Y %H:%M'))
+        total = venta.calcular_coste_total()
+        envio = 5 if total < 50 else 0
+        total = total + envio if envio else total
         MENSAJE = """Hola {nombre}, aquí tienes el resumen de tu compra:\n
         {articulos}
         ------------------------------------
         TIPO DE PAGO: {tipo_pago}
+        ENVÍO: {envio} €
         TOTAL: {total} €
         
         Dirección de envío: {direccion}
@@ -333,7 +314,8 @@ def enviar_correo_compra(request, venta, items):
             nombre=cliente['nombre'],
             articulos='\n\t'.join([str(item) for item in items]),
             tipo_pago=venta.get_tipo_pago_display(),
-            total=venta.calcular_coste_total(),
+            envio=envio,
+            total=total,
             direccion=f"{cliente['calle']},{cliente['apartamento']},{cliente['ciudad']},{cliente['pais']}"
         )
         REMITENTE = settings.EMAIL_HOST_USER
