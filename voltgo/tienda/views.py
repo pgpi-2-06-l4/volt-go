@@ -153,8 +153,9 @@ class Checkout(View):
     def post(self, request):
         usuario = request.user
         sesion_id = None
-        if usuario.is_authenticated and usuario.is_superuser:
-            return render(request, '403.html')
+        if usuario.is_authenticated:
+            if usuario.is_superuser:
+                return render(request, '403.html')
         else:
             # Usuarios no autenticados
             sesion_id = request.session['user_identifier']
