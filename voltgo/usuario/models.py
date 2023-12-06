@@ -81,6 +81,9 @@ def validar_fecha(fecha):
     if fecha > fecha_limite:
         raise ValidationError(_('La fecha no puede ser superior a la fecha actual.'),
                               params={'fecha_limite': fecha_limite})
+    if fecha == fecha_limite:
+        raise ValidationError(_('La fecha no puede ser igual a la fecha actual.'),
+                              params={'fecha_limite': fecha_limite})
     
 class Perfil(models.Model):
     
@@ -92,11 +95,11 @@ class Perfil(models.Model):
     fecha_nacimiento = models.DateField(validators=[validar_fecha], blank=True, null=True)
     
     telefono_validator = RegexValidator(
-        regex=r'^\+?1?\d{9,15}$',
+        regex=r'^(\+34|0034|34)?[6789]\d{8}$',
         message="Formato invalido."
     )
     
-    telefono = models.CharField(max_length=15, validators=[telefono_validator], blank=True, null=True)
+    telefono = models.CharField(max_length=9, validators=[telefono_validator], blank=True, null=True)
 
     def __str__(self):
         return self.usuario.username
