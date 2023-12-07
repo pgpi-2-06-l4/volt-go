@@ -5,8 +5,9 @@ from datetime import datetime
 import re
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.CharField(label='Correo electrónico')
+    password = forms.CharField(label='Contraseña',
+                               widget=forms.PasswordInput)
 
 
 class UserRegistrationForm(forms.ModelForm):
