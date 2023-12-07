@@ -22,7 +22,4 @@ urlpatterns = [
     path('direccion/<int:pk>/eliminar/', views.eliminar_direccion, name='eliminar_direccion'),
     path('direccion/editar/<int:pk>/', views.direccion_editar, name='direccion_editar'),
     path('direccion/nueva/', views.direccion_editar, name='direccion_nueva'),
-    path('tarjeta/<int:pk>/eliminar/', views.eliminar_tarjeta, name='eliminar_tarjeta'),
-    path('tarjeta/editar/<int:pk>/', views.tarjeta_editar, name='tarjeta_editar'),
-    path('tarjeta/nueva/', views.tarjeta_editar, name='tarjeta_nueva'),
 ]
