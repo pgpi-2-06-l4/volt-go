@@ -86,7 +86,7 @@ def gestionar_perfil(request):
 
     direcciones = Direccion.objects.filter(usuario=request.user)
 
-    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones,})
+    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones})
 
 
 @login_required
