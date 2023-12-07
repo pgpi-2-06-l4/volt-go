@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Direccion, TarjetaCredito, Perfil
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm, DireccionForm, TarjetaCreditoForm
+from .models import Usuario, Direccion, Perfil
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm, DireccionForm
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -95,9 +95,8 @@ def gestionar_perfil(request):
         profile_form = UserProfileEditForm(instance=request.user.perfil)
 
     direcciones = Direccion.objects.filter(usuario=request.user)
-    tarjetas = TarjetaCredito.objects.filter(usuario=request.user)
 
-    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones, 'tarjetas': tarjetas, })
+    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones})
 
 
 @login_required
@@ -131,33 +130,3 @@ def direccion_editar(request, pk=None):
     return render(request, 'account/direccion_editar.html', {'form': form, 'modo_edicion': modo_edicion})
 
 
-@login_required
-def tarjeta_editar(request, pk=None):
-    # Si se proporciona un pk, entonces estamos editando una dirección existente
-    if pk:
-        tarjeta = get_object_or_404(
-            TarjetaCredito, pk=pk, usuario=request.user)
-        modo_edicion = True
-    else:
-        tarjeta = None
-        modo_edicion = False
-
-    if request.method == 'POST':
-        form = TarjetaCreditoForm(request.POST, instance=tarjeta)
-        if form.is_valid():
-            tarjeta = form.save(commit=False)
-            tarjeta.usuario = request.user
-            tarjeta.save()
-            return redirect('gestionar_perfil')
-    else:
-        form = TarjetaCreditoForm(instance=tarjeta)
-
-    return render(request, 'account/tarjeta_editar.html', {'form': form, 'modo_edicion': modo_edicion})
-
-
-@login_required
-def eliminar_tarjeta(request, pk):
-    tarjeta = get_object_or_404(TarjetaCredito, pk=pk, usuario=request.user)
-    tarjeta.delete()
-
-    return redirect('gestionar_perfil')
