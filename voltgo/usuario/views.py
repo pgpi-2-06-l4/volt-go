@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Usuario, Direccion, TarjetaCredito, Perfil
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm, DireccionForm, TarjetaCreditoForm
+from .models import Usuario, Direccion, Perfil
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm, DireccionForm
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 
@@ -85,9 +85,8 @@ def gestionar_perfil(request):
         profile_form = UserProfileEditForm(instance=request.user.perfil)
 
     direcciones = Direccion.objects.filter(usuario=request.user)
-    tarjetas = TarjetaCredito.objects.filter(usuario=request.user)
 
-    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones, 'tarjetas': tarjetas,})
+    return render(request, 'account/gestionar_perfil.html', {'user_form': user_form, 'profile_form': profile_form, 'direcciones': direcciones,})
 
 
 @login_required

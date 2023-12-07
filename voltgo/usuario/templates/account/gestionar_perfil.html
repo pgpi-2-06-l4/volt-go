@@ -31,20 +31,5 @@
         <i class="fa fa-plus"></i> Añadir dirección
       </a>
     {% endif %}
-
-    <h2 class="text-center mt-4">Mi tarjeta</h2>
-    {% for tarjeta in tarjetas %}
-      <p>
-        {{ tarjeta }}
-        <a href="{% url 'tarjeta_editar' tarjeta.id %}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Editar</a>
-        <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarjeta?')"><i class="fas fa-trash-alt"></i> Eliminar</a>
-      </p>
-    {% endfor %}
-
-    {% if not tarjetas %}
-      <a href="{% url 'tarjeta_nueva' %}" class="btn btn-success">
-        <i class="fa fa-plus"></i> Añadir tarjeta
-      </a>
-    {% endif %}
   </div>
 {% endblock %}

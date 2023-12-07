@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Usuario, Perfil, Direccion, TarjetaCredito
+from .models import Usuario, Perfil, Direccion
 from datetime import datetime
 import re
 
@@ -73,11 +73,4 @@ class DireccionForm(forms.ModelForm):
         model = Direccion
         fields = ['calle', 'apartamento', 'pais', 'ciudad', 'codigo_postal']
 
-class TarjetaCreditoForm(forms.ModelForm):
-    class Meta:
-        model = TarjetaCredito
-        fields = ['iban', 'fecha_caducidad', 'cvv']
-        widgets = {
-            'fecha_caducidad': forms.TextInput(attrs={'placeholder': 'MM/YY'}),
-        }
 

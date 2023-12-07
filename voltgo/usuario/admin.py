@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Usuario, Perfil, Direccion, TarjetaCredito
+from .models import Usuario, Perfil, Direccion
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
@@ -7,4 +7,3 @@ class UsuarioAdmin(admin.ModelAdmin):
 
 admin.site.register(Perfil)
 admin.site.register(Direccion)
-admin.site.register(TarjetaCredito)
