@@ -5,8 +5,7 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.utils import timezone
-import re
+
 
 
 PAISES_CHOICES = [
@@ -84,11 +83,11 @@ def validar_fecha(fecha):
     if fecha == fecha_limite:
         raise ValidationError(_('La fecha no puede ser igual a la fecha actual.'),
                               params={'fecha_limite': fecha_limite})
-
+    
 def validate_letters(value):
         if not value.isalpha():
             raise ValidationError('La calle solo puede contener letras.')
-        
+    
 class Perfil(models.Model):
     
     class Meta:

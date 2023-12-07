@@ -119,31 +119,3 @@ def direccion_editar(request, pk=None):
     return render(request, 'account/direccion_editar.html', {'form': form, 'modo_edicion': modo_edicion})
 
 
-@login_required
-def tarjeta_editar(request, pk=None):
-    # Si se proporciona un pk, entonces estamos editando una dirección existente
-    if pk:
-        tarjeta = get_object_or_404(TarjetaCredito, pk=pk, usuario=request.user)
-        modo_edicion = True
-    else:
-        tarjeta = None
-        modo_edicion = False
-
-    if request.method == 'POST':
-        form = TarjetaCreditoForm(request.POST, instance=tarjeta)
-        if form.is_valid():
-            tarjeta = form.save(commit=False)
-            tarjeta.usuario = request.user
-            tarjeta.save()
-            return redirect('gestionar_perfil')
-    else:
-        form = TarjetaCreditoForm(instance=tarjeta)
-
-    return render(request, 'account/tarjeta_editar.html', {'form': form, 'modo_edicion': modo_edicion})
-
-@login_required
-def eliminar_tarjeta(request, pk):
-    tarjeta = get_object_or_404(TarjetaCredito, pk=pk, usuario=request.user)
-    tarjeta.delete()
-
-    return redirect('gestionar_perfil')

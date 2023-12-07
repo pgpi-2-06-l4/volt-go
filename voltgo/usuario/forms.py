@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Usuario, Perfil, Direccion
-from datetime import datetime
 import re
 
 class LoginForm(forms.Form):
