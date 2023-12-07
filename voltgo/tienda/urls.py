@@ -14,6 +14,7 @@ urlpatterns = [
     path('reclamaciones/', reclamaciones_by_user, name='reclamaciones'),
     path('compras/', compras_by_user, name='compras'),  
     path('success/', success, name='success') , 
-    path('seguimiento/', seguimiento, name='seguimiento')
+    path('seguimiento/', seguimiento, name='seguimiento'),
+    path('obtenerNumCarrito/', obtener_cantidad_carrito, name='obtenerNumCarrito'),
 ]
 

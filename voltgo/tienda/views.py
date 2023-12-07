@@ -15,6 +15,7 @@ from producto.models import ItemCarrito
 
 import stripe
 from typing import Any
+from django.http import JsonResponse
 
 def home_view(request):
     return render(request, 'home.html')
@@ -440,3 +441,11 @@ def seguimiento(request):
         form = BuscarPedidoForm()
 
     return render(request, 'seguimiento.html', {'form': form, 'resultado_pedido': resultado_pedido, 'mensaje_error': mensaje_error})
+
+
+def obtener_cantidad_carrito(request):
+    if request.user.is_authenticated:
+        cantidad_carrito = ItemCarrito.objects.filter(usuario=request.user).count()
+        return JsonResponse({'cantidad_carrito': cantidad_carrito})
+    else:
+        return JsonResponse({'error': 'Usuario no autenticado'})

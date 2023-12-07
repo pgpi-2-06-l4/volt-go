@@ -16,8 +16,9 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary pt-4 pb-4">
     <div class="container-fluid bg-success">
-      <a class="navbar-brand" href="/home">   
-        <img src="{% static 'images/LogoVoltGo.jpeg' %}" alt="Logo" width="60" height="60" class="d-inline-block align-text-middle">
+      <a class="navbar-brand" href="/home">
+        <img src="{% static 'images/LogoVoltGo.jpeg' %}" alt="Logo" width="60" height="60"
+          class="d-inline-block align-text-middle">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,21 +60,27 @@
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4 mr-5 pr-5">
+          {% if "/catalogo/carrito/" not in request.path %}
           <li class="nav-item" id="nav-elemento">
             <a class="nav-link active" aria-current="page" href="/productos/catalogo/carrito/">
-              <i class="fa fa-shopping-basket fa-lg
-              " aria-hidden="true"></i>
+              <i class="fa fa-shopping-basket fa-lg position-relative" aria-hidden="true">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  id="cantidadCesta" style="font-size: 14px;">0</span>
+              </i>
             </a>
           </li>
+          {% endif %}
           {% if request.user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img src="{% static 'images/default.png' %}" alt="Avatar" width="30" height="30" class="rounded-circle" id="dropdownMenuButton">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img src="{% static 'images/default.png' %}" alt="Avatar" width="30" height="30" class="rounded-circle"
+                id="dropdownMenuButton">
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="http://localhost:8000/usuario/gestionar_perfil/">Editar Perfil</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="http://localhost:8000/usuario/logout">Cerrar Sesión</a>
+              <a class="dropdown-item" href="http://localhost:8000/usuario/gestionar_perfil/">Editar Perfil</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="http://localhost:8000/usuario/logout">Cerrar Sesión</a>
             </div>
           </li>
           {% else %}
@@ -96,5 +103,22 @@
       </div>
     </div>
   </nav>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      actualizarNumeroCesta();
+    });
+
+    function actualizarNumeroCesta() {
+      fetch('/tienda/obtenerNumCarrito/')
+        .then(response => response.json())
+        .then(data => {
+          var cantidadSpan = document.getElementById('cantidadCesta');
+          cantidadSpan.textContent = data.cantidad_carrito;
+        })
+        .catch(error => console.error('Error al obtener la cantidad del carrito:', error));
+    }
+
+  </script>
 </body>
+
 </html>
