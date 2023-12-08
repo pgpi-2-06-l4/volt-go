@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'voltgo.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:postgres@localhost:5432/mysite',
+        default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
         conn_max_age=600
     )
 }
