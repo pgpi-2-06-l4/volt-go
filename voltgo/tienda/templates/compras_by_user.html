@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Mis compras</h1>
+    <br />
+    <div class="row">
+        {% for compra in compras %}
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Compra #{{ compra.pk }}</h5>
+                        <p class="card-text"><strong>Cliente:</strong> {{ compra.usuario.first_name }} {{ compra.usuario.last_name }} </p>
+                        <p class="card-text"><strong>Productos:</strong></p>
+                        <ul>
+                            {% for compra_id, items in items_compra.items %}
+                                {% if compra_id == compra.id %}
+                                    {% for item in items %}
+                                        <li><p class="card-text"> <strong>{{ item.producto.nombre }}</strong> x {{ item.cantidad }} uds.</p></li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <p class="card-text"><strong>Fecha de compra:</strong> {{ compra.fecha_inicio }}</p>
+                        <p class="card-text"><strong>Pago:</strong> {{ compra.get_tipo_pago_display }}</p>
+                        <p class="card-text"><strong>Estado:</strong> {{ compra.get_estado_venta_display }}</p>
+                        <p class="card-text"><strong>Envío:</strong> {{ compra.get_estado_envio_display }}</p>
+                        <a href="{% url 'tienda:reclamacion' compra.pk %}">
+                            <button type="button" class="btn btn-primary">
+                                Crear reclamacion
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:2 %}
+                </div><div class="row">
+            {% endif %}
+
+        {% endfor %}
+    </div>
+
+    {% if not compras %}
+        <p>No has realizado ninguna compra.</p>
+    {% endif %}
+
+{% endblock %}

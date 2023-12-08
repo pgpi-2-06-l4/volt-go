@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+    <form method="post" action="{% url 'tienda:checkout' %}">
+        {% csrf_token %}
+        <section class="d-flex flex-column align-items-center">
+            <header>
+                <h1>Resumen del pedido</h1>
+            </header>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información de los artículos</h2>
+                </header>
+                <ul>
+                    {% for item in items %}
+                        <input type="hidden" name="item[]" value="{{item.id}}">
+                        <li>{{ item.producto.nombre }} x {{ item.cantidad }}</li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                <p><strong>PEDIDO:</strong> {{ pedido }} €</p>
+                <p>
+                    <strong>ENVÍO:</strong> {{ envio }} €
+                    {% if envio == 0 %}
+                    <br>* Pedidos superiores a 50€ no pagan envío.
+                {% endif %}
+                </p>
+                
+                <p><strong>TOTAL:</strong> {{ total }} €</p>
+            </article>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información personal</h2>
+                </header>
+                {{ form_cliente }}
+            </article>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información del envío</h2>
+                </header>
+                {{ form_direccion }}
+            </article>
+            <article class="d-flex flex-column">
+                <header>
+                    <h2>Información del pago</h2>
+                </header>
+                {{ form_tipo_pago }}
+            </article>
+            <button type="submit" class="btn btn-success mb-3"><strong>Encargar/pagar ahora</strong></button>
+        </section>
+    </form>
+</main>
+{% endblock content %}

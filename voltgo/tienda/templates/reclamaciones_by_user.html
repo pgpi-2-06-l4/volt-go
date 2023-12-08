@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Mis reclamaciones</h1>
+    <br />
+    <div class="row">
+        {% for reclamacion in reclamaciones %}
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Compra #{{ reclamacion.venta.pk }}</h5>
+                        <p class="card-text">Título: {{ reclamacion.titulo }}</p>
+                        <p class="card-text">Descripción: {{ reclamacion.descripcion }}</p>
+                        {% if reclamacion.resuelta %}
+                            <p class="card-text">Resuelta ✅</p>
+                        {% endif %}
+                        {% if reclamacion.resuelta == False %}
+                            <p class="card-text">No resuelta ❌</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:2 %}
+                </div><div class="row">
+            {% endif %}
+
+        {% endfor %}
+    </div>
+
+    {% if not reclamaciones %}
+        <p>No tienes reclamaciones todavía.</p>
+    {% endif %}
+
+{% endblock %}

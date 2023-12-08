@@ -1,0 +1,207 @@
+[
+    {
+        "model": "producto.empresa",
+        "pk": 1,
+        "fields": {
+            "nombre": "ElectroCycles",
+            "descripcion": "Dedicada a la creación de motos eléctricas de vanguardia, combinando tecnología de última generación con un diseño innovador. Nuestras motos ofrecen una experiencia de conducción."
+        }
+    },
+    {
+        "model": "producto.empresa",
+        "pk": 2,
+        "fields": {
+            "nombre": "VoltWheels",
+            "descripcion": "VoltWheels se enorgullece de ofrecer motos eléctricas de alta potencia y durabilidad. Nuestros modelos están diseñados para adaptarse a cualquier estilo de vida, con baterías de larga duración."
+        }
+    },
+    {
+        "model": "producto.empresa",
+        "pk": 3,
+        "fields": {
+            "nombre": "E-Bike Empower",
+            "descripcion": "Creemos en la movilidad sostenible y accesible para todos. Nuestras motos eléctricas están diseñadas para empoderar a los ciclistas, brindando una conducción eficiente y respetuosa con el medio."
+        }
+    },
+    {
+        "model": "producto.empresa",
+        "pk": 4,
+        "fields": {
+            "nombre": "CurrentPedals",
+            "descripcion": "Ofrece una gama de motos eléctricas elegantes y versátiles. Con un enfoque en la innovación tecnológica, nuestras motos están equipadas con características inteligentes."
+        }
+    },
+    {
+        "model": "producto.empresa",
+        "pk": 5,
+        "fields": {
+            "nombre": "SparkRides",
+            "descripcion": "Especializada en motos eléctricas que inspiran aventuras. Diseños modernos y llamativos combinan rendimiento y estilo, brindando una experiencia de conducción única que enciende la pasión."
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 1,
+        "fields": {
+            "nombre": "EcoGlide",
+            "descripcion": "Una moto eléctrica urbana con estilo, perfecta para desplazamientos diarios sin esfuerzo y respetuosa con el medio ambiente.",
+            "url_imagen": "https://cdn.topgear.es/sites/navi.axelspringer.es/public/media/image/2019/10/moto-electrica-seat-silence-s01.jpg?tf=3840x",
+            "empresa": 1
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 2,
+        "fields": {
+            "nombre": "SwiftVolt",
+            "descripcion": "Rápida y ágil, esta moto eléctrica ofrece un impulso extra para conquistar colinas y recorrer la ciudad con facilidad.",
+            "url_imagen": "https://cdn.autobild.es/sites/navi.axelspringer.es/public/media/image/2020/01/boceto-moto-electrica-harley-davidson-1845681.jpg?tf=3840x",
+            "empresa": 1
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 3,
+        "fields": {
+            "nombre": "TrailBlazer",
+            "descripcion": "Diseñada para la aventura off-road, esta moto eléctrica todoterreno te lleva a lugares remotos con potencia y estabilidad.",
+            "url_imagen": "https://e00-expansion.uecdn.es/assets/multimedia/imagenes/2022/06/22/16558979435765.jpg",
+            "empresa": 2
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 4,
+        "fields": {
+            "nombre": "CitySprint",
+            "descripcion": "Una moto eléctrica ágil y compacta, ideal para la vida urbana, con velocidad y maniobrabilidad en el tráfico de la ciudad.",
+            "url_imagen": "https://patineteswheels.com/blog/wp-content/uploads/2021/02/motos-electricas.jpg",
+            "empresa": 2
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 5,
+        "fields": {
+            "nombre": "PowerGlide",
+            "descripcion": "Potencia y eficiencia se unen en esta moto eléctrica de alta gama, brindando un rendimiento excepcional en cada pedaleo.",
+            "url_imagen": "https://www.formulamoto.es/wp-content/uploads/2023/11/Vmoto_Super_Soco_APD_Concept_-1.jpg",
+            "empresa": 3
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 6,
+        "fields": {
+            "nombre": "CruiseMax",
+            "descripcion": "Relájate y disfruta del viaje con esta moto eléctrica cruiser, diseñada para trayectos cómodos y relajados.",
+            "url_imagen": "https://s2.abcstatics.com/media/motor/2020/09/16/silence-s01-U68780765465Ere-510x349@abc.jpg",
+            "empresa": 3
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 7,
+        "fields": {
+            "nombre": "EcoTrax",
+            "descripcion": "Una moto eléctrica plegable y versátil, perfecta para la movilidad urbana, fácil de transportar y guardar.",
+            "url_imagen": "https://arenamotor.es/wp-content/uploads/2022/08/01_Rena-menu.webp",
+            "empresa": 4
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 8,
+        "fields": {
+            "nombre": "AdventureElectra",
+            "descripcion": "Descubre nuevos horizontes con esta moto eléctrica de aventura, lista para explorar terrenos diversos con confianza.",
+            "url_imagen": "https://motoselectricasbuzz.com/wp-content/uploads/2023/05/Y1S-PRO-Gris_Perfil-Del-Izdo-on-con-respaldo-y-asiento-pasajero.png",
+            "empresa": 4
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 9,
+        "fields": {
+            "nombre": "SwiftStream",
+            "descripcion": "Ágil y rápida, esta moto eléctrica híbrida es tu compañera ideal para la ciudad y caminos más allá del asfalto.",
+            "url_imagen": "https://www.hibridosyelectricos.com/uploads/s1/53/75/64/el-modelo-esta-enfocado-a-un-uso-urbano-y-un-tipo-de-cliente-joven.jpeg",
+            "empresa": 5
+        }
+    },
+    {
+        "model": "producto.producto",
+        "pk": 10,
+        "fields": {
+            "nombre": "UrbanFlow",
+            "descripcion": "Una moto eléctrica urbana elegante y eficiente, diseñada para fluir sin esfuerzo a través del tráfico de la ciudad.",
+            "url_imagen": "https://movilidadelectrica.com/wp-content/uploads/2022/01/arc-vector-desnuda.jpeg",
+            "empresa": 5
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 1,
+        "fields": {
+            "fecha_inicio": "2023-11-01T12:00:00Z",
+            "fecha_fin": null,
+            "estado_producto": 1,  
+            "estado_envio": 0,  
+            "tipo_pago": 1, 
+            "producto": 1, 
+            "usuario": 1 
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 2,
+        "fields": {
+            "fecha_inicio": "2023-11-02T14:30:00Z",
+            "fecha_fin": "2023-11-05T16:45:00Z",
+            "estado_producto": 2,
+            "estado_envio": 1,
+            "tipo_pago": 0,
+            "producto": 2,
+            "usuario": 1
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 3,
+        "fields": {
+            "fecha_inicio": "2023-11-03T10:00:00Z",
+            "fecha_fin": null,
+            "estado_producto": 0,
+            "estado_envio": 0,
+            "tipo_pago": 1,
+            "producto": 3,
+            "usuario": 1
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 4,
+        "fields": {
+            "fecha_inicio": "2023-11-04T09:15:00Z",
+            "fecha_fin": "2023-11-07T18:30:00Z",
+            "estado_producto": 3,
+            "estado_envio": 2,
+            "tipo_pago": 1,
+            "producto": 4,
+            "usuario": 1
+        }
+    },
+    {
+        "model": "tienda.venta",
+        "pk": 5,
+        "fields": {
+            "fecha_inicio": "2023-11-05T13:45:00Z",
+            "fecha_fin": null,
+            "estado_producto": 1,
+            "estado_envio": 0,
+            "tipo_pago": 0,
+            "producto": 5,
+            "usuario": 1
+        }
+    }
+]

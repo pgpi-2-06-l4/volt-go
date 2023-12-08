@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Productos seleccionados</h1>
+
+    {% if carrito %}
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Subtotal</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <form action="{% url 'producto:pagar-carrito' %}" method="POST">
+                {% csrf_token %}
+                <tbody>
+                    {% for item in carrito %}
+                    <tr>
+                        <input type='hidden' name='item[]' value='{{ item.id }}'>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>{{ item.cantidad }}</td>
+                        <td>{{ item.producto.precio_base }} €/ud</td>
+                        <td>{{ item.get_precio_total_producto }} €</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'producto:agregar-al-carrito' pk=item.producto.pk %}">
+                                    <button type="button" class="btn btn-success btn-lg">
+                                        +
+                                    </button>
+                                </a>
+                                <a href="{% url 'producto:eliminar-del-carrito' pk=item.producto.pk %}">
+                                    <button type="button" class="btn btn-danger btn-lg mx-2">
+                                        -
+                                    </button>
+                                </a>
+                                {% if item.cantidad == item.producto.stock %}
+                                <div class="alert alert-warning mt-2" role="alert">
+                                    Limite de stock
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td><strong>Total: {{ total }} €</strong></td>
+                        <td>
+                            <a href="{% url 'producto:vaciar-carrito' %}" class="mr-4 text-decoration-none">
+                                <button type="button" class="btn btn-warning">
+                                    Vaciar carrito
+                                </button>
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                Pagar ahora
+                            </button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </form>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        El carrito está vacío. <a href="{% url 'catalogo' %}" class="alert-link">Ir al catálogo</a>.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

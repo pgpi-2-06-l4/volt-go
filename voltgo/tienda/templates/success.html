@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class=" text-center">
+        <img src="../static/images/LogoVoltGo.jpeg" alt="Logo de la Universidad de Sevilla" class="img-fluid mb-4" style="max-width: 200px;">
+        <h1 class="display-4">¡Tu pedido se ha completado con éxito!</h1>
+        {% if request.user.is_authenticated %}
+        <p class="lead">Puedes consultar tus pedidos en la sección de <a href="/tienda/compras/" class="alert-link">Mis compras</a></p>
+        {% else %}
+        <p class="lead">Puedes consultar tu pedido en la sección de <a href="/tienda/seguimiento/" class="alert-link">Seguimiento de pedidos</a> con el ID
+        proporcionado en el correo eléctronico que has recibido.</p>
+        {% endif %}
+        <hr class="my-4">
+    </div>
+{% endblock content %}
+

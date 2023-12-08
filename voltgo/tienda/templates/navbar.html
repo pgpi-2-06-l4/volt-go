@@ -1,0 +1,124 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="../../iconos/font-awesome/css/font-awesome.min.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary pt-4 pb-4">
+    <div class="container-fluid bg-success">
+      <a class="navbar-brand" href="/home">
+        <img src="{% static 'images/LogoVoltGo.jpeg' %}" alt="Logo" width="60" height="60"
+          class="d-inline-block align-text-middle">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-4">
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/home">
+              <h7 style="color: white;">Home</h7>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/productos/catalogo/">
+              <h7 style="color: white;">Catálogo</h7>
+            </a>
+          </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/tienda/compras/">
+              <h7 style="color: white;">Mis compras</h7>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/tienda/reclamaciones/">
+              <h7 style="color: white;">Mis reclamaciones</h7>
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/tienda/seguimiento/">
+              <h7 style="color: white;">Seguimiento de pedido</h7>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/about/">
+              <h7 style="color: white;">Sobre la US</h7>
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mt-4 mr-5 pr-5">
+          {% if "/catalogo/carrito/" not in request.path %}
+          <li class="nav-item" id="nav-elemento">
+            <a class="nav-link active" aria-current="page" href="/productos/catalogo/carrito/">
+              <i class="fa fa-shopping-basket fa-lg position-relative" aria-hidden="true">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  id="cantidadCesta" style="font-size: 14px;">0</span>
+              </i>
+            </a>
+          </li>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img src="{% static 'images/default.png' %}" alt="Avatar" width="30" height="30" class="rounded-circle"
+                id="dropdownMenuButton">
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="http://localhost:8000/usuario/gestionar_perfil/">Editar Perfil</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="http://localhost:8000/usuario/logout">Cerrar Sesión</a>
+            </div>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:8000/usuario/register">
+              <button type="button" class="btn btn-light">
+                <h7>Registrarse</h7>
+              </button>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:8000/usuario/login">
+              <button type="button" class="btn btn-primary">
+                <h7>Iniciar Sesión</h7>
+              </button>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      actualizarNumeroCesta();
+    });
+
+    function actualizarNumeroCesta() {
+      fetch('/tienda/obtenerNumCarrito/')
+        .then(response => response.json())
+        .then(data => {
+          var cantidadSpan = document.getElementById('cantidadCesta');
+          cantidadSpan.textContent = data.cantidad_carrito;
+        })
+        .catch(error => console.error('Error al obtener la cantidad del carrito:', error));
+    }
+
+  </script>
+</body>
+
+</html>
