@@ -29,33 +29,27 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
-    
+
     def clean_first_name(self):
         cd = self.cleaned_data['first_name']
         if len(cd) == 0:
-            raise forms.ValidationError('La cadena no puede estar vacia')
-        if cd.isspace():
-            raise forms.ValidationError('La cadena no puede estar vacia')   
-        if not re.match("^[A-Za-z]+$", cd):
-            raise forms.ValidationError('Los apellidos no debe incluir números o caracteres especiales.')
+            raise forms.ValidationError('La cadena no puede estar vacía')
+        if not re.match("^[A-Za-záéíóúüÜñÑ\s]+$", cd):
+            raise forms.ValidationError('El nombre no debe incluir números o caracteres especiales.')
         return cd
-    
+
     def clean_last_name(self):
         cd = self.cleaned_data['last_name']
         if len(cd) == 0:
-            raise forms.ValidationError('La cadena no puede estar vacia')
-        if cd.isspace():
-            raise forms.ValidationError('La cadena no puede estar vacia')   
-        if not re.match("^[A-Za-z]+$", cd):
-            raise forms.ValidationError('Los apellidos no debe incluir números o caracteres especiales.')
+            raise forms.ValidationError('La cadena no puede estar vacía')
+        if not re.match("^[A-Za-záéíóúüÜñÑ\s]+$", cd):
+            raise forms.ValidationError('Los apellidos no deben incluir números o caracteres especiales.')
         return cd
-    
+
     def clean_email(self):
         cd = self.cleaned_data['email']
         if len(cd) == 0:
             raise forms.ValidationError('La dirección de correo no puede estar vacía.')
-        if cd.isspace():
-            raise forms.ValidationError('La dirección de correo no puede estar vacía.')   
         if not re.match("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", cd):
             raise forms.ValidationError('La dirección de correo introducida no es válida.')
         return cd
