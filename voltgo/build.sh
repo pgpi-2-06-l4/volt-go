@@ -10,3 +10,5 @@ cd voltgo
 
 python manage.py collectstatic --no-input
 python manage.py migrate
+
+echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin','frabartre@alum.us.es','$PASSWORD_ADMIN')" | python manage.py shell
