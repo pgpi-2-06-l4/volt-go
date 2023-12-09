@@ -10,7 +10,7 @@ from django.shortcuts import redirect, get_object_or_404
 
 def user_login(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('/usuario/dashboard')  # Redirigir a la página principal si ya está autenticado
+        return HttpResponseRedirect('/usuario/dashboard/')  # Redirigir a la página principal si ya está autenticado
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
