@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Usuario, Perfil, Direccion
+from .models import Perfil, Direccion
 import re
 
 class LoginForm(forms.Form):
