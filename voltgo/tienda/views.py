@@ -114,12 +114,15 @@ class ResumenPedido(TemplateView):
         template_form = 'info_pago_form.html'
         context['autenticado'] = self.request.user.is_authenticated
         
+        info_cliente = {}
         form_cliente = InfoPagoClienteForm(request.POST)
         context['form_cliente'] = form_cliente.render(template_form)
         if form_cliente.is_valid():
             self.request.session['form_cliente'] = form_cliente.cleaned_data
             form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data, disabled=True)
             context['form_cliente'] = form_cliente_res.render(template_form)
+            info_cliente.update(form_cliente.cleaned_data)
+            print(info_cliente)
         else:
             context['errores'] = form_cliente.errors
             return render(request, 'info_pago.html', context)
@@ -130,6 +133,7 @@ class ResumenPedido(TemplateView):
             self.request.session['form_direccion'] = form_direccion.cleaned_data
             form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data, disabled=True)
             context['form_direccion'] = form_direccion_res.render(template_form)
+            info_cliente.update(form_direccion.cleaned_data)
         else:
             context['errores'] = form_direccion.errors
             return render(request, 'info_pago.html', context)
@@ -140,10 +144,12 @@ class ResumenPedido(TemplateView):
             self.request.session['form_tipo_pago'] = form_tipo_pago.cleaned_data
             form_tipo_pago_res = InfoTipoPagoForm(initial=form_tipo_pago.cleaned_data, disabled=True)
             context['form_tipo_pago'] = form_tipo_pago_res.render(template_form)
+            info_cliente.update(form_tipo_pago.cleaned_data)
         else:
             context['errores'] = form_tipo_pago.errors
             return render(request, 'info_pago.html', context)
         
+        request.session['info_cliente'] = info_cliente
         return render(request, 'resumen_pedido.html', context)
 
 class Checkout(View):
@@ -159,23 +165,11 @@ class Checkout(View):
             sesion_id = request.session['user_identifier']
             usuario = None
             
-        # Guardamos datos en la sesión
-        info_cliente = {}
-        form_cliente = InfoPagoClienteForm(request.POST)
-        if form_cliente.is_valid():
-            info_cliente.update(form_cliente.cleaned_data)
-        form_dir = InfoPagoDireccionForm(request.POST)           
-        if form_dir.is_valid():
-            info_cliente.update(form_dir.cleaned_data)
-        form_tipo_pago = InfoTipoPagoForm(request.POST)
-        if form_tipo_pago.is_valid():
-            info_cliente.update(form_tipo_pago.cleaned_data)
-        request.session['info_cliente'] = info_cliente
-
         estado_venta = Venta.EstadoVenta.POR_PAGAR
         estado_envio = Venta.EstadoEnvio.EN_ALMACEN
+        info_cliente = request.session['info_cliente']
         tipo_pago = int(info_cliente['tipo_pago'])
-        
+
         venta = Venta(
             fecha_inicio=timezone.now(),
             fecha_fin=None,
@@ -386,7 +380,6 @@ def success(request):
                             item_carrito.delete()
 
                         enviar_correo_compra(request, venta, items_venta)
-                        request.session.flush()
                         messages.success(request, 'Se ha enviado un correo a tu cuenta.')
                         return render(request, 'success.html')
                     else:
@@ -418,7 +411,6 @@ def success(request):
         venta.fecha_fin = timezone.now()
         venta.save()
         enviar_correo_compra(request, venta, items_venta)
-        request.session.flush()
         messages.success(request, 'Se ha enviado un correo a tu cuenta.')
         print('El pago se realizará contrareembolso.')
         return render(request, 'success.html')
