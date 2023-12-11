@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+import re
 
 
 class InfoPagoClienteForm(forms.Form):
@@ -15,7 +16,7 @@ class InfoPagoClienteForm(forms.Form):
             
     
     def validar_nombre(valor: str):
-        if valor.isalpha():
+        if re.match(r'^[a-zA-Z ]+$', valor):
             return valor
         else:
             raise ValidationError('Nombre inválido.')
@@ -31,7 +32,6 @@ class InfoPagoClienteForm(forms.Form):
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
             'placeholder': 'Nombre',
-            'pattern': '[A-Za-z ]+',
             'type': 'text'
         }),
         validators=[validar_nombre]
@@ -121,10 +121,7 @@ class InfoPagoDireccionForm(forms.Form):
     ]
     
     def validar_calle(valor: str):
-        if valor.isalpha():
-            return valor
-        else:
-            raise ValidationError('Calle inválida.')
+        return valor
     
     def validar_cp(valor: str):
         if valor.isdigit():
@@ -137,7 +134,6 @@ class InfoPagoDireccionForm(forms.Form):
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
             'placeholder': 'Calle',
-            'pattern': '[A-Za-z ]+',
             'type': 'text'
         }),
         validators=[validar_calle]

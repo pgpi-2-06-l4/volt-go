@@ -15,10 +15,7 @@ MARCAS_CHOICES = [
     ('Kawasaki', 'Kawasaki'),
     ('KTM', 'KTM'),
     ('Triumph', 'Triumph'),
-    ('Aprilia', 'Aprilia'),
     ('Benelli', 'Benelli'),
-    ('Kawasaki', 'Kawasaki'),
-    ('Suzuki', 'Suzuki'),
     ('Montesa', 'Montesa'),
     ('Moto Guzzi', 'Moto Guzzi')
 ]

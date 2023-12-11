@@ -37,7 +37,7 @@
                 </a>
                 <div class="card-body">
                     <h5 class="card-title">{{ producto.producto.nombre }}</h5>
-                    <p class="card-text">Precio: ${{ producto.producto.precio_base }}</p>
+                    <p class="card-text">Precio: {{ producto.producto.precio_base }} €</p>
                     <p class="card-text">Autonomía: {{ producto.autonomia }} horas</p>
                     <p class="card-text">Velocidad Máxima: {{ producto.velocidad_maxima }} Km/h</p>
                     {% if producto.producto.stock == 0 %}
