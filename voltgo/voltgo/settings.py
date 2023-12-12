@@ -12,24 +12,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-od7j%b)@)o4lnuw9sfxy$_#6)mfz45(70!*14^1r!5dqhl&2vi'
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
 
 # Application definition
 
@@ -77,34 +66,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'voltgo.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+STATIC_ROOT = '/app/static/'
+MEDIA_ROOT = '/app/static/media/'
+ALLOWED_HOSTS = ['*']
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
-#         conn_max_age=600
-#     )
-# }
-
-DOCKER = os.environ.get('DOCKER')
-
-if DOCKER==0:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
-            conn_max_age=600
-        )
-    }
-
-if DOCKER==1:
-    DEBUG = False
-
-    STATIC_ROOT = '/app/static/'
-    MEDIA_ROOT = '/app/static/media/'
-    ALLOWED_HOSTS = ['*']
-
-    CSRF_TRUSTED_ORIGINS = ['http://10.5.0.1:8001', 'http://localhost:8001']
+CSRF_TRUSTED_ORIGINS = ['http://10.5.0.1:8001', 'http://localhost:8001']
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -141,6 +107,16 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD':'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
+}
 
 # Following settings only make sense on production and may break development environments.
 if not DEBUG:
