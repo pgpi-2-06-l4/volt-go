@@ -12,8 +12,9 @@ from django.contrib.auth.models import User
 
 def user_login(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('/usuario/dashboard')
+        return HttpResponseRedirect('/usuario/dashboard/')  # Redirigir a la página principal si ya está autenticado
 
+      
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
