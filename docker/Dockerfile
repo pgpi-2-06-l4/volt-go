@@ -10,7 +10,7 @@ RUN pip install ipython
 
 WORKDIR /app
 
-RUN git clone https://github.com/pgpi-2-06-l4/volt-go/tree/feat/docker .
+RUN git clone --branch feat/docker https://github.com/pgpi-2-06-l4/volt-go.git .
 RUN pip install -r requirements.txt
 
 WORKDIR /app/voltgo
