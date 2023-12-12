@@ -84,20 +84,20 @@ WSGI_APPLICATION = 'voltgo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
-#         conn_max_age=600
-#     )
-# }
-
-
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
+        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
         conn_max_age=600
     )
 }
+
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
+#         conn_max_age=600
+#     )
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -155,7 +155,6 @@ APPEND_SLASH = False
 
 ## Configuracion de Stripe
 import stripe
-from decouple import config
 import os
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')

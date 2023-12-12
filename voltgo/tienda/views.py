@@ -38,7 +38,10 @@ class InfoPago(TemplateView):
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         datos_usuario = {}
-
+        datos_direccion = {}
+        datos_pago = {
+            'tipo_pago' : '0'
+        }
         
         if self.request.user.is_authenticated:
             context['autenticado'] = True
@@ -59,16 +62,12 @@ class InfoPago(TemplateView):
                 'ciudad': direccion.ciudad,
                 'codigo_postal': direccion.codigo_postal
             }
-            
-            info_pago_cliente = InfoPagoClienteForm(initial=datos_usuario)
-            info_pago_direccion = InfoPagoDireccionForm(initial=datos_direccion)
-            
         else:
             context['autenticado'] = False
-            info_pago_cliente = InfoPagoClienteForm()
-            info_pago_direccion = InfoPagoDireccionForm()
 
-        info_tipo_pago = InfoTipoPagoForm()
+        info_pago_cliente = InfoPagoClienteForm(initial=datos_usuario, disabled = False)
+        info_pago_direccion = InfoPagoDireccionForm(initial=datos_direccion, disabled = False)
+        info_tipo_pago = InfoTipoPagoForm(initial=datos_pago, disabled = False)
         template_form = 'info_pago_form.html'
         context['form_cliente'] = info_pago_cliente.render(template_form)
         context['form_direccion'] = info_pago_direccion.render(template_form)
@@ -76,6 +75,41 @@ class InfoPago(TemplateView):
         
         return context
     
+    def post(self, request):
+        context = self.get_context_data()
+        template_form = 'info_pago_form.html'
+        context['autenticado'] = self.request.user.is_authenticated
+        info_cliente = {}
+
+        form_cliente = InfoPagoClienteForm(request.POST)
+        form_direccion = InfoPagoDireccionForm(request.POST)
+        form_tipo_pago = InfoTipoPagoForm(request.POST)
+        
+        cliente_valid = form_cliente.is_valid()
+        direccion_valid = form_direccion.is_valid()
+        pago_valid = form_tipo_pago.is_valid()
+        
+        disabled = cliente_valid and direccion_valid and pago_valid
+        
+        if disabled:
+            request.session['form_cliente'] = form_cliente.cleaned_data
+            request.session['form_direccion'] = form_direccion.cleaned_data
+            request.session['form_tipo_pago'] = form_tipo_pago.cleaned_data
+        else:
+            context['form_cliente'] = form_cliente.render(template_form)
+            context['form_direccion'] = form_direccion.render(template_form)
+            context['form_tipo_pago'] = form_tipo_pago.render(template_form)
+        
+        info_cliente.update(form_cliente.cleaned_data)
+        info_cliente.update(form_direccion.cleaned_data)
+        info_cliente.update(form_tipo_pago.cleaned_data)
+        context['info_cliente'] = info_cliente
+        
+        if not (cliente_valid and direccion_valid and pago_valid):
+            return render(request, 'info_pago.html', context)
+        else:
+            request.session['info_cliente'] = info_cliente
+            return redirect('tienda:resumen-pedido')
     
 class ResumenPedido(TemplateView):
     template_name = 'resumen_pedido.html'
@@ -83,6 +117,7 @@ class ResumenPedido(TemplateView):
     def get_context_data(self, **kwargs):
         stripe_public_key = settings.STRIPE_PUBLIC_KEY
         context = super().get_context_data(**kwargs)
+        template_form = 'info_pago_form.html'
         items_id = self.request.session.get('items')
         items = []
         for item_id in items_id:
@@ -106,55 +141,25 @@ class ResumenPedido(TemplateView):
         context['pedido'] = pedido
         context['total'] = total
         context['stripe_public_key'] = stripe_public_key
+        
+        form_cliente = self.request.session.get('form_cliente')
+        form_direccion = self.request.session.get('form_direccion')
+        form_tipo_pago = self.request.session.get('form_tipo_pago')
+        
+        form_cliente_res = InfoPagoClienteForm(initial=form_cliente, disabled=True)
+        form_direccion_res = InfoPagoDireccionForm(initial=form_direccion, disabled=True)
+        form_tipo_pago_res = InfoTipoPagoForm(initial=form_tipo_pago, disabled=True)
+        
+        context['form_cliente'] = form_cliente_res.render(template_form)
+        context['form_direccion'] = form_direccion_res.render(template_form)
+        context['form_tipo_pago'] = form_tipo_pago_res.render(template_form)
 
         return context
-
-    def post(self, request):
-        context = self.get_context_data()
-        template_form = 'info_pago_form.html'
-        context['autenticado'] = self.request.user.is_authenticated
-        
-        info_cliente = {}
-        form_cliente = InfoPagoClienteForm(request.POST)
-        context['form_cliente'] = form_cliente.render(template_form)
-        if form_cliente.is_valid():
-            self.request.session['form_cliente'] = form_cliente.cleaned_data
-            form_cliente_res = InfoPagoClienteForm(initial=form_cliente.cleaned_data, disabled=True)
-            context['form_cliente'] = form_cliente_res.render(template_form)
-            info_cliente.update(form_cliente.cleaned_data)
-            print(info_cliente)
-        else:
-            context['errores'] = form_cliente.errors
-            return render(request, 'info_pago.html', context)
-        
-        form_direccion = InfoPagoDireccionForm(request.POST)
-        context['form_direccion'] = form_direccion.render(template_form)
-        if form_direccion.is_valid():
-            self.request.session['form_direccion'] = form_direccion.cleaned_data
-            form_direccion_res = InfoPagoDireccionForm(initial=form_direccion.cleaned_data, disabled=True)
-            context['form_direccion'] = form_direccion_res.render(template_form)
-            info_cliente.update(form_direccion.cleaned_data)
-        else:
-            context['errores'] = form_direccion.errors
-            return render(request, 'info_pago.html', context)
-
-        form_tipo_pago = InfoTipoPagoForm(request.POST)
-        context['form_tipo_pago'] = form_tipo_pago.render(template_form)
-        if form_tipo_pago.is_valid():
-            self.request.session['form_tipo_pago'] = form_tipo_pago.cleaned_data
-            form_tipo_pago_res = InfoTipoPagoForm(initial=form_tipo_pago.cleaned_data, disabled=True)
-            context['form_tipo_pago'] = form_tipo_pago_res.render(template_form)
-            info_cliente.update(form_tipo_pago.cleaned_data)
-        else:
-            context['errores'] = form_tipo_pago.errors
-            return render(request, 'info_pago.html', context)
-        
-        request.session['info_cliente'] = info_cliente
-        return render(request, 'resumen_pedido.html', context)
 
 class Checkout(View):
     
     def post(self, request):
+        print(settings.STRIPE_SECRET_KEY)
         usuario = request.user
         sesion_id = None
         if usuario.is_authenticated:
