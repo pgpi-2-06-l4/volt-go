@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -108,14 +108,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD':'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
-    }
+    'default': dj_database_url.config(
+        default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a.oregon-postgres.render.com/voltgosql',
+        conn_max_age=600
+    )
 }
 
 # Following settings only make sense on production and may break development environments.
