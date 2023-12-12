@@ -155,10 +155,11 @@ APPEND_SLASH = False
 
 ## Configuracion de Stripe
 import stripe
+from decouple import config
 import os
 
-STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
-STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='No se ha encontrado public_key') #os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='No se ha encontrado secret_key') #os.getenv('STRIPE_SECRET_KEY')
 
 stripe.api_key = STRIPE_SECRET_KEY
 

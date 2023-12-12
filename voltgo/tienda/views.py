@@ -423,6 +423,7 @@ def success(request):
 def seguimiento(request):
     resultado_pedido = None
     mensaje_error = None
+    items = None
 
     if request.method == 'POST':
         form = BuscarPedidoForm(request.POST)
@@ -430,6 +431,7 @@ def seguimiento(request):
         if form.is_valid():
             id_pedido = form.cleaned_data['id_pedido']
             resultado_pedido = Venta.objects.filter(pk=id_pedido).first()
+            items = ItemVenta.objects.filter(venta=resultado_pedido)
 
             if not resultado_pedido:
                 mensaje_error = "No se encontró ningún pedido con ese ID."
@@ -437,7 +439,7 @@ def seguimiento(request):
     else:
         form = BuscarPedidoForm()
 
-    return render(request, 'seguimiento.html', {'form': form, 'resultado_pedido': resultado_pedido, 'mensaje_error': mensaje_error})
+    return render(request, 'seguimiento.html', {'form': form, 'resultado_pedido': resultado_pedido, 'mensaje_error': mensaje_error, 'items': items})
 
 
 def obtener_cantidad_carrito(request):
