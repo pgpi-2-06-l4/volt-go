@@ -27,13 +27,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = []
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -91,13 +87,30 @@ WSGI_APPLICATION = 'voltgo.wsgi.application'
 #     )
 # }
 
+DOCKER = os.environ.get('DOCKER')
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
-        conn_max_age=600
-    )
-}
+if DOCKER==0:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
+            conn_max_age=600
+        )
+    }
+
+if DOCKER==1:
+    DEBUG = False
+
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a.oregon-postgres.render.com/voltgosql',
+            conn_max_age=600
+        )
+    }
+    STATIC_ROOT = '/app/static/'
+    MEDIA_ROOT = '/app/static/media/'
+    ALLOWED_HOSTS = ['*']
+
+    CSRF_TRUSTED_ORIGINS = ['http://10.5.0.1:8001', 'http://localhost:8001']
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
