@@ -20,4 +20,4 @@ ARG STRIPE_SECRET_KEY=sk_test_51OHWDGGXSBM20rPRxhKaoXCzDbXklKvuYZJqrIsQkpg1bq9Vo
 ENV STRIPE_PUBLIC_KEY=$STRIPE_PUBLIC_KEY
 ENV STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
 
-RUN cd /app/voltgo && python manage.py migrate
+RUN python manage.py migrate
