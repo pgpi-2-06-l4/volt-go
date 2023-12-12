@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+import re
 
 
 class InfoPagoClienteForm(forms.Form):
@@ -8,14 +9,18 @@ class InfoPagoClienteForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         if 'disabled' in kwargs:
+            if kwargs['disabled']:
+                for field in self.declared_fields.values():
+                    field.disabled = 'disabled'
+            else:
+                for field in self.declared_fields.values():
+                    field.disabled = None
             del kwargs['disabled']
-            for field in self.declared_fields.values():
-                field.disabled = 'disabled'
         super(InfoPagoClienteForm, self).__init__(*args, **kwargs)
             
     
     def validar_nombre(valor: str):
-        if valor.isalpha():
+        if valor.isalnum():
             return valor
         else:
             raise ValidationError('Nombre inválido.')
@@ -31,7 +36,6 @@ class InfoPagoClienteForm(forms.Form):
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
             'placeholder': 'Nombre',
-            'pattern': '[A-Za-z ]+',
             'type': 'text'
         }),
         validators=[validar_nombre]
@@ -46,6 +50,7 @@ class InfoPagoClienteForm(forms.Form):
     )
     telefono = forms.CharField(
         max_length=9,
+        min_length=9,
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
             'placeholder': 'Teléfono',
@@ -60,9 +65,13 @@ class InfoPagoDireccionForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         if 'disabled' in kwargs:
+            if kwargs['disabled']:
+                for field in self.declared_fields.values():
+                    field.disabled = 'disabled'
+            else:
+                for field in self.declared_fields.values():
+                    field.disabled = None
             del kwargs['disabled']
-            for field in self.declared_fields.values():
-                field.disabled = 'disabled'
         super(InfoPagoDireccionForm, self).__init__(*args, **kwargs)
     
     PAISES_CHOICES = [
@@ -121,10 +130,7 @@ class InfoPagoDireccionForm(forms.Form):
     ]
     
     def validar_calle(valor: str):
-        if valor.isalpha():
-            return valor
-        else:
-            raise ValidationError('Calle inválida.')
+        return valor
     
     def validar_cp(valor: str):
         if valor.isdigit():
@@ -137,7 +143,6 @@ class InfoPagoDireccionForm(forms.Form):
         widget=forms.TextInput(attrs={
             'class':'form-control mb-3',
             'placeholder': 'Calle',
-            'pattern': '[A-Za-z ]+',
             'type': 'text'
         }),
         validators=[validar_calle]
@@ -174,7 +179,7 @@ class InfoPagoDireccionForm(forms.Form):
             'class': 'form-control mb-3',
             'placeholder': 'Código postal',
             'pattern': '[0-9]+',
-            'type': 'number'
+            'type': 'text'
         }),
         validators=[validar_cp]
     )
@@ -185,9 +190,13 @@ class InfoTipoPagoForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         if 'disabled' in kwargs:
+            if kwargs['disabled']:
+                for field in self.declared_fields.values():
+                    field.disabled = 'disabled'
+            else:
+                for field in self.declared_fields.values():
+                    field.disabled = None
             del kwargs['disabled']
-            for field in self.declared_fields.values():
-                field.disabled = 'disabled'
         super(InfoTipoPagoForm, self).__init__(*args, **kwargs)
     
     tipo_pago = forms.ChoiceField(

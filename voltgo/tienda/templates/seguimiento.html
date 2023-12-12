@@ -19,10 +19,12 @@
       <h4>ID: {{ resultado_pedido.pk }}</h4>
       <h4>Fecha de inicio: {{ resultado_pedido.fecha_inicio }}</h4>
       <h4>Fecha de fin: {{ resultado_pedido.fecha_fin }}</h4>
-      <h4>Estado del producto: {{ resultado_pedido.get_estado_producto_display }}</h4>
       <h4>Estado de envío: {{ resultado_pedido.get_estado_envio_display }}</h4>
       <h4>Tipo de pago: {{ resultado_pedido.get_tipo_pago_display }}</h4>
-      <h4>Nombre del producto: {{ resultado_pedido.producto.nombre }}</h4>
+      <h4>Productos:</h4>
+        {% for item in items %}
+          <h5>- {{ item.producto.nombre }} x {{ item.cantidad }}</h5><br/>
+        {% endfor %}
     </div>
     {% endif %}
   </div>

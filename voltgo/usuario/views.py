@@ -3,33 +3,38 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Usuario, Direccion, Perfil
+from .models import Direccion, Perfil
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm, DireccionForm
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.models import User
+
 
 def user_login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('/usuario/dashboard/')  # Redirigir a la página principal si ya está autenticado
 
+      
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(request,
-                                username=cd['username'],
-                                password=cd['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
+            user = User.objects.filter(email=cd['email'])
+            if not user:
+                messages.error(request, 'Credenciales inválidas')
+            else:
+                userLog = authenticate(
+                    request, username=user[0].username, password=cd['password'])
+
+                if user[0].is_active:
+                    login(request, userLog)
                     dashboard_url = reverse('dashboard')
                     return HttpResponseRedirect(dashboard_url)
                 else:
                     return HttpResponse('Cuenta desactivada')
-            else:
-                messages.error(request, 'Credenciales inválidas')
     else:
         form = LoginForm()
+
     return render(request, 'account/login.html', {'form': form})
 
 
@@ -39,6 +44,7 @@ def dashboard(request):
                   'account/dashboard.html',
                   {'section': 'dashboard'})
 
+
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
@@ -46,7 +52,7 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            
+
             perfil = Perfil(usuario=new_user)
             perfil.save()
 
@@ -56,12 +62,15 @@ def register(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, '¡Registro exitoso! Ahora estás conectado.')
+                messages.success(
+                    request, '¡Registro exitoso! Ahora estás conectado.')
 
                 # Redirigir al usuario al dashboard
-                return redirect('dashboard')  # Reemplaza 'dashboard' con la URL de tu dashboard
+                # Reemplaza 'dashboard' con la URL de tu dashboard
+                return redirect('dashboard')
             else:
-                messages.error(request, 'Error en la autenticación después del registro.')
+                messages.error(
+                    request, 'Error en la autenticación después del registro.')
         else:
             # Si hay errores en el formulario, los agregamos al contexto
             messages.error(request, 'Corrige los errores marcados en rojo.')
@@ -69,17 +78,19 @@ def register(request):
         user_form = UserRegistrationForm()
     return render(request, 'account/register.html', {'user_form': user_form})
 
+
 @login_required
 def gestionar_perfil(request):
     if request.method == 'POST':
         user_form = UserEditForm(request.POST, instance=request.user)
-        profile_form = UserProfileEditForm(request.POST, request.FILES, instance=request.user.perfil)
+        profile_form = UserProfileEditForm(
+            request.POST, request.FILES, instance=request.user.perfil)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
             return redirect('home')
-        
+
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = UserProfileEditForm(instance=request.user.perfil)
@@ -95,6 +106,7 @@ def eliminar_direccion(request, pk):
     direccion.delete()
 
     return redirect('gestionar_perfil')
+
 
 @login_required
 def direccion_editar(request, pk=None):

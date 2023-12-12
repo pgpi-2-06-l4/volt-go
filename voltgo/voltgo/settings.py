@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'voltgo.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a/voltgosql',
+        default=config('DATABASE_URL', default='No se ha encontrado database url'),
         conn_max_age=600
     )
 }
@@ -165,9 +165,10 @@ APPEND_SLASH = False
 ## Configuracion de Stripe
 import stripe
 from decouple import config
+import os
 
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='No se ha encontrado public_key') #os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='No se ha encontrado secret_key') #os.getenv('STRIPE_SECRET_KEY')
 
 stripe.api_key = STRIPE_SECRET_KEY
 

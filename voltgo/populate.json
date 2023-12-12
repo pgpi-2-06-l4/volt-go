@@ -1,207 +1,802 @@
 [
-    {
-        "model": "producto.empresa",
-        "pk": 1,
-        "fields": {
-            "nombre": "ElectroCycles",
-            "descripcion": "Dedicada a la creación de motos eléctricas de vanguardia, combinando tecnología de última generación con un diseño innovador. Nuestras motos ofrecen una experiencia de conducción."
-        }
-    },
-    {
-        "model": "producto.empresa",
-        "pk": 2,
-        "fields": {
-            "nombre": "VoltWheels",
-            "descripcion": "VoltWheels se enorgullece de ofrecer motos eléctricas de alta potencia y durabilidad. Nuestros modelos están diseñados para adaptarse a cualquier estilo de vida, con baterías de larga duración."
-        }
-    },
-    {
-        "model": "producto.empresa",
-        "pk": 3,
-        "fields": {
-            "nombre": "E-Bike Empower",
-            "descripcion": "Creemos en la movilidad sostenible y accesible para todos. Nuestras motos eléctricas están diseñadas para empoderar a los ciclistas, brindando una conducción eficiente y respetuosa con el medio."
-        }
-    },
-    {
-        "model": "producto.empresa",
-        "pk": 4,
-        "fields": {
-            "nombre": "CurrentPedals",
-            "descripcion": "Ofrece una gama de motos eléctricas elegantes y versátiles. Con un enfoque en la innovación tecnológica, nuestras motos están equipadas con características inteligentes."
-        }
-    },
-    {
-        "model": "producto.empresa",
-        "pk": 5,
-        "fields": {
-            "nombre": "SparkRides",
-            "descripcion": "Especializada en motos eléctricas que inspiran aventuras. Diseños modernos y llamativos combinan rendimiento y estilo, brindando una experiencia de conducción única que enciende la pasión."
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 1,
-        "fields": {
-            "nombre": "EcoGlide",
-            "descripcion": "Una moto eléctrica urbana con estilo, perfecta para desplazamientos diarios sin esfuerzo y respetuosa con el medio ambiente.",
-            "url_imagen": "https://cdn.topgear.es/sites/navi.axelspringer.es/public/media/image/2019/10/moto-electrica-seat-silence-s01.jpg?tf=3840x",
-            "empresa": 1
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 2,
-        "fields": {
-            "nombre": "SwiftVolt",
-            "descripcion": "Rápida y ágil, esta moto eléctrica ofrece un impulso extra para conquistar colinas y recorrer la ciudad con facilidad.",
-            "url_imagen": "https://cdn.autobild.es/sites/navi.axelspringer.es/public/media/image/2020/01/boceto-moto-electrica-harley-davidson-1845681.jpg?tf=3840x",
-            "empresa": 1
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 3,
-        "fields": {
-            "nombre": "TrailBlazer",
-            "descripcion": "Diseñada para la aventura off-road, esta moto eléctrica todoterreno te lleva a lugares remotos con potencia y estabilidad.",
-            "url_imagen": "https://e00-expansion.uecdn.es/assets/multimedia/imagenes/2022/06/22/16558979435765.jpg",
-            "empresa": 2
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 4,
-        "fields": {
-            "nombre": "CitySprint",
-            "descripcion": "Una moto eléctrica ágil y compacta, ideal para la vida urbana, con velocidad y maniobrabilidad en el tráfico de la ciudad.",
-            "url_imagen": "https://patineteswheels.com/blog/wp-content/uploads/2021/02/motos-electricas.jpg",
-            "empresa": 2
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 5,
-        "fields": {
-            "nombre": "PowerGlide",
-            "descripcion": "Potencia y eficiencia se unen en esta moto eléctrica de alta gama, brindando un rendimiento excepcional en cada pedaleo.",
-            "url_imagen": "https://www.formulamoto.es/wp-content/uploads/2023/11/Vmoto_Super_Soco_APD_Concept_-1.jpg",
-            "empresa": 3
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 6,
-        "fields": {
-            "nombre": "CruiseMax",
-            "descripcion": "Relájate y disfruta del viaje con esta moto eléctrica cruiser, diseñada para trayectos cómodos y relajados.",
-            "url_imagen": "https://s2.abcstatics.com/media/motor/2020/09/16/silence-s01-U68780765465Ere-510x349@abc.jpg",
-            "empresa": 3
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 7,
-        "fields": {
-            "nombre": "EcoTrax",
-            "descripcion": "Una moto eléctrica plegable y versátil, perfecta para la movilidad urbana, fácil de transportar y guardar.",
-            "url_imagen": "https://arenamotor.es/wp-content/uploads/2022/08/01_Rena-menu.webp",
-            "empresa": 4
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 8,
-        "fields": {
-            "nombre": "AdventureElectra",
-            "descripcion": "Descubre nuevos horizontes con esta moto eléctrica de aventura, lista para explorar terrenos diversos con confianza.",
-            "url_imagen": "https://motoselectricasbuzz.com/wp-content/uploads/2023/05/Y1S-PRO-Gris_Perfil-Del-Izdo-on-con-respaldo-y-asiento-pasajero.png",
-            "empresa": 4
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 9,
-        "fields": {
-            "nombre": "SwiftStream",
-            "descripcion": "Ágil y rápida, esta moto eléctrica híbrida es tu compañera ideal para la ciudad y caminos más allá del asfalto.",
-            "url_imagen": "https://www.hibridosyelectricos.com/uploads/s1/53/75/64/el-modelo-esta-enfocado-a-un-uso-urbano-y-un-tipo-de-cliente-joven.jpeg",
-            "empresa": 5
-        }
-    },
-    {
-        "model": "producto.producto",
-        "pk": 10,
-        "fields": {
-            "nombre": "UrbanFlow",
-            "descripcion": "Una moto eléctrica urbana elegante y eficiente, diseñada para fluir sin esfuerzo a través del tráfico de la ciudad.",
-            "url_imagen": "https://movilidadelectrica.com/wp-content/uploads/2022/01/arc-vector-desnuda.jpeg",
-            "empresa": 5
-        }
-    },
-    {
-        "model": "tienda.venta",
-        "pk": 1,
-        "fields": {
-            "fecha_inicio": "2023-11-01T12:00:00Z",
-            "fecha_fin": null,
-            "estado_producto": 1,  
-            "estado_envio": 0,  
-            "tipo_pago": 1, 
-            "producto": 1, 
-            "usuario": 1 
-        }
-    },
-    {
-        "model": "tienda.venta",
-        "pk": 2,
-        "fields": {
-            "fecha_inicio": "2023-11-02T14:30:00Z",
-            "fecha_fin": "2023-11-05T16:45:00Z",
-            "estado_producto": 2,
-            "estado_envio": 1,
-            "tipo_pago": 0,
-            "producto": 2,
-            "usuario": 1
-        }
-    },
-    {
-        "model": "tienda.venta",
-        "pk": 3,
-        "fields": {
-            "fecha_inicio": "2023-11-03T10:00:00Z",
-            "fecha_fin": null,
-            "estado_producto": 0,
-            "estado_envio": 0,
-            "tipo_pago": 1,
-            "producto": 3,
-            "usuario": 1
-        }
-    },
-    {
-        "model": "tienda.venta",
-        "pk": 4,
-        "fields": {
-            "fecha_inicio": "2023-11-04T09:15:00Z",
-            "fecha_fin": "2023-11-07T18:30:00Z",
-            "estado_producto": 3,
-            "estado_envio": 2,
-            "tipo_pago": 1,
-            "producto": 4,
-            "usuario": 1
-        }
-    },
-    {
-        "model": "tienda.venta",
-        "pk": 5,
-        "fields": {
-            "fecha_inicio": "2023-11-05T13:45:00Z",
-            "fecha_fin": null,
-            "estado_producto": 1,
-            "estado_envio": 0,
-            "tipo_pago": 0,
-            "producto": 5,
-            "usuario": 1
-        }
-    }
+{
+  "model": "producto.caracteristica",
+  "pk": 1,
+  "fields": {
+    "nombre": "AT",
+    "valor": 43
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 2,
+  "fields": {
+    "nombre": "VM",
+    "valor": 60
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 3,
+  "fields": {
+    "nombre": "TC",
+    "valor": 5
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 4,
+  "fields": {
+    "nombre": "P",
+    "valor": 370
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 5,
+  "fields": {
+    "nombre": "AT",
+    "valor": 50
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 6,
+  "fields": {
+    "nombre": "VM",
+    "valor": 65
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 7,
+  "fields": {
+    "nombre": "TC",
+    "valor": 4
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 8,
+  "fields": {
+    "nombre": "P",
+    "valor": 250
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 9,
+  "fields": {
+    "nombre": "AT",
+    "valor": 150
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 10,
+  "fields": {
+    "nombre": "VM",
+    "valor": 150
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 11,
+  "fields": {
+    "nombre": "TC",
+    "valor": 10
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 12,
+  "fields": {
+    "nombre": "P",
+    "valor": 543
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 13,
+  "fields": {
+    "nombre": "AT",
+    "valor": 100
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 14,
+  "fields": {
+    "nombre": "VM",
+    "valor": 130
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 15,
+  "fields": {
+    "nombre": "TC",
+    "valor": 12
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 16,
+  "fields": {
+    "nombre": "P",
+    "valor": 260
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 17,
+  "fields": {
+    "nombre": "AT",
+    "valor": 200
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 18,
+  "fields": {
+    "nombre": "VM",
+    "valor": 180
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 19,
+  "fields": {
+    "nombre": "TC",
+    "valor": 14
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 20,
+  "fields": {
+    "nombre": "P",
+    "valor": 350
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 21,
+  "fields": {
+    "nombre": "AT",
+    "valor": 20
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 22,
+  "fields": {
+    "nombre": "VM",
+    "valor": 80
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 23,
+  "fields": {
+    "nombre": "TC",
+    "valor": 2
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 24,
+  "fields": {
+    "nombre": "P",
+    "valor": 150
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 25,
+  "fields": {
+    "nombre": "AT",
+    "valor": 60
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 26,
+  "fields": {
+    "nombre": "VM",
+    "valor": 90
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 27,
+  "fields": {
+    "nombre": "TC",
+    "valor": 5
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 28,
+  "fields": {
+    "nombre": "P",
+    "valor": 350
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 29,
+  "fields": {
+    "nombre": "AT",
+    "valor": 120
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 30,
+  "fields": {
+    "nombre": "VM",
+    "valor": 120
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 31,
+  "fields": {
+    "nombre": "TC",
+    "valor": 10
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 32,
+  "fields": {
+    "nombre": "P",
+    "valor": 150
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 33,
+  "fields": {
+    "nombre": "AT",
+    "valor": 300
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 34,
+  "fields": {
+    "nombre": "VM",
+    "valor": 200
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 35,
+  "fields": {
+    "nombre": "TC",
+    "valor": 10
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 36,
+  "fields": {
+    "nombre": "P",
+    "valor": 450
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 37,
+  "fields": {
+    "nombre": "AT",
+    "valor": 250
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 38,
+  "fields": {
+    "nombre": "VM",
+    "valor": 150
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 39,
+  "fields": {
+    "nombre": "TC",
+    "valor": 8
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 40,
+  "fields": {
+    "nombre": "P",
+    "valor": 375
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 41,
+  "fields": {
+    "nombre": "AT",
+    "valor": 250
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 42,
+  "fields": {
+    "nombre": "VM",
+    "valor": 160
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 43,
+  "fields": {
+    "nombre": "TC",
+    "valor": 9
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 44,
+  "fields": {
+    "nombre": "P",
+    "valor": 400
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 45,
+  "fields": {
+    "nombre": "AT",
+    "valor": 120
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 46,
+  "fields": {
+    "nombre": "VM",
+    "valor": 90
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 47,
+  "fields": {
+    "nombre": "TC",
+    "valor": 5
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 48,
+  "fields": {
+    "nombre": "P",
+    "valor": 250
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 49,
+  "fields": {
+    "nombre": "AT",
+    "valor": 500
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 50,
+  "fields": {
+    "nombre": "VM",
+    "valor": 200
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 51,
+  "fields": {
+    "nombre": "TC",
+    "valor": 10
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 52,
+  "fields": {
+    "nombre": "P",
+    "valor": 525
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 53,
+  "fields": {
+    "nombre": "AT",
+    "valor": 300
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 54,
+  "fields": {
+    "nombre": "VM",
+    "valor": 150
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 55,
+  "fields": {
+    "nombre": "TC",
+    "valor": 10
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 56,
+  "fields": {
+    "nombre": "P",
+    "valor": 375
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 57,
+  "fields": {
+    "nombre": "AT",
+    "valor": 80
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 58,
+  "fields": {
+    "nombre": "VM",
+    "valor": 50
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 59,
+  "fields": {
+    "nombre": "TC",
+    "valor": 3
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 60,
+  "fields": {
+    "nombre": "P",
+    "valor": 54
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 61,
+  "fields": {
+    "nombre": "AT",
+    "valor": 200
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 62,
+  "fields": {
+    "nombre": "VM",
+    "valor": 100
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 63,
+  "fields": {
+    "nombre": "TC",
+    "valor": 5
+  }
+},
+{
+  "model": "producto.caracteristica",
+  "pk": 64,
+  "fields": {
+    "nombre": "P",
+    "valor": 275
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 1,
+  "fields": {
+    "nombre": "e-Burgman",
+    "descripcion": "Perfecta para todo tipo de desplazamientos por ciudad.",
+    "url_imagen": "https://img.remediosdigitales.com/b23466/eburgman-3-2023/1366_2000.jpeg",
+    "precio_base": 20.0,
+    "stock": 17,
+    "empresa": "Suzuki",
+    "caracteristicas": [
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 2,
+  "fields": {
+    "nombre": "Neo's",
+    "descripcion": "NEO's esta perfectamente preparada para abrir una nueva era en la movilidad urbana de cero emisiones para todo el mundo.",
+    "url_imagen": "https://cdn2.yamaha-motor.eu/prod/product-assets/2023/EJE025/2023-Yamaha-EJE025-EU-Milky_White-360-Degrees-001-03.jpg",
+    "precio_base": 20.0,
+    "stock": 35,
+    "empresa": "Yamaha",
+    "caracteristicas": [
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 3,
+  "fields": {
+    "nombre": "Ducati MotoE",
+    "descripcion": "La mas rapida en la carretera",
+    "url_imagen": "https://electriccyclerider.com/wp-content/uploads/2021/12/ducati-motoe-prototype-2.jpg",
+    "precio_base": 60.0,
+    "stock": 10,
+    "empresa": "Ducati",
+    "caracteristicas": [
+      9,
+      10,
+      11,
+      12
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 4,
+  "fields": {
+    "nombre": "Kawasaki e-Tron",
+    "descripcion": "Rapida y manejable",
+    "url_imagen": "https://d500.epimg.net/cincodias/imagenes/2023/09/18/motor/1695053781_320986_1695053887_sumario_normal_recorte1.jpg",
+    "precio_base": 30.0,
+    "stock": 23,
+    "empresa": "Kawasaki",
+    "caracteristicas": [
+      13,
+      14,
+      15,
+      16
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 5,
+  "fields": {
+    "nombre": "Monster e-Bike",
+    "descripcion": "Fury Road",
+    "url_imagen": "https://d500.epimg.net/cincodias/imagenes/2023/09/18/motor/1695053781_320986_1695054009_sumario_normal_recorte1.jpg",
+    "precio_base": 60.0,
+    "stock": 23,
+    "empresa": "Kawasaki",
+    "caracteristicas": [
+      17,
+      18,
+      19,
+      20
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 6,
+  "fields": {
+    "nombre": "BMW CE 04",
+    "descripcion": "La Revolucion Silenciosa",
+    "url_imagen": "https://www.hibridosyelectricos.com/uploads/s1/40/89/74/p90495149-highres-bmw-ce-04-vagabund-m.jpeg",
+    "precio_base": 35.0,
+    "stock": 50,
+    "empresa": "BMW",
+    "caracteristicas": [
+      21,
+      22,
+      23,
+      24
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 7,
+  "fields": {
+    "nombre": "EM1 e",
+    "descripcion": "La eleccion de la electrica",
+    "url_imagen": "https://hips.hearstapps.com/hmg-prod/images/honda-em1e-01-645f4abeaa013.jpg?crop=1.00xw:1.00xh;0,0&resize=640:*",
+    "precio_base": 15.0,
+    "stock": 36,
+    "empresa": "Honda",
+    "caracteristicas": [
+      25,
+      26,
+      27,
+      28
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 8,
+  "fields": {
+    "nombre": "KTM Freeride E-XC",
+    "descripcion": "Posibilidades ilimitadas",
+    "url_imagen": "https://motecoelectric.com/storage/2021/08/PHO_BIKE_90_RE_freeride-ex-c-21-90re_SALL_AEPI_V1.jpg",
+    "precio_base": 50.0,
+    "stock": 10,
+    "empresa": "KTM",
+    "caracteristicas": [
+      29,
+      30,
+      31,
+      32
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 9,
+  "fields": {
+    "nombre": "Livewire One",
+    "descripcion": "Preparada para llevarte mas alla de las limitaciones de la combustian, la motocicleta electrica LiveWire ONE incluye un motor Revelation ensamblado por Harley-Davidson en EE.UU.",
+    "url_imagen": "https://www.harley-davidson.com/content/dam/h-d/images/product-images/bikes/electric-vehicles/hero-cards/livewire-one-motorcycle-hero-card.jpg?impolicy=myresize&rw=600",
+    "precio_base": 50.0,
+    "stock": 20,
+    "empresa": "Harley Davidson",
+    "caracteristicas": [
+      33,
+      34,
+      35,
+      36
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 10,
+  "fields": {
+    "nombre": "S2 del Mar",
+    "descripcion": "No se trata simplemente de la medida, sino de la experiencia. Creada con la agilidad en mente y con alma por su diseno, la S2 Del Mar nace para el pilotaje urbano y mas alla.",
+    "url_imagen": "https://www.harley-davidson.com/content/dam/h-d/images/product-images/bikes/electric-vehicles/hero-cards/livewire-del-mar-motorcycle-hero-card.jpg?impolicy=myresize&rw=600",
+    "precio_base": 60.0,
+    "stock": 33,
+    "empresa": "Harley Davidson",
+    "caracteristicas": [
+      37,
+      38,
+      39,
+      40
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 11,
+  "fields": {
+    "nombre": "Aprilia ELECTRICa",
+    "descripcion": "Un concept de motocicleta 100% electrica destinada a los entornos urbanos",
+    "url_imagen": "https://media.somoselectricos.com/wp-content/uploads/2022/11/Aprilia-ELECTRICa.jpg?_gl=1*1mcc4st*_ga*MTUyMDI4Mzk0Ny4xNzAyMjkxMTI3*_ga_4DRP24QML9*MTcwMjI5MTEyNi4xLjEuMTcwMjI5MTE1Ni4zMC4wLjA.*_ga_R5VXD8",
+    "precio_base": 30.0,
+    "stock": 60,
+    "empresa": "Aprilia",
+    "caracteristicas": [
+      41,
+      42,
+      43,
+      44
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 12,
+  "fields": {
+    "nombre": "eSR1",
+    "descripcion": "El scooter electrico mas fiable",
+    "url_imagen": "https://www.hibridosyelectricos.com/uploads/s1/34/38/80/2020120217035677046_5_659x371.jpeg",
+    "precio_base": 15.0,
+    "stock": 15,
+    "empresa": "Aprilia",
+    "caracteristicas": [
+      45,
+      46,
+      47,
+      48
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 13,
+  "fields": {
+    "nombre": "TE-1",
+    "descripcion": "TE-1 hace gala de numeros tan extremos como el propio diseno del prototipo.",
+    "url_imagen": "https://motor.elpais.com/wp-content/uploads/2022/07/Triumph-TE-1-2.jpg",
+    "precio_base": 80.0,
+    "stock": 10,
+    "empresa": "Triumph",
+    "caracteristicas": [
+      49,
+      50,
+      51,
+      52
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 14,
+  "fields": {
+    "nombre": "QJ7000D",
+    "descripcion": "A pesar de ser electrica, mantiene el cambio de marchas manual para los mas expertos.",
+    "url_imagen": "https://soymotero.net/wp-content/uploads/2021/08/nueva_benelli_electrica_qj7000_d.jpg",
+    "precio_base": 60.0,
+    "stock": 15,
+    "empresa": "Benelli",
+    "caracteristicas": [
+      53,
+      54,
+      55,
+      56
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 15,
+  "fields": {
+    "nombre": "4RT",
+    "descripcion": "Rapida y ligera",
+    "url_imagen": "https://www.trialworld.es/wp-content/uploads/2011/07/4rtelectrica_400.jpg",
+    "precio_base": 20.0,
+    "stock": 33,
+    "empresa": "Montesa",
+    "caracteristicas": [
+      57,
+      58,
+      59,
+      60
+    ]
+  }
+},
+{
+  "model": "producto.producto",
+  "pk": 16,
+  "fields": {
+    "nombre": "Guzzy Galleto",
+    "descripcion": "Elegancia en la carretera",
+    "url_imagen": "https://cdn.classic-trader.com/I/images/1920_1920_inset/vehicle_ad_standard_image_514c692572c3f31f74a34b6e6c8b761a.jpg",
+    "precio_base": 200.0,
+    "stock": 5,
+    "empresa": "Moto Guzzi",
+    "caracteristicas": [
+      61,
+      62,
+      63,
+      64
+    ]
+  }
+}
 ]

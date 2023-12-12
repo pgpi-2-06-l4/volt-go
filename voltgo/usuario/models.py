@@ -6,8 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
 
-
-
 PAISES_CHOICES = [
     ('ESP', 'ESP')
 ]
@@ -84,9 +82,10 @@ def validar_fecha(fecha):
         raise ValidationError(_('La fecha no puede ser igual a la fecha actual.'),
                               params={'fecha_limite': fecha_limite})
     
+
 def validate_letters(value):
-        if not value.isalpha():
-            raise ValidationError('La calle solo puede contener letras.')
+    if not all(char.isalpha() or char.isspace() for char in value):
+        raise ValidationError('La cadena solo puede contener letras')
     
 class Perfil(models.Model):
     

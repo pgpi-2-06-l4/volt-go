@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import home_view, eliminar_venta, about_view, InfoPago, ResumenPedido, Checkout, reclamacion_view, reclamaciones_by_user, compras_by_user, success, seguimiento, obtener_cantidad_carrito
 
 app_name = 'tienda'
 

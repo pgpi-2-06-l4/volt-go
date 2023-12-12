@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import catalogo, ProductDetailView, ver_carrito, agregar_al_carrito, eliminar_del_carrito, vaciar_carrito, pagar_carrito
 
 app_name = 'producto'
 
