@@ -20,4 +20,10 @@ ARG STRIPE_SECRET_KEY=sk_test_51OHWDGGXSBM20rPRxhKaoXCzDbXklKvuYZJqrIsQkpg1bq9Vo
 ENV STRIPE_PUBLIC_KEY=$STRIPE_PUBLIC_KEY
 ENV STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
 
-RUN python manage.py runserver
+RUN python3 ./manage.py collectstatic --noinput
+
+RUN python3 ./manage.py makemigrations
+
+RUN python3 ./manage.py migrate
+
+CMD ["python3", "manage.py","runserver", "0.0.0.0:8001","--noreload"]
