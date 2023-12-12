@@ -3,11 +3,16 @@ import dj_database_url
 DEBUG = True
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a.oregon-postgres.render.com/voltgosql',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD':'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
 }
+
 STATIC_ROOT = '/app/static/'
 MEDIA_ROOT = '/app/static/media/'
 ALLOWED_HOSTS = ['*']
