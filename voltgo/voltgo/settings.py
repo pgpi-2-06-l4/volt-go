@@ -111,7 +111,8 @@ DATABASES = {
     'default': dj_database_url.config(
         default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a.oregon-postgres.render.com/voltgosql',
         conn_max_age=600
-    )
+    ),
+    'ENGINE': 'django.db.backends.postgresql',
 }
 
 # Following settings only make sense on production and may break development environments.
