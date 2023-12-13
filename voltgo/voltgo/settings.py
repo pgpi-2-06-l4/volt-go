@@ -27,8 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = 'RENDER' not in os.environ
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -82,32 +81,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'voltgo.wsgi.application'
 
 
-# (SQLITE) BASE DE DATOS LOCAL PARA LOCAL 
+# (SQLITE) BASE DE DATOS LOCAL PARA LOCAL 
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
-#         conn_max_age=600
-#     )
-# }
+if DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+            conn_max_age=600
+        )
+    }
 
 # (POSTGRES) BASE DE DATOS EN LA NUBE PARA RENDER (DESPLIEGUE)
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL', default='No se ha encontrado database url'),
-        conn_max_age=600
-    )
-}
-
-# (POSTGRES) BASE DE DATOS EN LA NUBE PARA LOCALHOST
-
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='postgres://admin:LeEp5N4apL7BK8SMk6bWgPywzlshpdQi@dpg-clpl40946foc73dbi2ng-a.oregon-postgres.render.com/voltgosql',
-#         conn_max_age=600
-#     )
-# }
+if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config('DATABASE_URL', default='No se ha encontrado database url'),
+            conn_max_age=600
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
